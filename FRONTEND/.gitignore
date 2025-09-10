@@ -1,0 +1,34 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Node modules and build output
+node_modules/
+dist/
+dist-ssr/
+
+# Local config files
+*.local
+.env
+
+# Editor directories and files
+.vscode/
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+Thumbs.db
+
+# Temporary / downloaded assets
+FRONTEND/src/assets/LMS Flow Chat — Eraser_files/
+*.download
+*.tmp

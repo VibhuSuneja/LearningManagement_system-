@@ -1,0 +1,10 @@
+/* 1. External imports first */
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
+/* 2. Tailwind import */
+@import "tailwindcss";
+
+/* 3. Your custom styles */
+* {
+  font-family: "Outfit", sans-serif;
+}
