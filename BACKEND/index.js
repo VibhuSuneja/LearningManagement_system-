@@ -6,7 +6,7 @@ import userRouter from "./route/userRoute.js";
 import authRouter from "./route/authRoute.js";
 dotenv.config();
 import cors from "cors"
-const port = process.env.PORT; // earlier we created a port of any value , 
+const port = process.env.PORT ||8080; // earlier we created a port of any value , 
 // now to import value from env file we use process.env.PORT
 const app = express(); // use express functionalities of server creation,route creation ... etc.
 app.use(express.json()); // it will start taking values in json
