@@ -84,8 +84,9 @@ export const sendOTP =async(req,res)=>{
         if(!user){
             return res.status(404).json({message:"User not found"})
         }
-        }
-    } catch (error) {
+        const otp =Math.floor(1000 + Math.random()*9000).toString
+        ()
+    }catch (error) {
         
     }
 }
