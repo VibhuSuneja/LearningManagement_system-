@@ -78,25 +78,28 @@ return res.status(200).json({message:"Logout Successfully"})
 
     }
 }
-export const sendOTP =async(req,res)=>{
-    try {
-        const{email} =req.body
-        const user = await User.findOne({email})
-        if(!user){
-            return res.status(404).json({message:"User not found"})
-        }
-        const otp =Math.floor(1000 + Math.random()*9000).toString()
-        user.resetOtp= otp,
-        user.otpExpires= Date.now()+ 5*60*1000,
-        user.isOtpVerified= false
-
-        await user.save()
-        await sendMail(email, otp)
-        return res.status(200).json({message:"Otp send Successfully"})
-    }catch (error) {
-        return res.status(500).json({message:`send Otp error${error}`})
+export const sendOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-}
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    user.resetOtp = otp;
+    user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes
+    user.isOtpVerified = false;
+
+    await user.save();
+    await sendMail(email, otp);
+
+    return res.status(200).json({ message: "OTP sent successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: `sendOTP error: ${error}` });
+  }
+};
 
 export const verifyOTP= async (req,res)=>{
     try {
