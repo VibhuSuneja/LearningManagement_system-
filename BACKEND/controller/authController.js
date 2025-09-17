@@ -3,6 +3,7 @@ import User from "../model/UserModel.js" //importing the model
 import validator from "validator"
 import bcrypt from "bcryptjs"
 import genToken from "../config/token.js"
+import sendMail from "../config/sendMail.js"
 export const signUp= async(req,res) =>{
     try{ // for signing up we need name,email,password,role  which we will get from req.body
             const{name,email,password,role}=req.body
@@ -91,7 +92,27 @@ export const sendOTP =async(req,res)=>{
         user.isOtpVerified= false
 
         await user.save()
+        await sendMail(email, otp)
+        return res.status(200).json({message:"Otp send Successfully"})
     }catch (error) {
+        return res.status(500).json({message:`send Otp error${error}`})
+    }
+}
+
+export const verifyOTP= async (req,res)= >{
+    try {
+        const {email,otp} = req.body
+        const user = await User.findOne({email})
+        if(!user || user.resetOtp !=otp || user.otpExpires < Date.now() ){
+            return res.status(404).json({message:"Invalid OTP"})
+        }
+        user.isOtpVerified= true,
+        user.resetOtp= undefined,
+        user.otpExpires= undefined
+
+        await user.save()
+        return res.status(200).json({message:"Otp verified Successfully"})
+    } catch (error) {
         
     }
 }
