@@ -27,7 +27,7 @@ console.log(error)
 toast.error(error.response.data.message)
 setLoading(false)
   }
-}
+};
 
   //for step-2
   const verifyOtp =async()=>{ 
@@ -43,7 +43,7 @@ console.log(error)
 toast.error(error.response.data.message)
 setLoading(false)
     }
-  }
+  };
   //for step-3
   const resetPassword =async()=>{
     setLoading(true)
@@ -61,6 +61,7 @@ setLoading(false)
       toast.error(error.response.data.message)
       setLoading(false)
     }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
     {/* step-1  */}
@@ -115,7 +116,7 @@ setLoading(false)
 
     
     
-  )
+  );
 }
 
 export default ForgetPassword; 
