@@ -85,7 +85,7 @@ export const sendOTP =async(req,res)=>{
         if(!user){
             return res.status(404).json({message:"User not found"})
         }
-        const otp =Math.floor(1000 + Math.random()*9000).toString
+        const otp =Math.floor(1000 + Math.random()*9000).toString()
         ()
         user.resetOtp= otp,
         user.otpExpires= Date.now()+ 5*60*1000,
@@ -99,20 +99,20 @@ export const sendOTP =async(req,res)=>{
     }
 }
 
-export const verifyOTP= async (req,res)= >{
+export const verifyOTP= async (req,res)=>{
     try {
         const {email,otp} = req.body
         const user = await User.findOne({email})
         if(!user || user.resetOtp !=otp || user.otpExpires < Date.now() ){
             return res.status(404).json({message:"Invalid OTP"})
         }
-        user.isOtpVerified= true,
-        user.resetOtp= undefined,
+        user.isOtpVerified= true;
+        user.resetOtp= undefined;
         user.otpExpires= undefined
 
-        await user.save()
-        return res.status(200).json({message:"Otp verified Successfully"})
+        await user.save();
+        return res.status(200).json({message:"Otp verified Successfully"});
     } catch (error) {
-        
+             return res.status(500).json({message:`verify Otp error: ${error}`});
     }
 }
