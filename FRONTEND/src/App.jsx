@@ -1,36 +1,34 @@
-import React, { useState } from "react";
-import { Routes ,Route, Navigate } from 'react-router-dom' //we are getting this from our package that we have installed. now we can use routes, navigate to different page
-import Home from './pages/Home' // importing for our home page
-import SignUp from './pages/SignUp'
-import Login from './pages/Login'
-import {ToastContainer} from "react-toastify"
-import getCurrentUser from './customHooks/getCurrentUser'
-import { useSelector } from 'react-redux'
-import Profile from './pages/Profile'
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 import ForgetPassword from "./pages/ForgetPassword";
-export const serverUrl =
-  import.meta.env.MODE === "development"
-    ? "http://localhost:8080" // when running locally
-    : "https://learningmanagement-system.onrender.com"; // when deployed
+import { ToastContainer } from "react-toastify";
+import { useSelector } from "react-redux";
+import useGetCurrentUser from "./customHooks/getCurrentUser"; // rename hook properly
+
+export const serverUrl = "http://localhost:8080";
+
 function App() {
-  getCurrentUser()
-  const {userData}= useSelector(state=>state.user)
+  // ✅ Call the hook inside the component
+  useGetCurrentUser();
+  
+  const { userData } = useSelector((state) => state.user);
+
   return (
     <>
-    <ToastContainer />
-    <Routes>
-
-{/* we are providing path as / and we are providing an element as home page */}
-<Route path='/' element={<Home/>}/> 
-<Route path='/signup' element={!userData ? <SignUp/> : <Navigate to ={"/"}/>}/>
-<Route path='/login' element={<Login/>}/> 
-<Route path='/profile' element={userData?<Profile/>:<Navigate to ={"/signup"}/>}/> 
-<Route path='/forget' element={userData?<ForgetPassword/>:<Navigate to ={"/forget"}/>}/>
-         
-    </Routes>
-    
+      <ToastContainer />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={!userData ? <SignUp /> : <Navigate to="/" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={userData ? <Profile /> : <Navigate to="/signup" />} />
+        <Route path="/forget" element={!userData ? <ForgetPassword /> : <Navigate to="/forget" />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

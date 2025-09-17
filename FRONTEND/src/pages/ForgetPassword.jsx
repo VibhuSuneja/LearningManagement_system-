@@ -63,7 +63,7 @@ function ForgetPassword() {
       }
       const result = await axios.post(
         serverUrl + "/api/auth/resetpassword",
-        { email, Password: newpassword },
+        { email, password: newpassword },
         { withCredentials: true }
       );
       console.log(result.data);

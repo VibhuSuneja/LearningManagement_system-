@@ -17,8 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const allowedOrigins = [
-  "http://localhost:5173",  // local frontend
-  "https://learning-management-system-kug4snv27.vercel.app", // your deployed frontend
+  process.env.FRONTEND_URL,  // backend reads from .env
 ];
 
 // ✅ CORS configuration
