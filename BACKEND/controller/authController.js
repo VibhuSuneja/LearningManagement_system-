@@ -1,4 +1,3 @@
-// Authentication Controller
 import User from "../model/UserModel.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
@@ -10,13 +9,11 @@ export const signUp = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    if (!validator.isEmail(email)) {
+    if (!validator.isEmail(email))
       return res.status(400).json({ message: "Enter a valid email" });
-    }
 
-    if (password.length < 8) {
+    if (password.length < 8)
       return res.status(400).json({ message: "Password must be at least 8 characters" });
-    }
 
     const existUser = await User.findOne({ email });
     if (existUser) return res.status(400).json({ message: "User already exists" });
@@ -32,9 +29,9 @@ export const signUp = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.status(201).json(user);
+    res.status(201).json(user);
   } catch (error) {
-    return res.status(500).json({ message: `Signup error: ${error}` });
+    res.status(500).json({ message: `Signup error: ${error}` });
   }
 };
 
@@ -56,9 +53,9 @@ export const login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.status(200).json(user);
+    res.status(200).json(user);
   } catch (error) {
-    return res.status(500).json({ message: `Login error: ${error}` });
+    res.status(500).json({ message: `Login error: ${error}` });
   }
 };
 
@@ -70,9 +67,9 @@ export const logOut = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Strict",
     });
-    return res.status(200).json({ message: "Logout successfully" });
+    res.status(200).json({ message: "Logout successfully" });
   } catch (error) {
-    return res.status(500).json({ message: `Logout error: ${error}` });
+    res.status(500).json({ message: `Logout error: ${error}` });
   }
 };
 
@@ -87,15 +84,13 @@ export const sendOTP = async (req, res) => {
     user.resetOtp = otp;
     user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes
     user.isOtpVerified = false;
-
     await user.save();
 
-    // Correctly pass email and OTP to sendMail
-    await sendMail({ to: email, otp });
+    await sendMail(email, otp); // correct usage
 
-    return res.status(200).json({ message: "OTP sent successfully" });
+    res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
-    return res.status(500).json({ message: `sendOTP error: ${error}` });
+    res.status(500).json({ message: `sendOTP error: ${error}` });
   }
 };
 
@@ -105,18 +100,17 @@ export const verifyOTP = async (req, res) => {
     const { email, otp } = req.body;
     const user = await User.findOne({ email });
 
-    if (!user || user.resetOtp !== otp || user.otpExpires < Date.now()) {
+    if (!user || user.resetOtp !== otp || user.otpExpires < Date.now())
       return res.status(400).json({ message: "Invalid or expired OTP" });
-    }
 
     user.isOtpVerified = true;
     user.resetOtp = undefined;
     user.otpExpires = undefined;
-
     await user.save();
-    return res.status(200).json({ message: "OTP verified successfully" });
+
+    res.status(200).json({ message: "OTP verified successfully" });
   } catch (error) {
-    return res.status(500).json({ message: `verifyOTP error: ${error}` });
+    res.status(500).json({ message: `verifyOTP error: ${error}` });
   }
 };
 
@@ -126,16 +120,15 @@ export const resetPassword = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
-    if (!user || !user.isOtpVerified) {
+    if (!user || !user.isOtpVerified)
       return res.status(400).json({ message: "OTP verification required" });
-    }
 
     user.password = await bcrypt.hash(password, 10);
     user.isOtpVerified = false;
-
     await user.save();
-    return res.status(200).json({ message: "Password reset successfully" });
+
+    res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
-    return res.status(500).json({ message: `resetPassword error: ${error}` });
+    res.status(500).json({ message: `resetPassword error: ${error}` });
   }
 };
