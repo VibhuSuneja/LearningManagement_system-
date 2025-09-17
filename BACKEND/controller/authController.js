@@ -119,7 +119,6 @@ export const verifyOTP= async (req,res)=>{
 export const resetPassword = async(req,res)=>{
     try {
         const{email,Password} = req.body
-        const {email,otp} = req.body
         const user = await User.findOne({email})
         if(!user || !user.isOtpVerified){
             return res.status(404).json({message:"OTP verification required"})
@@ -134,4 +133,4 @@ export const resetPassword = async(req,res)=>{
 
     }catch (error) {
         return res.status(500).json({message:`reset Password error: ${error}`});
-    }
+    }}
