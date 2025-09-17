@@ -1,7 +1,7 @@
 // We will create routes with the help of express
 import express from "express"
 
-import { signUp,login,logOut,sendOTP } from "../controller/authController.js"
+import { signUp,login,logOut,sendOTP,verifyOTP,resetPassword } from "../controller/authController.js"
 // making a variable named as authRouter , which we take from express.router
 const authRouter = express.Router()
 // if we want to update or change data we use post request . we give route of signup . we made controller of signup in controller folder 
