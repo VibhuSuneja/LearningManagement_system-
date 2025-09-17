@@ -16,10 +16,9 @@ const port = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Allowed frontend URLs
 const allowedOrigins = [
-  "http://localhost:5173",                                   // Local frontend
-  "https://learning-management-system-six-rosy.vercel.app"   // Deployed frontend
+  "http://localhost:5173",  // local frontend
+  "https://learning-management-system-kug4snv27.vercel.app", // your deployed frontend
 ];
 
 // ✅ CORS configuration
