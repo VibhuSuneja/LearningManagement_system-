@@ -16,22 +16,30 @@ const port = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cookieParser());
 
+// Allowed origins
 const allowedOrigins = [
-  "http://localhost:5173",  // local frontend
-  "https://learning-management-system-six-rosy.vercel.app" // your deployed frontend
+  "http://localhost:5173",
+  "https://learning-management-system-six-rosy.vercel.app"
 ];
 
-// ✅ CORS configuration
+// CORS middleware
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
+      // allow requests with no origin like Postman
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        return callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true, // Allow cookies
+    credentials: true, // ✅ allow cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
 
@@ -44,14 +52,10 @@ app.get("/", (req, res) => {
   res.send("🚀 Server is running!");
 });
 
-// Global CORS error handler
+// Global error handler
 app.use((err, req, res, next) => {
-  if (err) {
-    console.error("CORS error:", err.message);
-    res.status(403).json({ message: err.message });
-  } else {
-    next();
-  }
+  console.error(err.stack);
+  res.status(err.status || 500).json({ message: err.message });
 });
 
 // Start server and connect to DB
