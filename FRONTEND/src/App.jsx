@@ -10,7 +10,8 @@ import { useSelector } from "react-redux";
 import useGetCurrentUser from "./customHooks/getCurrentUser";
 
 // ✅ Correct: Use the environment variable for the server URL
-export const serverUrl = import.meta.env.VITE_SERVER_URL;
+// This is the URL for your local backend server
+export const serverUrl = "http://localhost:8080";
 
 function App() {
   useGetCurrentUser();
