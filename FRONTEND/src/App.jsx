@@ -8,7 +8,10 @@ import getCurrentUser from './customHooks/getCurrentUser'
 import { useSelector } from 'react-redux'
 import Profile from './pages/Profile'
 import ForgetPassword from "./pages/ForgetPassword";
-export const serverUrl = "https://learningmanagement-system.onrender.com";
+export const serverUrl =
+  import.meta.env.MODE === "development"
+    ? "http://localhost:8080" // when running locally
+    : "https://learningmanagement-system.onrender.com"; // when deployed
 function App() {
   getCurrentUser()
   const {userData}= useSelector(state=>state.user)
