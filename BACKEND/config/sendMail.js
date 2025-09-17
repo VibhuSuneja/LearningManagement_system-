@@ -16,7 +16,6 @@ await transporter.sendMail({
     from: process.env.USER_EMAIL,
     to: to,
     subject: "reset your password",
-    text: "Hello world?", 
     html: `<p>Your OTP for Password Reset is <b>${otp}</b>.
         It expires in 5 minutes.</p>`, 
   });
