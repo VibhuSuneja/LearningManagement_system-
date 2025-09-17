@@ -1,5 +1,5 @@
-import {createTransport} from "nodemailer"
-import
+
+import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 dotenv.config()
 const transporter = nodemailer.createTransport({
