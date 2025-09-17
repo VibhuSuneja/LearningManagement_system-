@@ -9,7 +9,7 @@ import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
 import useGetCurrentUser from "./customHooks/getCurrentUser"; // rename hook properly
 
-export const serverUrl = "http://localhost:8080";
+export const serverUrl = "https://learningmanagement-system.onrender.com";
 
 function App() {
   // ✅ Call the hook inside the component
