@@ -66,7 +66,7 @@ setLoading(false)
     {/* step-1  */}
    {step == 1 && <div className="bg-white shadow-md rounded-xl p-8 max-w-md w-full">
     <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Forget your Password?</h2>
-    <form className="space-y-4">
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault() }}>
             <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700"> Enter your email address</label>
                 <input id="email" type="text" className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[black]" placeholder="you@example.com" required
