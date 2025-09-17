@@ -116,3 +116,22 @@ export const verifyOTP= async (req,res)=>{
              return res.status(500).json({message:`verify Otp error: ${error}`});
     }
 }
+export const resetPassword = async(req,res)=>{
+    try {
+        const{email,Password} = req.body
+        const {email,otp} = req.body
+        const user = await User.findOne({email})
+        if(!user || !user.isOtpVerified){
+            return res.status(404).json({message:"OTP verification required"})
+        }
+        const hashPassword = await bcrypt.hash(Password,10)
+        user.password= hashPassword,
+        user.isOtpVerified= false
+
+
+        await user.save()
+        return res.status(200).json({message:"Password reset Successfully"})
+
+    }catch (error) {
+        return res.status(500).json({message:`reset Password error: ${error}`});
+    }
