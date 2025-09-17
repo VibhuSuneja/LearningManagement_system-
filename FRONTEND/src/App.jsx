@@ -7,12 +7,12 @@ import Profile from "./pages/Profile";
 import ForgetPassword from "./pages/ForgetPassword";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
-import useGetCurrentUser from "./customHooks/getCurrentUser"; // rename hook properly
+import useGetCurrentUser from "./customHooks/getCurrentUser";
 
-export const serverUrl = "https://learningmanagement-system.onrender.com";
+// ✅ Correct: Use the environment variable for the server URL
+export const serverUrl = import.meta.env.VITE_SERVER_URL;
 
 function App() {
-  // ✅ Call the hook inside the component
   useGetCurrentUser();
   
   const { userData } = useSelector((state) => state.user);
@@ -25,6 +25,7 @@ function App() {
         <Route path="/signup" element={!userData ? <SignUp /> : <Navigate to="/" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={userData ? <Profile /> : <Navigate to="/signup" />} />
+        {/*  let's redirect to the login page for a better user experience */}
         <Route path="/forget" element={!userData ? <ForgetPassword /> : <Navigate to="/login" />} />
       </Routes>
     </>
