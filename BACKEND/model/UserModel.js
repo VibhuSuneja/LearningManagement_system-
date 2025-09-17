@@ -35,7 +35,17 @@ const userSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId, //here we have id of our individual course
         ref:"Course" //it will take reference from Course Model
 
-    }]
+    }],
+    resetOtp:{
+        type:String
+    },
+    otpExpires:{
+        type:Date
+    },
+    isOtpVerified:{
+        type:Boolean,
+        default:false
+    }
 },{timestamps:true})
 //creating model for User schema is userSchema 
 const User= mongoose.model("User", userSchema)
