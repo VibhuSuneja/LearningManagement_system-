@@ -10,6 +10,8 @@ import axios from 'axios';
 import { serverUrl } from '../App';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, provider } from '../../utils/firebase';
 
  function Login() {
     const [show , setShow]=useState(false)
@@ -34,6 +36,23 @@ import { setUserData } from '../redux/userSlice';
           
         }
     }
+      const googleSignUp = async () => {
+        try {
+          const response = await signInWithPopup(auth, provider)
+          let user = response.user 
+          let name = user.displayName
+          let email = user.email
+    
+    
+          const result = await axios.post(serverUrl + "/api/auth/googlesignup", { name, email, role}, { withCredentials: true })
+          dispatch(setUserData(result.data))
+          navigate("/")
+          toast.success("SignUp Successfully")
+        } catch (error) {
+          console.log(error)
+          toast.error(error.response?.data?.message || "Signup failed")
+        }
+      }
     return (
       <div className='bg-[#dddbdb] w-[100vw] h-[100vh] flex items-center justify-center  '>
         {/* A full-screen container (100vw x 100vh) with light gray background (#dddbdb). 
