@@ -44,9 +44,18 @@ function SignUp() {
   const googleSignUp = async () => {
     try {
       const response = await signInWithPopup(auth, provider)
-      console.log(response)
+      let user = response.user 
+      let name = user.displayName
+      let email = user.email
+
+
+      const result = await axios.post(serverUrl + "/api/auth/googlesignup", { name, email, role}, { withCredentials: true })
+      dispatch(setUserData(result.data))
+      navigate("/")
+      toast.success("SignUp Successfully")
     } catch (error) {
-      console.error(error)
+      console.log(error)
+      toast.error(error.response?.data?.message || "Signup failed")
     }
   }
 
