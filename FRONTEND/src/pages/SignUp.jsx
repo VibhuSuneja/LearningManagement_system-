@@ -11,6 +11,7 @@ import {ClipLoader} from 'react-spinners'
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
 import { signInWithPopup } from 'firebase/auth';
+import { auth, provider } from '../../utils/firebase';
 function SignUp() {
   const [show , setShow]=useState(false)
   const navigate= useNavigate()
@@ -39,7 +40,11 @@ function SignUp() {
 
   const googleSignUp =async()=>{
     try {
-      const response = await signInWithPopup()
+      const response = await signInWithPopup(auth,provider)
+      console.log(response)
+    } catch (error) {
+
+    }
   return (
     <div className='bg-[#dddbdb] w-[100vw] h-[100vh] flex items-center justify-center  '>
       {/* A full-screen container (100vw x 100vh) with light gray background (#dddbdb). 
@@ -86,7 +91,7 @@ function SignUp() {
               <div className='w-[50%] text-[15px] text-[#6f6f6f] flex items-center justify-center'>Or Continue</div>
               <div className='w-[25%] h-[0.5px] bg-[#c4c4c4]'></div>
             </div>
-            <div className='w-[80%] h-[40px] border-1 border-[black] rounded-[5px] flex items-center justify-center'>
+            <div className='w-[80%] h-[40px] border-1 border-[black] rounded-[5px] flex items-center justify-center' onClick={googleSignUp}>
               <img src={google} className='w-[25px]' alt="" />
               <span className='text-[18px] text-gray-500'>oogle</span>
             </div>
@@ -110,5 +115,5 @@ function SignUp() {
     </div>
   )
 }
-
-export default SignUp
+}
+export default SignUp;
