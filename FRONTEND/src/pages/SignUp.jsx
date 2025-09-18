@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import {ClipLoader} from 'react-spinners'
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
+import { signInWithPopup } from 'firebase/auth';
 function SignUp() {
   const [show , setShow]=useState(false)
   const navigate= useNavigate()
@@ -35,6 +36,10 @@ function SignUp() {
       toast.error(error.response.data.message)
     }
   }
+
+  const googleSignUp =async()=>{
+    try {
+      const response = await signInWithPopup()
   return (
     <div className='bg-[#dddbdb] w-[100vw] h-[100vh] flex items-center justify-center  '>
       {/* A full-screen container (100vw x 100vh) with light gray background (#dddbdb). 
