@@ -36,18 +36,19 @@ import { auth, provider } from '../../utils/firebase';
           
         }
     }
-      const googleSignUp = async () => {
+      const googleLogin = async () => {
         try {
           const response = await signInWithPopup(auth, provider)
           let user = response.user 
           let name = user.displayName
           let email = user.email
+          let role =""
     
     
           const result = await axios.post(serverUrl + "/api/auth/googlesignup", { name, email, role}, { withCredentials: true })
           dispatch(setUserData(result.data))
           navigate("/")
-          toast.success("SignUp Successfully")
+          toast.success("Google Login Successfully")
         } catch (error) {
           console.log(error)
           toast.error(error.response?.data?.message || "Signup failed")
@@ -89,7 +90,7 @@ import { auth, provider } from '../../utils/firebase';
                 <div className='w-[50%] text-[15px] text-[#6f6f6f] flex items-center justify-center'>Or Continue</div>
                 <div className='w-[25%] h-[0.5px] bg-[#c4c4c4]'></div>
               </div>
-              <div className='w-[80%] h-[40px] border-1 border-[black] rounded-[5px] flex items-center justify-center'>
+              <div className='w-[80%] h-[40px] border-1 border-[black] rounded-[5px] flex items-center justify-center' onClick={googleLogin}>
                 <img src={google} className='w-[25px]' alt="" />
                 <span className='text-[18px] text-gray-500'>oogle</span>
               </div>
