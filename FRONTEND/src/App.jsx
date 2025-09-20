@@ -5,6 +5,7 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import ForgetPassword from "./pages/ForgetPassword";
+import EditProfile from "./pages/EditProfile";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
 import useGetCurrentUser from "./customHooks/getCurrentUser";
@@ -26,8 +27,8 @@ function App() {
         <Route path="/signup" element={!userData ? <SignUp /> : <Navigate to="/" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={userData ? <Profile /> : <Navigate to="/signup" />} />
-        {/*  let's redirect to the login page for a better user experience */}
-        <Route path="/forget" element={!userData ? <ForgetPassword /> : <Navigate to="/login" />} />
+        <Route path="/forget" element={!userData ? <ForgetPassword /> : <Navigate to="/signup" />} />
+        <Route path="/editprofile" element={userData ? <EditProfile /> : <Navigate to="/signup" />} />
       </Routes>
     </>
   );
