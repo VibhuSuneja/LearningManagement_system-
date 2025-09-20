@@ -1,34 +1,44 @@
-import User from "../model/UserModel.js"
+import User from "../model/UserModel.js";
+import uploadToCloudinary from "../config/cloudinary.js";
 
- 
-
-export const getCurrentUser = async(req,res) =>{
-try {
-    const user = await User.findById(req.userId).select("-password")
-    if(!user){
-       return res.status(404).json({message:"User not Found"})
+// Get current logged-in user
+export const getCurrentUser = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized: No user found." });
     }
-    return res.status(200).json(user)
-} catch (error) {
-    return res.status(500).json({message:`GetCurrent user error ${error}`})
-}
-}
+    res.status(200).json(req.user);
+  } catch (error) {
+    res.status(500).json({ message: `GetCurrent user error: ${error.message}` });
+  }
+};
 
-export const updateProfile = async(req,res) =>{
-    try {
-        const userId = req.userId
-        const {description, name} = req.body
-        let photoUrl
-        if(req.file){
-            photoUrl = await uploadToCloudinary(req.file.path)
-        }
-        const user = await User.findByIdAndUpdate(userId, {name , description , photoUrl})
+// Update profile
+export const updateProfile = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized: No user found." });
+    }
 
-        if(!user){
-          return res.status(404).json({message:"User not Found"})
+    const { name, description } = req.body;
+    let photoUrl;
+
+    if (req.file) {
+      photoUrl = await uploadToCloudinary(req.file.path);
     }
-          return res.status(200).json(user)
-    } catch (error) {
-        return res.status(500).json({message:`Update profile error ${error}`})
-    }
-}
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        name: name || req.user.name,
+        description: description || req.user.description,
+        ...(photoUrl && { photoUrl }),
+      },
+      { new: true }
+    ).select("-password");
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: `Update profile failed: ${error.message}` });
+  }
+};

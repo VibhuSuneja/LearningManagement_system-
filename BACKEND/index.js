@@ -22,7 +22,11 @@ app.use(
     credentials: true,
   })
 );
-
+// Debug cookies
+app.use((req, res, next) => {
+  console.log("Cookies received:", req.cookies);
+  next();
+});
 // --- Routes ---
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);

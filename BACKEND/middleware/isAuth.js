@@ -3,48 +3,64 @@ import User from "../model/UserModel.js";
 
 const isAuth = async (req, res, next) => {
   try {
+    console.log("Incoming cookies:", req.cookies);
+
     const { token } = req.cookies;
-
     if (!token) {
-      // Use 401 for unauthorized access
-      return res.status(401).json({
-        message: "Unauthorized: No token provided. Please login.",
-        success: false,
-      });
+      console.log("No token found in request!");
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No token provided.", success: false });
     }
 
-    // This will now fail gracefully if JWT_SECRET is missing
+    // Verify JWT
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decodedData.id);
+    console.log("Decoded JWT:", decodedData);
 
-    if (!req.user) {
-        return res.status(404).json({
-            message: "User not found.",
-            success: false,
-        });
+    // Use the correct key from your token
+    const userId = decodedData.userId;
+    if (!userId) {
+      console.log("Token does not contain userId!");
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: Invalid token payload.", success: false });
     }
 
-    next();
+    // Find user in DB
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      console.log("User not found in DB!");
+      return res
+        .status(404)
+        .json({ message: "User not found.", success: false });
+    }
+
+    // Attach user to request
+    req.user = user;
+    console.log("Authenticated user:", req.user);
+
+    next(); // proceed to next middleware or route
   } catch (error) {
-    // Catch specific token errors for clearer messages
-    if (error.name === 'JsonWebTokenError') {
-        return res.status(401).json({
-            message: "Unauthorized: The token is invalid.",
-            success: false,
-        });
+    console.error("Auth middleware error:", error);
+
+    if (error.name === "JsonWebTokenError") {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: Invalid token.", success: false });
     }
-    if (error.name === 'TokenExpiredError') {
-        return res.status(401).json({
-            message: "Unauthorized: Your session has expired. Please login again.",
-            success: false,
+
+    if (error.name === "TokenExpiredError") {
+      return res
+        .status(401)
+        .json({
+          message: "Unauthorized: Token expired. Please login again.",
+          success: false,
         });
     }
 
-    // Fallback for any other errors
-    res.status(500).json({
-      message: `Server Error: ${error.message}`,
-      success: false,
-    });
+    return res
+      .status(500)
+      .json({ message: `Server error: ${error.message}`, success: false });
   }
 };
 

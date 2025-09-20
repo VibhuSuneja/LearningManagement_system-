@@ -22,12 +22,12 @@ export const signUp = async (req, res) => {
     const user = await User.create({ name, email, password: hashPassword, role });
 
     let token = await genToken(user._id);
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: false, // must be false for localhost
+  sameSite: "Strict",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
 
     res.status(201).json(user);
   } catch (error) {
