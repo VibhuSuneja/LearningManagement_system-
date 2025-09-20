@@ -16,6 +16,9 @@ export const getCurrentUser = async (req, res) => {
 // Update profile
 export const updateProfile = async (req, res) => {
   try {
+    console.log("Request Body:", req.body);
+    console.log("Request File:", req.file);
+
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized: No user found." });
     }
@@ -23,8 +26,17 @@ export const updateProfile = async (req, res) => {
     const { name, description } = req.body;
     let photoUrl;
 
+    // Check if a new file has been uploaded
     if (req.file) {
+      console.log("Uploading to Cloudinary...");
       photoUrl = await uploadToCloudinary(req.file.path);
+      console.log("Cloudinary URL:", photoUrl);
+
+      // --- ADDED ERROR HANDLING ---
+      // If the file exists but the upload fails, stop and send an error.
+      if (!photoUrl) {
+        return res.status(500).json({ message: "Image upload failed. Please check server logs for details." });
+      }
     }
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -32,6 +44,7 @@ export const updateProfile = async (req, res) => {
       {
         name: name || req.user.name,
         description: description || req.user.description,
+        // Only add photoUrl to the update if it's a new, valid URL
         ...(photoUrl && { photoUrl }),
       },
       { new: true }
@@ -39,6 +52,7 @@ export const updateProfile = async (req, res) => {
 
     res.status(200).json(updatedUser);
   } catch (error) {
+    console.error("Update Profile Error:", error);
     res.status(500).json({ message: `Update profile failed: ${error.message}` });
   }
 };
