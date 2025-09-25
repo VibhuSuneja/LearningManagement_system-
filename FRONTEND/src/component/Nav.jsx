@@ -42,10 +42,10 @@ function Nav() {
           />
         </div>
         <div className="w-[30%] lg:flex items-center justify-center gap-4 hidden">
+          {/* ✅ CORRECTED: Conditional rendering for user avatar */}
           {!userData ? (
             <IoPersonCircle
-              className="w-[50px] h-[50px] fill-black
-                                cursor-pointer"
+              className="w-[50px] h-[50px] fill-black cursor-pointer"
               onClick={() => setShow((prev) => !prev)}
             />
           ) : (
@@ -70,8 +70,7 @@ function Nav() {
 
           {userData?.role === "educator" && (
             <div
-              className="px-[20px] py-[10px] border-2 lg:border-white border-black lg:text-white bg-[black] text-black rounded-[10px] text-[18px]
-                                font-light flex gap-2 cursor-pointer"
+              className="px-[20px] py-[10px] border-2 lg:border-white border-black lg:text-white bg-[black] text-black rounded-[10px] text-[18px] font-light flex gap-2 cursor-pointer"
               onClick={() => navigate("/dashboard")}
             >
               Dashboard
@@ -79,9 +78,7 @@ function Nav() {
           )}
           {!userData ? (
             <span
-              className="px-[20px] py-[10px] border-2 
-                         border-white text-white rounded-[10px] text-[18px] 
-                         font-light cursor-pointer bg-[#000000d5]"
+              className="px-[20px] py-[10px] border-2 border-white text-white rounded-[10px] text-[18px] font-light cursor-pointer bg-[#000000d5]"
               onClick={() => navigate("/login")}
             >
               Login
@@ -94,15 +91,15 @@ function Nav() {
               LogOut
             </span>
           )}
-          {show && (
-            <div
-              className="absolute top-[110%] right-[15%] flex items-center flex-col justify-center gap-2 text-[16px] rounded-md bg-[white] px-[15px] py-[10px] border-[2px]  
-                         border-black hover:border-white hover:text-white cursor-pointer hover:bg-black"
-            >
-              <span className="bg-[black] text-white  px-[30px] py-[10px] rounded-2xl hover:bg-gray-600" onClick={()=>navigate("/profile")}>
+          {show && userData && (
+            <div className="absolute top-[110%] right-[15%] flex items-center flex-col justify-center gap-2 text-[16px] rounded-md bg-[white] px-[15px] py-[10px] border-[2px] border-black hover:border-white hover:text-white cursor-pointer hover:bg-black">
+              <span
+                className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600"
+                onClick={() => navigate("/profile")}
+              >
                 My Profile
               </span>
-              <span className="bg-[black] text-white  px-[30px] py-[10px] rounded-2xl hover:bg-gray-600">
+              <span className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600">
                 My Courses
               </span>
             </div>
@@ -113,12 +110,11 @@ function Nav() {
           onClick={() => setShowHam((prev) => !prev)}
         />
         <div
-          className={`fixed  top-0 left-0 w-[100vw] h-[100vh] bg-[#000000d6] flex items-center
-                       justify-center flex-col gap-5 z-10 lg:hidden ${
-                         showHam
-                           ? "translate-x-[0%] transition duration-600"
-                           : "translate-x-[-100%] transition duration-600"
-                       }`}
+          className={`fixed top-0 left-0 w-[100vw] h-[100vh] bg-[#000000d6] flex items-center justify-center flex-col gap-5 z-10 lg:hidden ${
+            showHam
+              ? "translate-x-[0%] transition duration-600"
+              : "translate-x-[-100%] transition duration-600"
+          }`}
         >
           <GiTireIronCross
             className="w-[35px] h-[35px] fill-white absolute top-5 right-[4%]"
@@ -128,10 +124,11 @@ function Nav() {
             <IoPersonCircle className="w-[50px] h-[50px] fill-black cursor-pointer" />
           ) : (
             <>
+              {/* ✅ CORRECTED: Mobile view avatar */}
               {userData.photoUrl ? (
                 <img
                   src={userData.photoUrl}
-                  className="w-[50px] h-[50px] rounded-full"
+                  className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center text-[20px] border-2 bg-black border-white cursor-pointer"
                   alt="user avatar"
                 />
               ) : (
@@ -140,7 +137,10 @@ function Nav() {
                 </div>
               )}
 
-              <div className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer" onClick={()=>navigate("/profile")}>
+              <div
+                className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
+                onClick={() => navigate("/profile")}
+              >
                 My Profile
               </div>
 
