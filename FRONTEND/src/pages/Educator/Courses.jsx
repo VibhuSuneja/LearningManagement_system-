@@ -4,10 +4,37 @@ import { useNavigate } from 'react-router-dom';
 import img from "../../assets/empty.jpg"
 import { FaEdit } from "react-icons/fa";
 import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { serverUrl } from '../../App';
+import { setCreatorCourseData } from '../../redux/courseSlice';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
 function Courses() {
-    const navigate = useNavigate();
-    const {creatorCourseData} = useSelector(state=>state.course)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const {userData} = useSelector(state=>state.user)
+  const { creatorCourseData } = useSelector(state => state.course)
+
+  useEffect(() => {
+    const getCreatorData = async () => {
+      try {
+        const result = await axios.get(serverUrl + "/api/course/getcreatorcourses", { withCredentials: true })
+
+        await dispatch(setCreatorCourseData(result.data))
+
+
+        console.log(result.data)
+
+      } catch (error) {
+        console.log(error)
+        toast.error(error.response.data.message)
+      }
+
+    }
+    getCreatorData()
+  }, [])
   return (
     <div className='flex min-h-screen bg-gray-100'>
       <div className='w-[100%] min-h-screen p-4 sm:p-6   bg-gray-100'>
