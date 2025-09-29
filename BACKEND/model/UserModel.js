@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
     }
 },{timestamps:true})
 //creating model for User schema is userSchema 
-const User= mongoose.model("User", userSchema)
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 export default(User) //exporting our User
 //Authentication controller will be made for login, signup,logout ...later we will make for authentication also.
 

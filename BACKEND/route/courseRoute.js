@@ -1,21 +1,29 @@
-import express from "express"
-import isAuth from "../middlewares/isAuth.js"
-import { createCourse, createLecture, editCourse, editLecture, getCourseById, getCourseLecture, getCreatorById, getCreatorCourses, getPublishedCourses, removeCourse, removeLecture } from "../controllers/courseController.js"
-import upload from "../middlewares/multer.js"
+import express from "express";
+import { isAuth } from "../middleware/isAuth.js";
+import upload from "../middleware/multer.js"
+import {
+    createCourse,
+    editCourse,
+    getCourseById,
+    getCreatorCourses,
+    getPublishedCourses,
+    removeCourse
+} from "../controller/courseController.js";
 
 let courseRouter = express.Router()
 
-courseRouter.post("/create",isAuth,createCourse)
-courseRouter.get("/getpublishedcoures",getPublishedCourses)
-courseRouter.get("/getcreatorcourses",isAuth,getCreatorCourses)
-courseRouter.post("/editcourse/:courseId",isAuth,upload.single("thumbnail"),editCourse)
-courseRouter.get("/getcourse/:courseId",isAuth,getCourseById)
-courseRouter.delete("/removecourse/:courseId",isAuth,removeCourse)
-courseRouter.post("/createlecture/:courseId",isAuth,createLecture)
-courseRouter.get("/getcourselecture/:courseId",isAuth,getCourseLecture)
-courseRouter.post("/editlecture/:lectureId",isAuth,upload.single("videoUrl"),editLecture)
-courseRouter.delete("/removelecture/:lectureId",isAuth,removeLecture)
-courseRouter.post("/getcreator",isAuth,getCreatorById)
+courseRouter.post("/create/:creatorId", isAuth, createCourse);
+courseRouter.put("/edit/:courseId", isAuth, editCourse);
+courseRouter.get("/:courseId", getCourseById);
+courseRouter.get("/creator-courses", isAuth, getCreatorCourses);
+courseRouter.get("/published", getPublishedCourses);
+courseRouter.delete("/delete/:courseId", isAuth, removeCourse);
+
+// Remove lecture routes entirely
+// courseRouter.post("/createlecture/:courseId", isAuth, createLecture);
+// courseRouter.get("/lectures/:courseId", getCourseLecture);
+
+export default courseRouter;
 
 
 
@@ -23,4 +31,4 @@ courseRouter.post("/getcreator",isAuth,getCreatorById)
 
 
 
-export default courseRouter
+

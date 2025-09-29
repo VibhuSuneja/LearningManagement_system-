@@ -6,6 +6,8 @@ import connectDb from "./config/connectDB.js";
 import cookieParser from "cookie-parser";
 import userRouter from "./route/userRoute.js";
 import authRouter from "./route/authRoute.js";
+import courseRouter from "./route/courseRoute.js";
+
 import cors from "cors";
 
 const app = express();
@@ -32,7 +34,7 @@ app.use((req, res, next) => {
 // --- Routes ---
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
-
+app.use("/api/course", courseRouter);
 // --- Health check ---
 app.get("/", (req, res) => {
   res.send("🚀 Server is running!");
