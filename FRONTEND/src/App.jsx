@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import useGetCurrentUser from "./customHooks/getCurrentUser";
 import Dashboard from './pages/Educator/Dashboard'
 import Courses from './pages/Educator/Courses'
+import CreateCourses from './pages/Educator/CreateCourses'
 
 // ✅ Correct: Use the environment variable for the server URL
 // This is the URL for your local backend server
@@ -33,6 +34,8 @@ function App() {
         <Route path="/editprofile" element={userData ? <EditProfile /> : <Navigate to="/signup" />} />
         <Route path="/dashboard" element={userData ?.role === "educator" ? <Dashboard /> : <Navigate to="/signup" />} />
         <Route path="/courses" element={userData ?.role === "educator" ? <Courses /> : <Navigate to="/signup" />} />
+        <Route path="/createcourse" element={userData ?.role === "educator" ? <CreateCourses /> : <Navigate to="/signup" />} />    
+
       </Routes>
     </>
   );
