@@ -1,6 +1,6 @@
 import express from "express"
 import isAuth from "../middleware/isAuth.js"
-import { createCourse, createLecture, editCourse, editLecture, getCourseById, getCourseLecture, getCreatorById, getCreatorCourses, getPublishedCourses, removeCourse, removeLecture } from "../controllers/courseController.js"
+import { createCourse, createLecture, editCourse, editLecture, getCourseById, getCourseLecture, getCreatorById, getCreatorCourses, getPublishedCourses, removeCourse, removeLecture } from "../controller/courseController.js"
 import upload from "../middleware/multer.js"
 
 let courseRouter = express.Router()
