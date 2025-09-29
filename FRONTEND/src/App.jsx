@@ -37,7 +37,7 @@ function App() {
         <Route path="/dashboard" element={userData ?.role === "educator" ? <Dashboard /> : <Navigate to="/signup" />} />
         <Route path="/courses" element={userData ?.role === "educator" ? <Courses /> : <Navigate to="/signup" />} />
         <Route path="/createcourse" element={userData ?.role === "educator" ? <CreateCourses /> : <Navigate to="/signup" />} />    
-
+        <Route path="/editcourse/:courseId" element={userData ?.role === "educator" ? <EditCourse /> : <Navigate to="/signup" />} />  
       </Routes>
     </>
   );
