@@ -9,6 +9,7 @@ import EditProfile from "./pages/EditProfile";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
 import useGetCurrentUser from "./customHooks/getCurrentUser";
+import useGetCreatorCourse from "./customHooks/getCreatorCourse";
 import Dashboard from './pages/Educator/Dashboard'
 import Courses from './pages/Educator/Courses'
 import CreateCourses from './pages/Educator/CreateCourses'
