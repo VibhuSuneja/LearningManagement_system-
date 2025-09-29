@@ -106,5 +106,3 @@ export const removeCourse = async (req, res) => {
   }
 };
 
-
-

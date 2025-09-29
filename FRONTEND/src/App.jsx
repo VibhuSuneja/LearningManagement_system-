@@ -19,6 +19,7 @@ export const serverUrl = "http://localhost:8080";
 
 function App() {
   useGetCurrentUser();
+  useGetCreatorCourse();
   
   const { userData } = useSelector((state) => state.user);
 
