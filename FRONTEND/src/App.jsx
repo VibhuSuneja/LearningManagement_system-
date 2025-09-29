@@ -9,6 +9,8 @@ import EditProfile from "./pages/EditProfile";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
 import useGetCurrentUser from "./customHooks/getCurrentUser";
+import Dashboard from './pages/Educator/Dashboard'
+import Courses from './pages/Educator/Courses'
 
 // ✅ Correct: Use the environment variable for the server URL
 // This is the URL for your local backend server
@@ -29,6 +31,8 @@ function App() {
         <Route path="/profile" element={userData ? <Profile /> : <Navigate to="/signup" />} />
         <Route path="/forget" element={!userData ? <ForgetPassword /> : <Navigate to="/signup" />} />
         <Route path="/editprofile" element={userData ? <EditProfile /> : <Navigate to="/signup" />} />
+        <Route path="/dashboard" element={userData ?.role === "educator" ? <Dashboard /> : <Navigate to="/signup" />} />
+        <Route path="/courses" element={userData ?.role === "educator" ? <Courses /> : <Navigate to="/signup" />} />
       </Routes>
     </>
   );
