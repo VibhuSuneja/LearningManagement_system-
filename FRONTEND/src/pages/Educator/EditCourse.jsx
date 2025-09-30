@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useEffect} from 'react'
 import { FaArrowLeftLong } from "react-icons/fa6"
 import { useNavigate, useParams } from 'react-router-dom';
@@ -6,6 +7,8 @@ import { useRef } from 'react';
 import img from "../../assets/empty.jpg"
 import { FaEdit } from "react-icons/fa";
 import { serverUrl } from '../../App';
+import { toast } from 'react-toastify';
+import { ClipLoader } from 'react-spinners';
 
 function EditCourse() {
   const navigate = useNavigate()
@@ -21,6 +24,7 @@ function EditCourse() {
   const [ price,setPrice] = useState("")  
   const [frontendImage, setFrontendImage] = useState(img)
   const [backendImage, setBackendImage] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const handleThumbnail = (e) => {
   const file = e.target.files[0]
@@ -47,7 +51,7 @@ useEffect(()=>{
 if(selectCourse)
 {
 setTitle(selectCourse.title || "")
-setSubtitle(selectCourse.subTitle || "")
+setSubtitle(selectCourse.subtitle || "")
 setDescription(selectCourse.description || "")
 setCategory(selectCourse.category || "")
 setLevel(selectCourse.level || "")
@@ -66,6 +70,35 @@ setIsPublished(selectCourse?.isPublished )
   useEffect(()=>{
     getCourseById()
   },[])
+
+
+  const handleEditCourse = async () => {
+    setLoading(true)
+    const formData = new FormData()
+  formData.append("title", title);
+  formData.append("subTitle", subtitle);
+  formData.append("description", description);
+  formData.append("category", category);
+  formData.append("level", level);
+  formData.append("price", price);
+  formData.append("thumbnail", backendImage);
+  formData.append("isPublished", isPublished);
+    try {
+         const result = await axios.post(serverUrl +
+      `/api/course/editcourse/${courseId}`,
+      { withCredentials: true }
+    );
+        console.log(result.data)
+        setLoading(false)
+        navigate("/courses")
+        toast.success("Course Updated Successfully")
+        } catch (error) {
+            console.log(error)
+            setLoading(false)
+            toast.error(error.response.data.message)
+
+    }
+  }
   return (
     <div className='max-w-5xl mx-auto p-6 mt-10 bg-white rounded-lg shadow-md'>
             {/* top bar */}
@@ -96,7 +129,7 @@ setIsPublished(selectCourse?.isPublished )
             <input type="text" id='title' className='w-full border px-4 py-2 rounded-md' placeholder='Course Title' onChange={(e)=>setTitle(e.target.value) } value={title}/>
           </div>
           <div>
-            <label htmlFor="subtitle" className='block text-sm font-medium text-gray-700 mb-1'>subtitle</label>
+            <label htmlFor="subtitle" className='block text-sm font-medium text-gray-700 mb-1'>Subtitle</label>
             <input type="text" id='subtitle' className='w-full border px-4 py-2 rounded-md' placeholder='Course Subitle'onChange={(e)=>setSubtitle(e.target.value) } value={subtitle}/>
           </div>
                     <div>
@@ -152,7 +185,7 @@ setIsPublished(selectCourse?.isPublished )
 
             <div className='flex items-center justify-start gap-[15px] mt-4'>
               <button type="button" className='bg-[#e9e8e8] hover:bg-red-200 text-black border-1 border-black  cursor-pointer px-4 py-2 rounded-md' onClick={()=>navigate("/courses")}>Cancel</button>
-              <button className='bg-black text-white px-7 py-2 rounded-md hover:bg-gray-500 cursor-pointer'>Save</button>
+              <button className='bg-black text-white px-7 py-2 rounded-md hover:bg-gray-500 cursor-pointer' onClick={handleEditCourse}>{loading ? <ClipLoader size={30} color={"#fff"} /> : "Save"}</button>
             </div>
         </form>
       </div>
