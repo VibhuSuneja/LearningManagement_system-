@@ -133,11 +133,12 @@ export const createLecture = async (req,res) => {
         const course = await Course.findById(courseId)
         if(course){
             course.lectures.push(lecture._id)
-            
+            await course.save() // Save the course document after modification
         }
-        await course.populate("lectures")
-        await course.save()
-        return res.status(201).json({lecture,course})
+        
+        const populatedCourse = await Course.findById(courseId).populate("lectures") // Re-fetch the course with populated lectures to return the latest data
+        
+        return res.status(201).json({lecture,course: populatedCourse})
         
     } catch (error) {
         return res.status(500).json({message:`Failed to Create Lecture ${error}`})
@@ -148,12 +149,10 @@ export const createLecture = async (req,res) => {
 export const getCourseLecture = async (req,res) => {
     try {
         const {courseId} = req.params
-        const course = await Course.findById(courseId)
+        const course = await Course.findById(courseId).populate("lectures") // Populate lectures directly in the query
         if(!course){
             return res.status(404).json({message:"Course not found"})
         }
-        await course.populate("lectures")
-        await course.save()
         return res.status(200).json(course)
     } catch (error) {
         return res.status(500).json({message:`Failed to get Lectures ${error}`})

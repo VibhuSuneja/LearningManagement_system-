@@ -43,7 +43,7 @@ function CreateLecture() {
     const getCourseLecture = async () => {
       try {
         const result = await axios.get(
-          serverUrl + `/api/course/courselecture/${courseId}`,
+          serverUrl + `/api/course/getcourselecture/${courseId}`,
           { withCredentials: true }
         );
         console.log(result.data);
