@@ -11,7 +11,7 @@ reducers:{
         state.creatorCourseData=action.payload
     },
     setCourseData:(state,action)=>{
-        state.CourseData=action.payload
+        state.courseData=action.payload
     },
 }
 })

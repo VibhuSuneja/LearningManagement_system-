@@ -14,8 +14,8 @@ const usePublishedCourses = () => {
           `${serverUrl}/api/course/getpublishedcourses`,
           { withCredentials: true }
         )
-        dispatch(setCourseData(result.data))
-        console.log(result.data)
+        // Dispatch only the 'courses' array from the response
+        dispatch(setCourseData(result.data.courses)) 
       } catch (error) {
         console.error(error)
       }
