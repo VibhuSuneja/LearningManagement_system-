@@ -1,50 +1,72 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ClipLoader } from 'react-spinners';
-import { toast } from 'react-toastify';
-import axios from 'axios'
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+import { toast } from "react-toastify";
+import axios from "axios";
 import { serverUrl } from "../../App";
+import { useEffect } from "react";
+import {FaEdit} from "react-icons/fa"
 
 import { setLectureData } from "../../redux/lectureSlice";
 
-
 function CreateLecture() {
-  const { courseId } = useParams()
-  const navigate = useNavigate()
-  const [lectureTitle, setLectureTitle] = useState("")
-  const [loading, setLoading] = useState(false)
-  const dispatch = useDispatch()
-  const { lectureData } = useSelector(state => state.lecture)
+  const { courseId } = useParams();
+  const navigate = useNavigate();
+  const [lectureTitle, setLectureTitle] = useState("");
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { lectureData } = useSelector((state) => state.lecture);
 
   const handleCreateLecture = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const result = await axios.post(
         `${serverUrl}/api/course/createlecture/${courseId}`,
         { lectureTitle },
         { withCredentials: true }
-      )
-      console.log(result.data)
-      dispatch(setLectureData([...lectureData, result.data.lecture]))
-      setLoading(false)
-      toast.success("Lecture Added")
-      setLectureTitle("")
+      );
+      console.log(result.data);
+      dispatch(setLectureData([...lectureData, result.data.lecture]));
+      setLoading(false);
+      toast.success("Lecture Added");
+      setLectureTitle("");
     } catch (error) {
-      console.log(error)
-      toast.error(error?.response?.data?.message || "Failed to add lecture")
-      setLoading(false)
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Failed to add lecture");
+      setLoading(false);
     }
-  }
+  };
 
+  useEffect(() => {
+    const getCourseLecture = async () => {
+      try {
+        const result = await axios.get(
+          serverUrl + `/api/course/courselecture/${courseId}`,
+          { withCredentials: true }
+        );
+        console.log(result.data);
+        dispatch(setLectureData(result.data.lectures));
+      } catch (error) {
+        console.log(error);
+        toast.error(error.response.data.message);
+      }
+    };
+    getCourseLecture();
+  }, []);
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white shadow-xl rounded-xl w-full max-w-2xl p-6">
         {/* header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">Let’s Add a Lecture</h1>
-          <p className="text-sm text-gray-500">Enter the title and add your video lectures to enhance your course content.</p>
+          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+            Let’s Add a Lecture
+          </h1>
+          <p className="text-sm text-gray-500">
+            Enter the title and add your video lectures to enhance your course
+            content.
+          </p>
         </div>
 
         {/* input Area */}
@@ -70,12 +92,35 @@ function CreateLecture() {
             disabled={loading}
             onClick={handleCreateLecture}
           >
-            {loading ? <ClipLoader size={30} color="white" /> : "+ Create Lecture"}
+            {loading ? (
+              <ClipLoader size={30} color="white" />
+            ) : (
+              "+ Create Lecture"
+            )}
           </button>
+        </div>
+        {/* lecture */}
+        <div className="space-y-2">
+          {lectureData?.map((lecture, index) => (
+            <div
+              key={index}
+              className="bg-gray-100 rounded-md flex justify-between items-center p-3 text-sm font-medium text-gray-700"
+            >
+              <span>
+                Lecture - {index + 1}: {lecture.lectureTitle}
+              </span>
+              <FaEdit
+                className="text-gray-500 hover:text-gray-700 cursor-pointer"
+                onClick={() =>
+                  navigate(`/editlecture/${courseId}/${lecture._id}`)
+                }
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default CreateLecture
+export default CreateLecture;
