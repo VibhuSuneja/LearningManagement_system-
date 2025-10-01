@@ -25,6 +25,7 @@ function EditCourse() {
   const [frontendImage, setFrontendImage] = useState(img);
   const [backendImage, setBackendImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
 
   const handleThumbnail = (e) => {
     const file = e.target.files[0];
@@ -93,7 +94,21 @@ function EditCourse() {
       toast.error(error.response?.data?.message || "An error occurred");
     }
   };
-
+   const handleRemoveCourse = async () => {
+    setLoading1(true);
+   try {
+    const result = await axios.delete(serverUrl+`/api/course/removecourse/${courseId}`, { withCredentials: true });
+    console.log(result.data);
+    setLoading1(false);
+    toast.success("Course Removed Successfully");
+    navigate("/courses");
+   } catch (error) {
+    console.log(error)
+        setLoading1(false);
+    toast.error(error.response.data.message);
+   }
+  
+  }
   return (
     <div className='max-w-5xl mx-auto p-6 mt-10 bg-white rounded-lg shadow-md'>
       <div className='flex items-center justify-center gap-[20px] md:justify-between flex-col md:flex-row mb-6 relative '>
@@ -113,7 +128,7 @@ function EditCourse() {
           ) : (
             <button className='bg-red-100 text-red-600 px-4 py-2 rounded-md border-1' onClick={() => setIsPublished(prev => !prev)}>Click to UnPublish</button>
           )}
-          <button className='bg-red-600 text-white px-4 py-2 rounded-md'>Remove Course</button>
+          <button className='bg-red-600 text-white px-4 py-2 rounded-md' onClick={handleRemoveCourse}>Remove Course</button>
         </div>
         <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); }}>
           <div>

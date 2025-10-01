@@ -15,12 +15,14 @@ import Courses from './pages/Educator/Courses';
 import CreateCourses from './pages/Educator/CreateCourses';
 // FIX: Added the import for the EditCourse component
 import EditCourse from "./pages/Educator/EditCourse";
+import getPublishedCourse from "./customHooks/getPublishedCourse";
 
 export const serverUrl = "http://localhost:8080";
 
 function App() {
   useGetCurrentUser();
   useGetCreatorCourse();
+  getPublishedCourse();
   
   const { userData } = useSelector((state) => state.user);
 
