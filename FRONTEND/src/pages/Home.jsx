@@ -7,7 +7,9 @@ import ail from "../assets/SearchAi.png"
 import Logos from '../component/Logos';
 import ExploreCourses from '../component/ExploreCourses';
 import CardPage from '../component/CardPage';
+import getPublishedCourse from '../customHooks/getPublishedCourse';
 function Home() {
+  getPublishedCourse();
   return (
     <div className="w-[100%] overflow-hidden">
       <div className='w=[100%] lg:h-[140vh] h-[70vh] relative'>
