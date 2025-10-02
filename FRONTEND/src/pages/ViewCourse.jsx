@@ -9,7 +9,6 @@ function ViewCourse() {
     const navigate = useNavigate()
     const {courseId} =useParams()
   const { courseData, selectedCourse } = useSelector(state => state.course)
-    const  {selectedCourseData} = useSelector(state=>state.course)
     const  dispatch =useDispatch()
 
 
@@ -45,8 +44,8 @@ function ViewCourse() {
                 {/* thumbnail */}
           <div className="w-full md:w-1/2">
              <FaArrowLeftLong  className='text-[black] w-[22px] h-[22px] cursor-pointer' onClick={()=>navigate("/")}/>
-            {selectedCourseData?.thumbnail ? <img
-              src={selectedCourseData?.thumbnail}
+            {selectedCourse?.thumbnail ? <img
+              src={selectedCourse?.thumbnail}
               alt="Course Thumbnail"
               className="rounded-xl w-full object-cover"
             /> :  <img
