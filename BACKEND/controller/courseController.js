@@ -27,7 +27,7 @@ export const createCourse = async (req,res) => {
 export const getPublishedCourses = async (req,res) => {
 try {
     // Correctly query the database for courses where isPublished is true
-    const courses = await Course.find({ isPublished: true });
+    const courses = await Course.find({ isPublished: true }).populate("lectures");
 
     if (!courses) {
       return res.status(404).json({

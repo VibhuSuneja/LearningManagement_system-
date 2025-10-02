@@ -1,10 +1,14 @@
 import React from 'react'
 import { FaStar } from "react-icons/fa";
+import { useNavigate, useParams } from 'react-router-dom';
 function Card({thumbnail, title, category, price, id}) {
+  const navigate = useNavigate()
   return (
     <div className='max-w-sm w-full bg-white rounded-2xl
      overflow-hidden shadow-md hover:shadow-lg transition-all
-      duration-300 border border-gray-300'>
+      duration-300 border border-gray-300' onClick={()=>navigate(`/viewcourse/${id}`)
+
+      }>
         <img src={thumbnail} alt="" className='w-full h-48 object-cover' />
 
 
