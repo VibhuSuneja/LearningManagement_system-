@@ -20,18 +20,21 @@ import AllCourses from "./pages/AllCourses";
 import CreateLecture from "./pages/Educator/CreateLecture";
 import EditLecture from "./pages/Educator/EditLectures";
 import ViewCourse from "./pages/ViewCourse";
+import ScrollToTop from "./component/ScrollToTop";
 export const serverUrl = "http://localhost:8080";
 
 function App() {
   useGetCurrentUser();
   useGetCreatorCourse();
   getPublishedCourse();
+
   
   const { userData } = useSelector((state) => state.user);
 
   return (
     <>
       <ToastContainer />
+      <ScrollToTop/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={!userData ? <SignUp /> : <Navigate to="/" />} />

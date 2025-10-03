@@ -28,7 +28,7 @@ function ViewCourse() {
       if (selectedCourse?.creator) {
         try {
           const result = await axios.post(serverUrl + "/api/course/creator", 
-            { userId: selectedCourse.creator },
+            { userId: selectedCourse.creator._id },
             { withCredentials: true }
           );
           setCreatorData(result.data);
@@ -47,7 +47,7 @@ function ViewCourse() {
 useEffect(() => {
   if (creatorData?._id && courseData.length > 0) {
     const creatorCourse = courseData.filter(
-      (course) => course.creator?.toString() === creatorData._id && course._id !== courseId
+      (course) => course.creator?._id.toString() === creatorData._id && course._id !== courseId
     );
     setCreatorCourses(creatorCourse);
   }
