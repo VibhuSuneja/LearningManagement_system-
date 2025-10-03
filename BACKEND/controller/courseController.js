@@ -206,5 +206,25 @@ export const removeLecture = async (req,res) => {
     }
 }
 
+//get Creator data
 
+
+// controllers/userController.js
+
+export const getCreatorById = async (req, res) => {
+  try {
+    const {userId} = req.body;
+
+    const user = await User.findById(userId).select("-password"); // Exclude password
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json( user );
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    res.status(500).json({ message: "get Creator error" });
+  }
+};
 
