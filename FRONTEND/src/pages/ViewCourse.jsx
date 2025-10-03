@@ -12,6 +12,7 @@ function ViewCourse() {
   const navigate = useNavigate()
   const { courseId } = useParams()
   const { courseData, selectedCourse } = useSelector(state => state.course)
+  const  {userData} = useSelector(state=>state.user)
   const dispatch = useDispatch()
   const [selectedLecture,setSelectedLecture] = useState(null)
   const [creatorData , setCreatorData] = useState(null)
@@ -52,6 +53,17 @@ useEffect(() => {
     setCreatorCourses(creatorCourse);
   }
 }, [creatorData, courseData, courseId]); // <-- notice semicolon
+
+const handleEnroll = async (userId ,courseId) =>{
+
+try {
+    const orderData = await axios.post(serverUrl + "/api/order/razorpay-order" , {userId, courseId}, {withCredentials:true})
+    console.log(orderData)
+} catch (error) {
+    console.log(error)
+}
+}
+
   return (
     <div className='min-h-screen bg-gray-50 p-6'>
       <div className='max-w-6xl mx-auto bg-white shadow-md rounded-xl p-6 space-y-6 relative'>
@@ -106,7 +118,7 @@ useEffect(() => {
               <li>✅ Lifetime access to course materials</li>
             </ul>
 
-            <button className='bg-[black] text-white px-6 py-2 rounded hover:bg-gray-700 mt-3 cursor-pointer'>
+            <button className='bg-[black] text-white px-6 py-2 rounded hover:bg-gray-700 mt-3 cursor-pointer' onClick={()=>handleEnroll(userData._id,courseId)}>
               Enroll Now
             </button>
           </div>

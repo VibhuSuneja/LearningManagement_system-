@@ -8,6 +8,7 @@ import userRouter from "./route/userRoute.js";
 import authRouter from "./route/authRoute.js";
 import courseRouter from "./route/courseRoute.js";
 import cors from "cors";
+import paymentRouter from "./route/paymentRoute.js";
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -26,6 +27,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/course", courseRouter);
+app.use("/api/order", paymentRouter);
 
 // ✅ This message will appear in your terminal if the file is loaded correctly.
 console.log("✅ Course router has been successfully loaded.");
