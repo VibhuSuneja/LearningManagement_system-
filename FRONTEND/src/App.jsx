@@ -20,7 +20,7 @@ import AllCourses from "./pages/AllCourses";
 import CreateLecture from "./pages/Educator/CreateLecture";
 import EditLecture from "./pages/Educator/EditLectures";
 import ViewCourse from "./pages/ViewCourse";
-import ScrollToTop from "./component/ScrollToTop";
+import ScrollToTop from './component/ScrollToTop.jsx'
 export const serverUrl = "http://localhost:8080";
 
 function App() {
@@ -34,7 +34,8 @@ function App() {
   return (
     <>
       <ToastContainer />
-      <ScrollToTop/>
+      <ScrollToTop />
+      
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={!userData ? <SignUp /> : <Navigate to="/" />} />
