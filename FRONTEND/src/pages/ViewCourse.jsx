@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FaLock, FaPlayCircle } from "react-icons/fa";
 import { serverUrl } from '../App';
 import img from "../assets/empty.jpg"
-
+import axios from 'axios';
 function ViewCourse() {
   const navigate = useNavigate()
   const { courseId } = useParams()
@@ -26,7 +26,7 @@ function ViewCourse() {
       if (selectedCourse?.creator) {
         try {
           const result = await axios.post(serverUrl + "/api/course/creator", 
-            { userId: selectedCourseData.creator },
+            { userId: selectedCourse.creator },
             { withCredentials: true }
           );
           setCreatorData(result.data);

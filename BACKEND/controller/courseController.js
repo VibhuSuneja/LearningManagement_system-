@@ -27,7 +27,8 @@ export const createCourse = async (req,res) => {
 export const getPublishedCourses = async (req,res) => {
 try {
     // Correctly query the database for courses where isPublished is true
-    const courses = await Course.find({ isPublished: true }).populate("lectures");
+    const courses = await Course.find({ isPublished: true }).populate("lectures")
+    .populate("creator");
 
     if (!courses) {
       return res.status(404).json({
@@ -50,20 +51,27 @@ try {
 };
 
 
-export const getCreatorCourses = async (req,res) => {
-    try {
-        const userId = req.userId
-        const courses = await Course.find({creator:userId})
-        if(!courses)
-        {
-            return res.status(404).json({message:"Course not found"})
-        }
-        return res.status(200).json(courses)
-        
-    } catch (error) {
-        return res.status(500).json({message:`Failed to get creator courses ${error}`})
+export const getCreatorCourses = async (req, res) => {
+  try {
+    const userId = req.userId;
+    console.log(`Fetching courses for creator ID: ${userId}`); // DEBUGGING LOG
+
+    const courses = await Course.find({ creator: userId })
+      .populate("lectures")
+      .populate("creator"); // THE ESSENTIAL FIX
+
+    if (!courses) {
+      console.log(`No courses found for creator ID: ${userId}`); // DEBUGGING LOG
+      return res.status(404).json({ message: "Course not found" });
     }
-}
+
+    console.log(`Found ${courses.length} courses. First course creator field:`, courses[0]?.creator); // DEBUGGING LOG
+    return res.status(200).json(courses);
+  } catch (error) {
+    console.error(`Error in getCreatorCourses: ${error}`); // DEBUGGING LOG
+    return res.status(500).json({ message: `Failed to get creator courses ${error}` });
+  }
+};
 
 export const editCourse = async (req,res) => {
     try {
@@ -227,4 +235,3 @@ export const getCreatorById = async (req, res) => {
     res.status(500).json({ message: "get Creator error" });
   }
 };
-

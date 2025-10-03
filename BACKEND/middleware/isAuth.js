@@ -37,6 +37,7 @@ export const isAuth = async (req, res, next) => {
 
     // Attach user to request
     req.user = user;
+    req.userId = user._id;
     console.log("Authenticated user:", req.user);
 
     next(); // proceed to next middleware or route
