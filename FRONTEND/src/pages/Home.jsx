@@ -10,6 +10,8 @@ import Logos from '../component/Logos';
 import ExploreCourses from '../component/ExploreCourses';
 import CardPage from '../component/CardPage';
 import getPublishedCourse from '../customHooks/getPublishedCourse';
+import About from '../component/About';
+import Footer from '../component/Footer'
 function Home() {
   const navigate = useNavigate()
   getPublishedCourse();
@@ -32,6 +34,8 @@ function Home() {
       <Logos/>
       <ExploreCourses/>
       <CardPage/>
+      <About/>
+      <Footer/>
       </div>
   )
 }
