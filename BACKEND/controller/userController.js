@@ -2,15 +2,17 @@ import User from "../model/UserModel.js";
 import uploadToCloudinary from "../config/cloudinary.js";
 
 // Get current logged-in user
-export const getCurrentUser = async (req, res) => {
-  try {
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized: No user found." });
+export const getCurrentUser = async (req,res) => {
+    try {
+        const user = await User.findById(req.userId).select("-password").populate("enrolledCourses")
+         if(!user){
+            return res.status(400).json({message:"user does not found"})
+        }
+        return res.status(200).json(user)
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({message:"get current user error"})
     }
-    res.status(200).json(req.user);
-  } catch (error) {
-    res.status(500).json({ message: `GetCurrent user error: ${error.message}` });
-  }
 };
 
 // Update profile

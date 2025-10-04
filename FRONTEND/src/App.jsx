@@ -22,6 +22,7 @@ import EditLecture from "./pages/Educator/EditLectures";
 import ViewCourse from "./pages/ViewCourse";
 import ScrollToTop from './component/ScrollToTop.jsx'
 import ViewLectures from "./pages/Educator/ViewLectures.jsx";
+import MyEnrolledCourses from "./pages/MyEnrolledCourses.jsx";
 export const serverUrl = "http://localhost:8080";
 
 function App() {
@@ -51,8 +52,9 @@ function App() {
         <Route path="/editcourse/:courseId" element={userData?.role === "educator" ? <EditCourse /> : <Navigate to="/signup" />} />  
         <Route path="/createlecture/:courseId" element={userData?.role === "educator" ? <CreateLecture /> : <Navigate to="/signup" />} />   
         <Route path="/editlecture/:courseId/:lectureId" element={userData?.role === "educator" ? <EditLecture /> : <Navigate to="/signup" />} />     
-         <Route path="/viewcourse/:courseId" element={userData?.role === "educator" ? <ViewCourse /> : <Navigate to="/signup" />} />   
-         <Route path="/viewlecture/:courseId" element={userData?.role === "educator" ? <ViewLectures /> : <Navigate to="/signup" />} /> 
+         <Route path="/viewcourse/:courseId" element={userData ? <ViewCourse /> : <Navigate to="/signup" />} />   
+         <Route path="/viewlecture/:courseId" element={userData ? <ViewLectures /> : <Navigate to="/signup" />} /> 
+          <Route path="/mycourses" element={userData ? <MyEnrolledCourses /> : <Navigate to="/signup" />} /> 
       </Routes>
     </>
   );

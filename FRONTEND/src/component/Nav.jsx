@@ -24,7 +24,7 @@ function Nav() {
       });
       dispatch(setUserData(null));
       console.log(result.data);
-      toast.success("logout successfully");
+      toast.success("Logout successfully");
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
@@ -34,15 +34,17 @@ function Nav() {
   return (
     <div>
       <div className="w-[100%] h-[70px] fixed top-0 px-[20px] py-[10px] flex items-center justify-between bg-[#00000047] z-10">
+        {/* LOGO */}
         <div className="lg:w-[20%] w-[40%] lg:pl-[50px]">
           <img
             src={logo}
-            alt=""
+            alt="logo"
             className="w-[60px] rounded-[5px] border-2 border-white"
           />
         </div>
+
+        {/* DESKTOP NAV */}
         <div className="w-[30%] lg:flex items-center justify-center gap-4 hidden">
-          {/* ✅ CORRECTED: Conditional rendering for user avatar */}
           {!userData ? (
             <IoPersonCircle
               className="w-[50px] h-[50px] fill-black cursor-pointer"
@@ -53,7 +55,7 @@ function Nav() {
               {userData.photoUrl ? (
                 <img
                   src={userData.photoUrl}
-                  className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center text-[20px] border-2 bg-black border-white cursor-pointer"
+                  className="w-[50px] h-[50px] rounded-full border-2 border-white cursor-pointer"
                   alt="user avatar"
                   onClick={() => setShow((prev) => !prev)}
                 />
@@ -76,6 +78,7 @@ function Nav() {
               Dashboard
             </div>
           )}
+
           {!userData ? (
             <span
               className="px-[20px] py-[10px] border-2 border-white text-white rounded-[10px] text-[18px] font-light cursor-pointer bg-[#000000d5]"
@@ -91,24 +94,31 @@ function Nav() {
               LogOut
             </span>
           )}
+
           {show && userData && (
-            <div className="absolute top-[110%] right-[15%] flex items-center flex-col justify-center gap-2 text-[16px] rounded-md bg-[white] px-[15px] py-[10px] border-[2px] border-black hover:border-white hover:text-white cursor-pointer hover:bg-black">
+            <div className="absolute top-[110%] right-[15%] flex flex-col items-center justify-center gap-2 text-[16px] rounded-md bg-white px-[15px] py-[10px] border-[2px] border-black hover:border-white hover:text-white hover:bg-black cursor-pointer">
               <span
                 className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600"
                 onClick={() => navigate("/profile")}
               >
                 My Profile
               </span>
-              <span className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600">
+              <span
+                className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600"
+                onClick={() => navigate("/mycourses")}
+              >
                 My Courses
               </span>
             </div>
           )}
         </div>
+
+        {/* MOBILE NAV */}
         <RxHamburgerMenu
-          className="w-[35px] h-[35px] lg:hidden text-white fill-black cursor-pointer "
+          className="w-[35px] h-[35px] lg:hidden text-white fill-black cursor-pointer"
           onClick={() => setShowHam((prev) => !prev)}
         />
+
         <div
           className={`fixed top-0 left-0 w-[100vw] h-[100vh] bg-[#000000d6] flex items-center justify-center flex-col gap-5 z-10 lg:hidden ${
             showHam
@@ -120,15 +130,15 @@ function Nav() {
             className="w-[35px] h-[35px] fill-white absolute top-5 right-[4%]"
             onClick={() => setShowHam((prev) => !prev)}
           />
+
           {!userData ? (
             <IoPersonCircle className="w-[50px] h-[50px] fill-black cursor-pointer" />
           ) : (
             <>
-              {/* ✅ CORRECTED: Mobile view avatar */}
               {userData.photoUrl ? (
                 <img
                   src={userData.photoUrl}
-                  className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center text-[20px] border-2 bg-black border-white cursor-pointer"
+                  className="w-[50px] h-[50px] rounded-full border-2 bg-black border-white cursor-pointer"
                   alt="user avatar"
                 />
               ) : (
@@ -144,12 +154,18 @@ function Nav() {
                 My Profile
               </div>
 
-              <div className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer">
+              <div
+                className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
+                onClick={() => navigate("/mycourses")}
+              >
                 My Courses
               </div>
 
               {userData?.role === "educator" && (
-                <div className="w-[200px] h-[65px] border-2 border-white text-white bg-black flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer" onClick={() => navigate("/dashboard")}>
+                <div
+                  className="w-[200px] h-[65px] border-2 border-white text-white bg-black flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
+                  onClick={() => navigate("/dashboard")}
+                >
                   Dashboard
                 </div>
               )}
