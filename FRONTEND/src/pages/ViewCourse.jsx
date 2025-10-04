@@ -8,6 +8,8 @@ import { serverUrl } from '../App';
 import img from "../assets/empty.jpg"
 import axios from 'axios';
 import Card from '../component/Card';
+import { toast } from 'react-toastify';
+
 function ViewCourse() {
   const navigate = useNavigate()
   const { courseId } = useParams()
@@ -59,8 +61,36 @@ const handleEnroll = async (userId ,courseId) =>{
 try {
     const orderData = await axios.post(serverUrl + "/api/order/razorpay-order" , {userId, courseId}, {withCredentials:true})
     console.log(orderData)
-} catch (error) {
+
+    const options = {
+          key:import.meta.env.VITE_RAZORPAY_KEY_ID,
+          amount: orderData.data.amount,
+          currency: 'INR',
+          name: "VIRTUAL COURSES",
+          description: "COURSE ENROLLMENT PAYMENT",
+          order_id:orderData.data.id,
+          handler: async function (response) {
+          console.log("razorpay response" , response)
+          try {
+                const verifyPayment = await axios.post(serverUrl + "/api/order/verifypayment",{
+
+                  ...response,
+                  courseId,
+                  userId
+                } ,{withCredentials:true})
+                toast.success(verifyPayment.data.message)
+              } catch (error) {
+                toast.error(error.response.data.message)
+              }
+
+    }
+          }
+
+    const rzp = new window.Razorpay(options)
+    rzp.open()
+} catch (error) { 
     console.log(error)
+    toast.error("Something went wrong while enrolling")
 }
 }
 
