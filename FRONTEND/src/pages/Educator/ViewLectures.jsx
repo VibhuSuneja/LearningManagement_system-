@@ -111,7 +111,7 @@ function ViewLecture() {
     <h3 className="text-md font-semibold text-gray-700 mb-3">Educator</h3>
     <div className="flex items-center gap-4">
       <img
-        src={courseData?.photoUrl || '/default-avatar.png'}
+        src={creatorData?.photoUrl || '/default-avatar.png'}
         alt="Instructor"
         className="w-14 h-14 rounded-full object-cover border"
       />
