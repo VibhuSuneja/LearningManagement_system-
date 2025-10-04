@@ -11,88 +11,103 @@ import Card from '../component/Card';
 import { toast } from 'react-toastify';
 
 function ViewCourse() {
-  const navigate = useNavigate()
-  const { courseId } = useParams()
-  const { courseData, selectedCourse } = useSelector(state => state.course)
-  const  {userData} = useSelector(state=>state.user)
-  const dispatch = useDispatch()
-  const [selectedLecture,setSelectedLecture] = useState(null)
-  const [creatorData , setCreatorData] = useState(null)
-  const [creatorCourses, setCreatorCourses] = useState(null)
+  const navigate = useNavigate();
+  const { courseId } = useParams();
+  const { courseData, selectedCourse } = useSelector(state => state.course);
+  const { userData } = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  const [selectedLecture, setSelectedLecture] = useState(null);
+  const [creatorData, setCreatorData] = useState(null);
+  const [creatorCourses, setCreatorCourses] = useState(null);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+
   const fetchCourseData = async () => {
-    const course = courseData.find((c) => c._id === courseId)
+    const course = courseData.find((c) => c._id === courseId);
     if (course) {
-      dispatch(setSelectedCourse(course))
-      console.log(selectedCourse)
+      dispatch(setSelectedCourse(course));
+      console.log(selectedCourse);
     }
-  }
+  };
+
   useEffect(() => {
     const handleCreator = async () => {
       if (selectedCourse?.creator) {
         try {
-          const result = await axios.post(serverUrl + "/api/course/creator", 
+          const result = await axios.post(
+            serverUrl + "/api/course/creator",
             { userId: selectedCourse.creator._id },
             { withCredentials: true }
           );
           setCreatorData(result.data);
-          console.log(result.data)
+          console.log(result.data);
         } catch (error) {
           console.error("Error fetching creator:", error);
         }
       }
     };
-    handleCreator()
-  },[selectedCourse])
-  useEffect(() => {
-    fetchCourseData()
-  }, [courseData, courseId])
+    handleCreator();
+  }, [selectedCourse]);
 
-useEffect(() => {
-  if (creatorData?._id && courseData.length > 0) {
-    const creatorCourse = courseData.filter(
-      (course) => course.creator?._id.toString() === creatorData._id && course._id !== courseId
+  const checkEnrollment = () => {
+    const verify = userData?.enrolledCourses?.some(c =>
+      (typeof c === 'string' ? c : c._id).toString() === courseId?.toString()
     );
-    setCreatorCourses(creatorCourse);
-  }
-}, [creatorData, courseData, courseId]); // <-- notice semicolon
-
-const handleEnroll = async (userId ,courseId) =>{
-
-try {
-    const orderData = await axios.post(serverUrl + "/api/order/razorpay-order" , {userId, courseId}, {withCredentials:true})
-    console.log(orderData)
-
-    const options = {
-          key:import.meta.env.VITE_RAZORPAY_KEY_ID,
-          amount: orderData.data.amount,
-          currency: 'INR',
-          name: "VIRTUAL COURSES",
-          description: "COURSE ENROLLMENT PAYMENT",
-          order_id:orderData.data.id,
-          handler: async function (response) {
-          console.log("razorpay response" , response)
-          try {
-                const verifyPayment = await axios.post(serverUrl + "/api/order/verifypayment",{
-
-                  ...response,
-                  courseId,
-                  userId
-                } ,{withCredentials:true})
-                toast.success(verifyPayment.data.message)
-              } catch (error) {
-                toast.error(error.response.data.message)
-              }
-
+    if (verify) {
+      setIsEnrolled(true);
     }
-          }
+  };
 
-    const rzp = new window.Razorpay(options)
-    rzp.open()
-} catch (error) { 
-    console.log(error)
-    toast.error("Something went wrong while enrolling")
-}
-}
+  useEffect(() => {
+    fetchCourseData();
+    checkEnrollment();
+  }, [courseData, courseId, userData]);
+
+  useEffect(() => {
+    if (creatorData?._id && courseData.length > 0) {
+      const creatorCourse = courseData.filter(
+        (course) => course.creator?._id.toString() === creatorData._id && course._id !== courseId
+      );
+      setCreatorCourses(creatorCourse);
+    }
+  }, [creatorData, courseData, courseId]);
+
+  const handleEnroll = async (userId, courseId) => {
+    try {
+      const orderData = await axios.post(
+        serverUrl + "/api/order/razorpay-order",
+        { userId, courseId },
+        { withCredentials: true }
+      );
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: orderData.data.amount,
+        currency: 'INR',
+        name: "VIRTUAL COURSES",
+        description: "COURSE ENROLLMENT PAYMENT",
+        order_id: orderData.data.id,
+        handler: async function (response) {
+          try {
+            const verifyPayment = await axios.post(
+              serverUrl + "/api/order/verify-payment",
+              { ...response, courseId, userId },
+              { withCredentials: true }
+            );
+            setIsEnrolled(true);
+            toast.success(verifyPayment.data.message);
+          } catch (error) {
+            toast.error(error.response.data.message);
+          }
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong while enrolling");
+    }
+  };
 
   return (
     <div className='min-h-screen bg-gray-50 p-6'>
@@ -148,124 +163,161 @@ try {
               <li>✅ Lifetime access to course materials</li>
             </ul>
 
-            <button className='bg-[black] text-white px-6 py-2 rounded hover:bg-gray-700 mt-3 cursor-pointer' onClick={()=>handleEnroll(userData._id,courseId)}>
-              Enroll Now
-            </button>
-          </div>
-        </div>
+            {/* Enroll / Watch */}
+            {!isEnrolled ? (
+              <button
+                className='bg-black text-white px-6 py-2 rounded hover:bg-gray-700 mt-3 cursor-pointer'
+                onClick={() => handleEnroll(userData._id, courseId)}
+              >
+                Enroll Now
+              </button>
+            ) : (
+              <button
+                className='bg-green-100 text-green-500 px-6 py-2 hover:bg-gray-700 rounded mt-3 cursor-pointer' onClick={()=>navigate(`/viewlecture/${courseId}`)}
+              >
+                Watch Now
+              </button>
+            )}
 
-        {/* What You'll Learn */}
-        <div>
-          <h2 className='text-xl font-semibold mb-2'>What You'll Learn</h2>
-          <ul className='list-disc pl-6 text-gray-700 space-y-1'>
-            <li>Learn {selectedCourse?.category} from Beginning</li>
-          </ul>
-        </div>
+            {/* What You'll Learn */}
+            <div>
+              <h2 className='text-xl font-semibold mb-2'>What You'll Learn</h2>
+              <ul className='list-disc pl-6 text-gray-700 space-y-1'>
+                <li>Learn {selectedCourse?.category} from Beginning</li>
+              </ul>
+            </div>
 
-        {/* Who This Course is For */}
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Who This Course is For</h2>
-          <p className="text-gray-700">
-            Beginners, aspiring developers, and professionals looking to upgrade skills.
-          </p>
-        </div>
+            {/* Who This Course is For */}
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Who This Course is For</h2>
+              <p className="text-gray-700">
+                Beginners, aspiring developers, and professionals looking to upgrade skills.
+              </p>
+            </div>
 
-        {/* Curriculum Section */}
-        <div className="flex flex-col md:flex-row gap-6">
-          <div className="bg-white w-full md:w-2/5 p-6 rounded-2xl shadow-lg border border-gray-200">
-            <h2 className='text-xl font-bold mb-1 text-gray-800'>Course Curriculum</h2>
-            <p className='text-sm text-gray-500 mb-4'>
-              {selectedCourse?.lectures?.length} Lectures
-            </p>
+            {/* Curriculum Section */}
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="bg-white w-full md:w-2/5 p-6 rounded-2xl shadow-lg border border-gray-200">
+                <h2 className='text-xl font-bold mb-1 text-gray-800'>Course Curriculum</h2>
+                <p className='text-sm text-gray-500 mb-4'>
+                  {selectedCourse?.lectures?.length} Lectures
+                </p>
 
-            <div className='flex flex-col gap-3'>
-              {selectedCourse?.lectures?.map((lecture, index) => (
-                <button
-                  key={index}
-                  disabled={!lecture.isPreviewFree}
-                  onClick={() => {
-                    if (lecture.isPreviewFree) {
-                      setSelectedLecture(lecture)
-                    }
-                  }}
-className={`flex items-center gap-3 px-4 py-3 rounded-lg border transition-all duration-200 text-left ${
-  lecture.isPreviewFree
-    ? `hover:bg-gray-100 cursor-pointer border-gray-300 ${selectedLecture?.lectureTitle === lecture?.lectureTitle ? "bg-gray-100 border-gray-400" : ""}`
-    : "cursor-not-allowed opacity-60 border-gray-200"
-}`}
-                >
-                  <span className='text-lg text-gray-700'>
-                    {lecture.isPreviewFree ? <FaPlayCircle/> : <FaLock/> }
-                  </span>
-                  <span className='text-sm font-medium text-gray-800'>{lecture?.lectureTitle}</span>
-                  
+                <div className='flex flex-col gap-3'>
+                  {selectedCourse?.lectures?.map((lecture, index) => (
+                    <button
+                      key={index}
+                      disabled={!lecture.isPreviewFree}
+                      onClick={() => {
+                        if (lecture.isPreviewFree) {
+                          setSelectedLecture(lecture);
+                        }
+                      }}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-lg border transition-all duration-200 text-left ${
+                        lecture.isPreviewFree
+                          ? `hover:bg-gray-100 cursor-pointer border-gray-300 ${
+                              selectedLecture?.lectureTitle === lecture?.lectureTitle
+                                ? "bg-gray-100 border-gray-400"
+                                : ""
+                            }`
+                          : "cursor-not-allowed opacity-60 border-gray-200"
+                      }`}
+                    >
+                      <span className='text-lg text-gray-700'>
+                        {lecture.isPreviewFree ? <FaPlayCircle /> : <FaLock />}
+                      </span>
+                      <span className='text-sm font-medium text-gray-800'>
+                        {lecture?.lectureTitle}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className='bg-white w-full md:w-3/5 p-6 rounded-2xl shadow-lg border border-gray-200'>
+                <div className='aspect-video w-full rounded-lg overflow-hidden mb-4 bg-black flex items-center justify-center'>
+                  {selectedLecture?.videoUrl ? (
+                    <video
+                      className='w-full h-full object-cover'
+                      src={selectedLecture?.videoUrl}
+                      controls
+                    />
+                  ) : (
+                    <span className='text-white text-sm'>
+                      Select a Preview Lecture to Watch
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Review Section */}
+            <div className='mt-8 border-t pt-6'>
+              <h2 className='text-xl font-semibold mb-2'>Write a Review</h2>
+              <div className='mb-4'>
+                <div className='flex gap-1 mb-2'>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FaStar key={star} className='fill-gray-300' />
+                  ))}
+                </div>
+                <textarea
+                  className='w-full border border-gray-300 rounded-lg p-2'
+                  placeholder='Write your review here...'
+                  rows={3}
+                />
+                <button className='bg-black text-white mt-3 px-4 py-2 rounded hover:bg-gray-800'>
+                  Submit Review
                 </button>
+              </div>
+            </div>
+
+            {/* Creator Info */}
+            <div className='flex items-center gap-4 pt-4 border-t'>
+              {creatorData?.photoUrl ? (
+                <img
+                  src={creatorData?.photoUrl}
+                  alt=""
+                  className='border-1 border-gray-200 w-16 h-16 rounded-full object-cover'
+                />
+              ) : (
+                <img
+                  src={img}
+                  alt=""
+                  className='w-16 h-16 rounded-full object-cover border-1 border-gray-200'
+                />
+              )}
+
+              <div>
+                <h2 className='text-lg font-semibold'>{creatorData?.name}</h2>
+                <p className='md:text-sm text-gray-600 text-[10px]'>{creatorData?.description}</p>
+                <p className="md:text-sm text-gray-600 text-[10px]">{creatorData?.email}</p>
+              </div>
+            </div>
+
+            {/* Other Courses */}
+            <div>
+              <p className='text-xl font-semibold mb-2'>
+                Other Published Courses by the Educator -
+              </p>
+            </div>
+
+            <div className='w-full transition-all duration-300 py-[20px] flex items-start justify-center lg:justify-start flex-wrap gap-6 lg:px-[80px]'>
+              {creatorCourses?.map((course, index) => (
+                <Card
+                  key={index}
+                  thumbnail={course.thumbnail}
+                  title={course.title}
+                  id={course._id}
+                  price={course.price}
+                  category={course.category}
+                />
               ))}
             </div>
           </div>
-          <div className='bg-white w-full md:w-3/5 p-6 rounded-2xl shadow-lg border border-gray-200'>
-          
-          <div className='aspect-video w-full rounded-lg overflow-hidden mb-4 bg-black flex items-center justify-center'>
-
-            {selectedLecture?.videoUrl ? <video className='w-full h-full object-cover' src={selectedLecture?.videoUrl}
-            controls/> : <span className='text-white text-sm'>
-              Select a Preview Lecture to Watch
-            </span>
-
-
-            }
-          </div>
-
-          </div>
-        </div>
-                <div className='mt-8 border-t pt-6'>
-                  <h2 className='text-xl font-semibold mb-2'>
-                    Write a Review
-                  </h2>
-                  <div className='mb-4'>
-                    <div className='flex gap-1 mb-2'>
-                      {
-                          [1,2,3,4,5].map((star)=>(
-
-                            <FaStar key={star} className='fill-gray-300'/>
-                          ))
-
-                      }
-                    </div>
-                    <textarea name="" className='w-full border border-gray-300 rounded-lg p-2' placeholder='   Write your review here ....'
-                   rows={3}
-        />
-
-        <button className='bg-black text-white mt-3 px-4 py-2 rounded hover:bg-gray-800'>Submit Review </button>
-                  </div>
-                </div>
-                {/* for creator info */}
-                <div className='flex items-center gap-4 pt-4 border-t'>
-
-                  {creatorData?.photoUrl? <img src={creatorData?.photoUrl} alt="" className=' border-1 border-gray-200 w-16 h-16 rounded-full object-cover' />:  <img src={img} alt="" className='w-16 h-16 rounded-full object-cover border-1 border-gray-200' />}
-
-                  <div>
-                          <h2 className='text-lg font-semibold'>{creatorData?.name}</h2>
-                          <p className='md:text-sm text-gray-600 text-[10px] '>{creatorData?.description}</p>
-                          <p className="md:text-sm text-gray-600 text-[10px] ">{creatorData?.email}</p>
-
-                  </div>
-                </div>
-
-                <div>
-                        <p className='text-xl font-semibold mb-2'>Other Published Courses by the Educator -</p>
-                </div>
-                        <div className='w-full transition-all duration-300 py-[20px]   flex items-start justify-center lg:justify-start flex-wrap gap-6 lg:px-[80px] '>
-          
-            {
-                creatorCourses?.map((course,index)=>(
-                    <Card key={index} thumbnail={course.thumbnail} title={course.title} id={course._id} price={course.price} category={course.category}/>
-                ))
-            }
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ViewCourse
+export default ViewCourse;
