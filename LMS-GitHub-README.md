@@ -401,8 +401,8 @@ SOFTWARE.
 
 **Vibhu Suneja**
 - GitHub: [@VibhuSuneja](https://github.com/VibhuSuneja)
-- Email: vibhu.suneja@example.com
-- LinkedIn: [Connect with me](https://linkedin.com/in/vibhusuneja)
+- Email: vibhusun01@gmail.com
+- LinkedIn: https://www.linkedin.com/in/vibhusuneja08?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BBrCyG2mWSouA3to4I%2BS9FA%3D%3D)
 
 ## 🙏 Acknowledgments
 
