@@ -10,19 +10,19 @@
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [AI Integration](#ai-integration)
-- [Installation](#installation)
-- [Environment Variables](#environment-variables)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Project Structure](#project-structure)
-- [Screenshots](#screenshots)
-- [Contributing](#contributing)
-- [License]([#license](https://github.com/VibhuSuneja/LearningManagement_system-/blob/main/README.md#-license))
-- [Contact](#contact)
+- [Overview]
+- [Features]
+- [Technology Stack]
+- [AI Integration]
+- [Installation]
+- [Environment Variables]
+- [Usage]
+- [API Endpoints]
+- [Project Structure]
+- [Screenshots]
+- [Contributing]
+- ([#license](https://github.com/VibhuSuneja/LearningManagement_system-/blob/main/README.md#-license))
+- [Contact]
 
 ## 🚀 Overview
 
