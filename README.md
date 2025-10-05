@@ -21,7 +21,7 @@
 - [Project Structure](#project-structure)
 - [Screenshots](#screenshots)
 - [Contributing](#contributing)
-- [License](#license)
+- [License]([#license](https://github.com/VibhuSuneja/LearningManagement_system-/blob/main/README.md#-license))
 - [Contact](#contact)
 
 ## 🚀 Overview
