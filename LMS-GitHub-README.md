@@ -325,16 +325,20 @@ LearningManagement_system-/
 ## 📸 Screenshots
 
 ### Homepage
-![Homepage](https://via.placeholder.com/800x400?text=LMS+Homepage)
+![Homepage]<img width="2537" height="1439" alt="image" src="https://github.com/user-attachments/assets/aeff5938-7fd2-4f6f-800c-f888c93ae7bd" />
+
 
 ### Course Dashboard
-![Dashboard](https://via.placeholder.com/800x400?text=Student+Dashboard)
+![Dashboard]<img width="2498" height="1218" alt="image" src="https://github.com/user-attachments/assets/c384f42e-b5ad-47e4-987c-122013bb875b" />
+
 
 ### Course Creation
-![Course Creation](https://via.placeholder.com/800x400?text=Course+Creation+Interface)
+![Course Creation]<img width="2494" height="1223" alt="image" src="https://github.com/user-attachments/assets/06083a38-f39b-46d7-a4e9-2bf8ae2ad536" />
+
 
 ### AI Search
-![AI Search](https://via.placeholder.com/800x400?text=AI+Powered+Search)
+![AI Search](<img width="2469" height="1220" alt="image" src="https://github.com/user-attachments/assets/b7deb9f2-341e-4be4-804b-a1122a06e0b3" />
+
 
 ## 🤝 Contributing
 
