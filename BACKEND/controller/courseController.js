@@ -28,7 +28,7 @@ export const getPublishedCourses = async (req,res) => {
 try {
     // Correctly query the database for courses where isPublished is true
     const courses = await Course.find({ isPublished: true }).populate("lectures")
-    .populate("creator");
+    .populate("creator").populate("reviews");
 
     if (!courses) {
       return res.status(404).json({

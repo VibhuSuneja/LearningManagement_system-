@@ -36,7 +36,8 @@ export const createReview = async (req, res) => {
 export const getReviews = async (req, res) => {
   try {
     
-    const review = await Review.find({}).populate("user" , "name" , "photoUrl"  , "role").sort({reviewedAt :  -1 })
+    const review = await Review.find({}).populate("user", "name photoUrl role description")
+  .populate("course", "title").sort({reviewedAt :  -1 })
     return res.status(200).json(review);
   } catch (error) {
     return res.status(500).json({ message: "Error fetching reviews" });

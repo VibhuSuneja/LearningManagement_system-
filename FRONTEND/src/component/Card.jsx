@@ -1,7 +1,17 @@
 import React from 'react'
 import { FaStar } from "react-icons/fa";
 import { useNavigate, useParams } from 'react-router-dom';
-function Card({thumbnail, title, category, price, id}) {
+function Card({thumbnail, title, category, price, id, reviews}) {
+
+    const calculateAvgReview = (reviews) =>{
+      if(!reviews || reviews.length  === 0 ){
+        return 0
+      }
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+  return (total / reviews.length).toFixed(1); // rounded to 1 decimal
+  };
+
+const avgRating = calculateAvgReview(reviews)
   const navigate = useNavigate()
   return (
     <div className='max-w-sm w-full bg-white rounded-2xl
@@ -21,7 +31,7 @@ function Card({thumbnail, title, category, price, id}) {
 
         <div className='flex justify-between text-sm text-gray-600 mt-3 px-[10px]'>
          <span className='font-semibold text-gray-800'>{price}</span>
-         <span className='flex items-center gap-1'><FaStar className='text-yellow-500'/>5</span>
+         <span className='flex items-center gap-1'><FaStar className='text-yellow-500'/>{avgRating}</span>
         </div>
     </div>
 

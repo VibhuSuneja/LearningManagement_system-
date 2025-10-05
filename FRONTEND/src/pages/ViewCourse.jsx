@@ -130,6 +130,19 @@ function ViewCourse() {
       setComment("")
     }
   }
+
+  const calculateAvgReview = (reviews) =>{
+      if(!reviews || reviews.length  === 0 ){
+        return 0
+      }
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+  return (total / reviews.length).toFixed(1); // rounded to 1 decimal
+  };
+
+const avgRating = calculateAvgReview(selectedCourse?.reviews)
+
+
+
   return (
     <div className='min-h-screen bg-gray-50 p-6'>
       <div className='max-w-6xl mx-auto bg-white shadow-md rounded-xl p-6 space-y-6 relative'>
@@ -167,7 +180,7 @@ function ViewCourse() {
             <div className="font-medium">
               <div className="flex items-center gap-2 text-yellow-500">
                 <FaStar />
-                <span>5</span>
+                <span>{avgRating}</span>
                 <span className="text-gray-600">(1,200 Reviews)</span>
               </div>
             </div>
