@@ -25,7 +25,7 @@ import ViewLectures from "./pages/Educator/ViewLectures.jsx";
 import MyEnrolledCourses from "./pages/MyEnrolledCourses.jsx";
 import getAllReviews from "./customHooks/getAllReviews.js";
 import SearchWithAi from "./pages/SearchWithAi.jsx";
-export const serverUrl = "http://localhost:8080";
+export const serverUrl = "https://learningmanagement-system.onrender.com";
 
 function App() {
   useGetCurrentUser();
