@@ -9,6 +9,7 @@ import img from "../assets/empty.jpg"
 import axios from 'axios';
 import Card from '../component/Card';
 import { toast } from 'react-toastify';
+import { ClipLoader } from 'react-spinners';
 
 function ViewCourse() {
   const navigate = useNavigate();
@@ -20,7 +21,9 @@ function ViewCourse() {
   const [creatorData, setCreatorData] = useState(null);
   const [creatorCourses, setCreatorCourses] = useState(null);
   const [isEnrolled, setIsEnrolled] = useState(false);
-
+  const [rating,setRating] = useState(0)
+  const [comment,setComment] = useState("")
+  const [loading,setLoading] = useState(false)
   const fetchCourseData = async () => {
     const course = courseData.find((c) => c._id === courseId);
     if (course) {
@@ -109,6 +112,24 @@ function ViewCourse() {
     }
   };
 
+    const handleReview = async () => {
+      setLoading(true)
+    try {
+      const result = await axios.post(serverUrl + "/api/review/createreview" , {rating , comment , courseId} , {withCredentials:true})
+      toast.success("Review Added")
+      setLoading(false)
+      console.log(result.data)
+      setRating(0)
+      setComment("")
+
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+      toast.error(error.response.data.message)
+      setRating(0)
+      setComment("")
+    }
+  }
   return (
     <div className='min-h-screen bg-gray-50 p-6'>
       <div className='max-w-6xl mx-auto bg-white shadow-md rounded-xl p-6 space-y-6 relative'>
@@ -257,16 +278,18 @@ function ViewCourse() {
               <div className='mb-4'>
                 <div className='flex gap-1 mb-2'>
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <FaStar key={star} className='fill-gray-300' />
+                    <FaStar key={star} onClick={()=>setRating(star)} className={star <= rating ? "fill-amber-300" : "fill-gray-300"}/>
                   ))}
                 </div>
                 <textarea
+                onChange={(e)=>setComment(e.target.value)}
+                  value={ comment}
                   className='w-full border border-gray-300 rounded-lg p-2'
                   placeholder='Write your review here...'
                   rows={3}
                 />
-                <button className='bg-black text-white mt-3 px-4 py-2 rounded hover:bg-gray-800'>
-                  Submit Review
+                <button className='bg-black text-white mt-3 px-4 py-2 rounded hover:bg-gray-800' disabled={loading} onClick={handleReview}>
+                  {loading? <ClipLoader size={30} color='white'/>:"Submit Review"}
                 </button>
               </div>
             </div>
