@@ -10,7 +10,7 @@
 
 ## 📋 Table of Contents
 
-- [Overview](https://github.com/VibhuSuneja/LearningManagement_system-/blob/main/README.md#-overview)]
+- [[Overview](https://github.com/VibhuSuneja/LearningManagement_system-/blob/main/README.md#-overview)]
 - [Features]
 - [Technology Stack]
 - [AI Integration]
