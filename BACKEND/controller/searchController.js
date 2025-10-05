@@ -4,7 +4,7 @@ import Course from "../model/courseModel.js";
 dotenv.config();
 
 
-export const searchWithAi = async (req,res) => {
+export const searchWithAI = async (req,res) => {
 
     try {
          const { input } = req.body;

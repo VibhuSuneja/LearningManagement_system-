@@ -2,7 +2,7 @@ import express from "express"
 import isAuth from "../middleware/isAuth.js"
 import { createCourse,  editCourse,  getCourseById,  getCreatorCourses, getPublishedCourses, removeCourse,createLecture,removeLecture,getCourseLecture,editLecture, getCreatorById  } from "../controller/courseController.js"
 import upload from "../middleware/multer.js"
-import { searchWithAi } from "../controller/searchController.js"
+import { searchWithAI } from "../controller/searchController.js"
 
 let courseRouter = express.Router()
 
@@ -19,7 +19,7 @@ courseRouter.delete("/removelecture/:lectureId",isAuth,removeLecture)
 courseRouter.post("/creator",isAuth,getCreatorById)
 
 // for search
-courseRouter.post("/search",searchWithAi)
+courseRouter.post("/search",searchWithAI)
 
 
 
