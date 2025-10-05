@@ -31,7 +31,7 @@ app.use("/api/user", userRouter);
 app.use("/api/course", courseRouter);
 app.use("/api/order", paymentRouter);
 app.use("/api/review",reviewRouter);
-app.use("/api/search",searchRouter);
+app.use("/api/ai",searchRouter);
 
 // ✅ This message will appear in your terminal if the file is loaded correctly.
 console.log("✅ Course router has been successfully loaded.");
