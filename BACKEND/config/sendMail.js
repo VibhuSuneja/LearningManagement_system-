@@ -5,9 +5,7 @@ dotenv.config();
 const sendMail = async (email, subject, text) => {
   try {
     const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',             // ✅ Add this line
-  port: 465,                          // ✅ Add this line  
-  secure: true,                      // ✅ Add this line
+      service: "Gmail",
       auth: {
         user: process.env.USER_EMAIL,
         pass: process.env.USER_PASSWORD, // Use a Google App Password here
