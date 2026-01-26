@@ -1,6 +1,6 @@
 import Course from "../model/courseModel.js";
 import razorpay from 'razorpay'
-import User from "../model/userModel.js";
+import User from "../model/UserModel.js";
 import dotenv from "dotenv"
 dotenv.config()
 const razorpayInstance = new razorpay({

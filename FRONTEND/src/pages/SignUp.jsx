@@ -104,9 +104,27 @@ function SignUp() {
           </div>
 
           {/* Role */}
-          <div className='flex md:w-[50%] w-[70%] items-center justify-between'>
-            <span className={`px-[10px] py-[5px] border-[2px] rounded-xl cursor-pointer hover:border-black ${role==="student" ? "border-black" : "border-[#646464]"}`} onClick={()=>setRole("student")}>Student</span>
-            <span className={`px-[10px] py-[5px] border-[2px] rounded-xl cursor-pointer hover:border-black ${role==="educator" ? "border-black" : "border-[#646464]"}`} onClick={()=>setRole("educator")}>Educator</span>
+          <div className='flex md:w-[60%] w-[80%] items-center justify-between gap-4'>
+            <span 
+              className={`flex-1 text-center py-2 border-2 rounded-xl cursor-pointer transition-all duration-300 font-medium ${
+                role === "student" 
+                  ? "border-black bg-black text-white shadow-md scale-105" 
+                  : "border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-400"
+              }`} 
+              onClick={() => setRole("student")}
+            >
+              Student
+            </span>
+            <span 
+              className={`flex-1 text-center py-2 border-2 rounded-xl cursor-pointer transition-all duration-300 font-medium ${
+                role === "educator" 
+                  ? "border-black bg-black text-white shadow-md scale-105" 
+                  : "border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-400"
+              }`} 
+              onClick={() => setRole("educator")}
+            >
+              Educator
+            </span>
           </div>
 
           {/* Button */}

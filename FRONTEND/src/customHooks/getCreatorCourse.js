@@ -6,28 +6,31 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 const getCreatorCourse = () => {
-    const dispatch = useDispatch()
-    const {userData} = useSelector(state=>state.user)
-  return (
-    useEffect(()=>{
-    const creatorCourses = async () => {
-      try {
-        const result = await axios.get(serverUrl + "/api/course/getcreatorcourses" , {withCredentials:true})
-        
-         await dispatch(setCreatorCourseData(result.data))
+    const dispatch = useDispatch();
+    const { userData } = useSelector(state => state.user);
 
-        
-        console.log(result.data)
-        
-      } catch (error) {
-        console.log(error)
-        toast.error(error.response.data.message)
-      }
-      
-    }
-    creatorCourses()
-  },[userData])
-  )
-}
+    useEffect(() => {
+        // Only fetch if user is logged in and is an educator
+        if (!userData || userData.role !== 'educator') {
+            return;
+        }
+
+        const creatorCourses = async () => {
+            try {
+                const result = await axios.get(serverUrl + "/api/course/getcreatorcourses", { withCredentials: true });
+                await dispatch(setCreatorCourseData(result.data));
+                console.log(result.data);
+            } catch (error) {
+                console.log(error);
+                // Only show error if it's not a generic 401 (which we already handle by checking userData)
+                if (error.response?.status !== 401) {
+                    toast.error(error.response?.data?.message || "Failed to fetch creator courses");
+                }
+            }
+        };
+
+        creatorCourses();
+    }, [userData, dispatch]);
+};
 
 export default getCreatorCourse

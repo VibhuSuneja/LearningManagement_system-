@@ -25,6 +25,7 @@ import ViewLectures from "./pages/Educator/ViewLectures.jsx";
 import MyEnrolledCourses from "./pages/MyEnrolledCourses.jsx";
 import getAllReviews from "./customHooks/getAllReviews.js";
 import SearchWithAi from "./pages/SearchWithAi.jsx";
+import Chatbot from "./component/Chatbot.jsx";
 export const serverUrl = "http://localhost:8080";
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
     <>
       <ToastContainer />
       <ScrollToTop />
+      <Chatbot />
       
       <Routes>
         <Route path="/" element={<Home />} />
@@ -49,7 +51,7 @@ function App() {
         <Route path="/forget" element={!userData ? <ForgetPassword /> : <Navigate to="/signup" />} />
         <Route path="/editprofile" element={userData ? <EditProfile /> : <Navigate to="/signup" />} />
         <Route path="/dashboard" element={userData?.role === "educator" ? <Dashboard /> : <Navigate to="/signup" />} />
-        <Route path="/allcourses" element={userData?.role === "educator" ? <AllCourses/> : <Navigate to="/signup" />} />
+        <Route path="/allcourses" element={userData ? <AllCourses/> : <Navigate to="/signup" />} />
         <Route path="/courses" element={userData?.role === "educator" ? <Courses /> : <Navigate to="/signup" />} />
         <Route path="/createcourse" element={userData?.role === "educator" ? <CreateCourses /> : <Navigate to="/signup" />} />    
         <Route path="/editcourse/:courseId" element={userData?.role === "educator" ? <EditCourse /> : <Navigate to="/signup" />} />  

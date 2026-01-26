@@ -11,6 +11,7 @@ import cors from "cors";
 import paymentRouter from "./route/paymentRoute.js";
 import reviewRouter from "./route/reviewRoute.js";
 import searchRouter from "./route/searchRoute.js";
+import chatbotRouter from "./route/chatbotRoute.js";
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -32,6 +33,7 @@ app.use("/api/course", courseRouter);
 app.use("/api/order", paymentRouter);
 app.use("/api/review",reviewRouter);
 app.use("/api/ai",searchRouter);
+app.use("/api/chatbot", chatbotRouter);
 
 // ✅ This message will appear in your terminal if the file is loaded correctly.
 console.log("✅ Course router has been successfully loaded.");
