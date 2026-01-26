@@ -25,7 +25,8 @@ import ViewLectures from "./pages/Educator/ViewLectures.jsx";
 import MyEnrolledCourses from "./pages/MyEnrolledCourses.jsx";
 import getAllReviews from "./customHooks/getAllReviews.js";
 import SearchWithAi from "./pages/SearchWithAi.jsx";
-export const serverUrl = "http://localhost:8080";
+import Chatbot from "./component/Chatbot.jsx";
+export const serverUrl = "http://localhost:8080"; // Change to production URL before deploy
 
 function App() {
   useGetCurrentUser();
