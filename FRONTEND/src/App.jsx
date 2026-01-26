@@ -26,7 +26,7 @@ import MyEnrolledCourses from "./pages/MyEnrolledCourses.jsx";
 import getAllReviews from "./customHooks/getAllReviews.js";
 import SearchWithAi from "./pages/SearchWithAi.jsx";
 import Chatbot from "./component/Chatbot.jsx";
-export const serverUrl = "https://learningmanagement-system-1.onrender.com";
+export const serverUrl = import.meta.env.VITE_SERVER_URL || "https://learningmanagement-system-1.onrender.com";
 
 function App() {
   useGetCurrentUser();

@@ -20,21 +20,24 @@ const port = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cookieParser());
 const allowedOrigins = [
-  process.env.FRONTEND_URL,
+  "https://learning-management-system-kappa-black.vercel.app",
   "http://localhost:5173",
-  "https://learningmanagement-system-1.onrender.com"
-];
+  process.env.FRONTEND_URL
+].filter(Boolean); // Remove undefined/null values
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log("CORS blocked origin:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
   })
 );
 
