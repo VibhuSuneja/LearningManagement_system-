@@ -26,7 +26,7 @@ import MyEnrolledCourses from "./pages/MyEnrolledCourses.jsx";
 import getAllReviews from "./customHooks/getAllReviews.js";
 import SearchWithAi from "./pages/SearchWithAi.jsx";
 import Chatbot from "./component/Chatbot.jsx";
-export const serverUrl = "http://localhost:8080"; // Change to production URL before deploy
+export const serverUrl = "https://learningmanagement-system-1.onrender.com";
 
 function App() {
   useGetCurrentUser();
