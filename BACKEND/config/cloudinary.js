@@ -9,16 +9,31 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const uploadToCloudinary = async (filePath) => {
-  if (!filePath) return null;
+const uploadToCloudinary = async (fileInput) => {
+  if (!fileInput) return null;
 
   try {
-    const uploadResult = await cloudinary.uploader.upload(filePath, { resource_type: "auto" });
-    fs.unlinkSync(filePath); // remove temp file
-    return uploadResult.secure_url;
+    // Handle buffer (production) or file path (local)
+    if (Buffer.isBuffer(fileInput)) {
+      return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { resource_type: "auto" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result.secure_url);
+          }
+        );
+        uploadStream.end(fileInput);
+      });
+    } else {
+      // Your existing file path logic
+      const uploadResult = await cloudinary.uploader.upload(fileInput, { resource_type: "auto" });
+      fs.unlinkSync(fileInput); // remove temp file
+      return uploadResult.secure_url;
+    }
   } catch (error) {
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    if (typeof fileInput === 'string' && fs.existsSync(fileInput)) {
+      fs.unlinkSync(fileInput);
     }
     console.log("Error during Cloudinary upload:", error);
     return null;

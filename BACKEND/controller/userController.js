@@ -31,7 +31,7 @@ export const updateProfile = async (req, res) => {
     // Check if a new file has been uploaded
     if (req.file) {
       console.log("Uploading to Cloudinary...");
-      photoUrl = await uploadToCloudinary(req.file.path);
+      photoUrl = await uploadToCloudinary(req.file.buffer);
       console.log("Cloudinary URL:", photoUrl);
 
       // --- ADDED ERROR HANDLING ---

@@ -12,7 +12,7 @@ import CardPage from '../component/CardPage';
 import getPublishedCourse from '../customHooks/getPublishedCourse';
 import About from '../component/About';
 import Footer from '../component/Footer'
-import ReviewPage from '../component/reviewPage';
+import ReviewPage from '../component/ReviewPage';
 function Home() {
   const navigate = useNavigate()
   getPublishedCourse();

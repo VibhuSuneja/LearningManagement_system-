@@ -79,7 +79,7 @@ export const editCourse = async (req,res) => {
         const {title , subTitle , description , category , level , price , isPublished } = req.body;
         let thumbnail
          if(req.file){
-            thumbnail =await uploadOnCloudinary(req.file.path)
+            thumbnail =await uploadOnCloudinary(req.file.buffer)
                 }
         let course = await Course.findById(courseId)
         if(!course){
@@ -177,7 +177,7 @@ export const editLecture = async (req,res) => {
         }
         let videoUrl
         if(req.file){
-            videoUrl =await uploadOnCloudinary(req.file.path)
+            videoUrl =await uploadOnCloudinary(req.file.buffer)
             lecture.videoUrl = videoUrl
                 }
         if(lectureTitle){
