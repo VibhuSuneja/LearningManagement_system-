@@ -26,7 +26,11 @@ import MyEnrolledCourses from "./pages/MyEnrolledCourses.jsx";
 import getAllReviews from "./customHooks/getAllReviews.js";
 import SearchWithAi from "./pages/SearchWithAi.jsx";
 import Chatbot from "./component/Chatbot.jsx";
-export const serverUrl = import.meta.env.VITE_SERVER_URL || "https://learningmanagement-system-1.onrender.com";
+import Chat from "./pages/Chat.jsx";
+import LiveSessions from "./pages/LiveSessions.jsx";
+
+export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
+console.log("Using Server URL:", serverUrl);
 
 function App() {
   useGetCurrentUser();
@@ -61,6 +65,8 @@ function App() {
          <Route path="/viewlecture/:courseId" element={userData ? <ViewLectures /> : <Navigate to="/signup" />} /> 
           <Route path="/mycourses" element={userData ? <MyEnrolledCourses /> : <Navigate to="/signup" />} /> 
           <Route path="/search" element={userData ? <SearchWithAi /> : <Navigate to="/signup" />} /> 
+          <Route path="/chat" element={userData ? <Chat /> : <Navigate to="/signup" />} /> 
+          <Route path="/live/:courseId" element={userData ? <LiveSessions /> : <Navigate to="/signup" />} /> 
       </Routes>
     </>
   );

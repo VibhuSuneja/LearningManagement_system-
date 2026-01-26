@@ -1,5 +1,6 @@
 import Review from "../model/reviewModel.js";
 import Course from "../model/courseModel.js";
+import { createNotification } from "./notificationController.js";
 
 export const createReview = async (req, res) => {
   try {
@@ -25,6 +26,15 @@ export const createReview = async (req, res) => {
 
     course.reviews.push(review._id);
     await course.save();
+
+    // Notify course creator
+    await createNotification(
+      course.creator,
+      userId,
+      "comment",
+      `New ${rating}-star review on your course "${course.title}": "${comment.substring(0, 30)}..."`,
+      courseId
+    );
 
     return res.status(200).json(review);
   } catch (error) {

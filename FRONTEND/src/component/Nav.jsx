@@ -7,6 +7,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { setUserData } from "../redux/userSlice";
 import { toast } from "react-toastify";
+import NotificationTray from "./NotificationTray";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { GiTireIronCross } from "react-icons/gi";
 
@@ -45,6 +46,7 @@ function Nav() {
 
         {/* DESKTOP NAV */}
         <div className="w-[30%] lg:flex items-center justify-center gap-4 hidden">
+          {userData && <NotificationTray />}
           {!userData ? (
             <IoPersonCircle
               className="w-[50px] h-[50px] fill-black cursor-pointer"
@@ -52,7 +54,7 @@ function Nav() {
             />
           ) : (
             <>
-              {userData.photoUrl ? (
+              {userData.photoUrl && userData.photoUrl !== "" ? (
                 <img
                   src={userData.photoUrl}
                   className="w-[50px] h-[50px] rounded-full border-2 border-white cursor-pointer"
@@ -108,6 +110,12 @@ function Nav() {
                 onClick={() => navigate("/mycourses")}
               >
                 My Courses
+              </span>
+              <span
+                className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600"
+                onClick={() => navigate("/chat")}
+              >
+                Messages
               </span>
             </div>
           )}

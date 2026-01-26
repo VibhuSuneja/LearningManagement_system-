@@ -2,6 +2,7 @@ import uploadOnCloudinary from "../config/cloudinary.js"
 import Course from "../model/courseModel.js"
 import Lecture from "../model/lectureModel.js"; 
 import User from "../model/UserModel.js"
+import { createNotification } from "./notificationController.js";
 
 // create Courses
 export const createCourse = async (req,res) => {
@@ -137,16 +138,29 @@ export const createLecture = async (req,res) => {
         if(!lectureTitle || !courseId){
              return res.status(400).json({message:"Lecture Title required"})
         }
-        const lecture = await Lecture.create({lectureTitle})
-        const course = await Course.findById(courseId)
-        if(course){
-            course.lectures.push(lecture._id)
-            await course.save() // Save the course document after modification
+        const lecture = await Lecture.create({ lectureTitle });
+        const course = await Course.findById(courseId).populate("enrolledStudents");
+
+        if (course) {
+            course.lectures.push(lecture._id);
+            await course.save();
+
+            // Send notifications to all enrolled students
+            for (const student of course.enrolledStudents) {
+              if (student) {
+                await createNotification(
+                  student._id || student,
+                  course.creator,
+                  "course_update",
+                  `A new lecture "${lectureTitle}" has been added to "${course.title}".`,
+                  courseId
+                );
+              }
+            }
         }
-        
-        const populatedCourse = await Course.findById(courseId).populate("lectures") // Re-fetch the course with populated lectures to return the latest data
-        
-        return res.status(201).json({lecture,course: populatedCourse})
+
+        const populatedCourse = await Course.findById(courseId).populate("lectures");
+        return res.status(201).json({ lecture, course: populatedCourse });
         
     } catch (error) {
         return res.status(500).json({message:`Failed to Create Lecture ${error}`})

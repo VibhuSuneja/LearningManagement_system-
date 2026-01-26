@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { setSelectedCourse } from '../redux/courseSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaLock, FaPlayCircle } from "react-icons/fa";
+import { IoVideocamOutline } from "react-icons/io5";
 import { serverUrl } from '../App';
 import img from "../assets/empty.jpg"
 import axios from 'axios';
@@ -197,21 +198,32 @@ const avgRating = calculateAvgReview(selectedCourse?.reviews)
               <li>✅ Lifetime access to course materials</li>
             </ul>
 
-            {/* Enroll / Watch */}
-            {!isEnrolled ? (
-              <button
-                className='bg-black text-white px-6 py-2 rounded hover:bg-gray-700 mt-3 cursor-pointer'
-                onClick={() => handleEnroll(userData._id, courseId)}
-              >
-                Enroll Now
-              </button>
-            ) : (
-              <button
-                className='bg-green-100 text-green-500 px-6 py-2 hover:bg-gray-700 rounded mt-3 cursor-pointer' onClick={()=>navigate(`/viewlecture/${courseId}`)}
-              >
-                Watch Now
-              </button>
-            )}
+            {/* Enroll / Watch / Live */}
+            <div className="flex gap-4">
+              {!isEnrolled && userData?._id !== selectedCourse?.creator?._id ? (
+                <button
+                  className='bg-black text-white px-6 py-2 rounded hover:bg-gray-700 mt-3 cursor-pointer transition-all'
+                  onClick={() => handleEnroll(userData._id, courseId)}
+                >
+                  Enroll Now
+                </button>
+              ) : (
+                <>
+                  <button
+                    className='bg-green-100 text-green-500 px-6 py-2 hover:bg-green-200 rounded mt-3 cursor-pointer transition-all flex items-center gap-2 font-semibold' 
+                    onClick={() => navigate(`/viewlecture/${courseId}`)}
+                  >
+                    <FaPlayCircle /> Watch Now
+                  </button>
+                  <button
+                    className='bg-red-50 text-red-600 px-6 py-2 hover:bg-red-100 rounded mt-3 cursor-pointer transition-all flex items-center gap-2 font-semibold'
+                    onClick={() => navigate(`/live/${courseId}`)}
+                  >
+                    <IoVideocamOutline size={20} /> Live Class
+                  </button>
+                </>
+              )}
+            </div>
 
             {/* What You'll Learn */}
             <div>

@@ -2,7 +2,7 @@ import React from 'react'
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 import img from "../../assets/empty.jpg"
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaVideo } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import axios from 'axios';
@@ -68,7 +68,10 @@ function Courses() {
                {course?.price ? <td className='py-3 px-4'>₹ {course?.price}</td>
                :<td className='py-3 px-4'>₹ NA</td>}
               <td className='py-3 px-4'><span className={`px-3 py-1 rounded-full text-xs ${course.isPublished ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}`}>{course?.isPublished ? "Published" : "Draft"}</span></td>
-              <td className='py-3 px-4'> <FaEdit className='text-gray-600 hover:text-blue-600 cursor-pointer' onClick={() => navigate(`/editcourse/${course?._id}`)}/> </td>
+              <td className='py-3 px-4 flex gap-3'> 
+                <FaEdit className='text-gray-600 hover:text-blue-600 cursor-pointer' onClick={() => navigate(`/editcourse/${course?._id}`)}/> 
+                <FaVideo className='text-gray-600 hover:text-red-600 cursor-pointer' onClick={() => navigate(`/live/${course._id}`)} title="Live Session" />
+              </td>
             </tr>
             ))}
           </tbody>
@@ -88,7 +91,10 @@ function Courses() {
                     <h2 className='font-medium text-sm'>{course?.title}</h2>
                     {course?.price ? <p className='text-gray-600 text-xs mt-1'>₹ {course?.price}</p> : <p className='text-gray-600 text-xs mt-1'>₹ NA</p>}
                   </div>
-                  <FaEdit className='text-gray-600 hover:text-blue-600 cursor-pointer' onClick={() => navigate(`/editcourse/${course?._id}`)}/>
+                  <div className="flex flex-col gap-3">
+                    <FaEdit className='text-gray-600 hover:text-blue-600 cursor-pointer' onClick={() => navigate(`/editcourse/${course?._id}`)}/>
+                    <FaVideo className='text-gray-600 hover:text-red-600 cursor-pointer' onClick={() => navigate(`/live/${course._id}`)}/>
+                  </div>
                 </div>
                 <span className={`w-fit px-3 py-1 text-xs rounded-full ${course.isPublished ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}`}>{course?.isPublished ? "Published" : "Draft"}</span>
             </div>

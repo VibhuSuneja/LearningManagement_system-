@@ -12,8 +12,11 @@ import paymentRouter from "./route/paymentRoute.js";
 import reviewRouter from "./route/reviewRoute.js";
 import searchRouter from "./route/searchRoute.js";
 import chatbotRouter from "./route/chatbotRoute.js";
+import notificationRouter from "./route/notificationRoute.js";
+import messageRouter from "./route/messageRoute.js";
+import liveSessionRouter from "./route/liveSessionRoute.js";
+import { app, server } from "./socket/socket.js";
 
-const app = express();
 const port = process.env.PORT || 8080;
 
 // --- Middleware ---
@@ -46,20 +49,23 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/course", courseRouter);
 app.use("/api/order", paymentRouter);
-app.use("/api/review",reviewRouter);
-app.use("/api/ai",searchRouter);
+app.use("/api/review", reviewRouter);
+app.use("/api/ai", searchRouter);
 app.use("/api/chatbot", chatbotRouter);
+app.use("/api/notification", notificationRouter);
+app.use("/api/message", messageRouter);
+app.use("/api/live-session", liveSessionRouter);
 
 // ✅ This message will appear in your terminal if the file is loaded correctly.
 console.log("✅ Course router has been successfully loaded.");
 
 // --- Health check ---
 app.get("/", (req, res) => {
-  res.send("🚀 Server is running!");
+  res.send("🚀 Server is running with WebSockets!");
 });
 
 // --- Server Startup ---
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`✅ Server running on port ${port}`);
   connectDb();
 });

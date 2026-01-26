@@ -33,12 +33,13 @@ export const RazorpayOrder = async (req, res) => {
 
 
 
+import { createNotification } from "./notificationController.js";
+
 export const verifyPayment = async (req, res) => {
   try {
-    
-        const {razorpay_order_id , courseId , userId} = req.body
-        const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
-        if(orderInfo.status === 'paid') {
+    const { razorpay_order_id, courseId, userId } = req.body;
+    const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
+    if (orderInfo.status === 'paid') {
       // Update user and course enrollment
       const user = await User.findById(userId);
       if (!user.enrolledCourses.includes(courseId)) {
@@ -51,6 +52,25 @@ export const verifyPayment = async (req, res) => {
         course.enrolledStudents.push(userId);
         await course.save();
       }
+
+      // Send notifications
+      // 1. Notification to the student
+      await createNotification(
+        userId,
+        course.creator, // System/Creator as sender
+        "enrollment",
+        `You have successfully enrolled in "${course.title}".`,
+        courseId
+      );
+
+      // 2. Notification to the educator
+      await createNotification(
+        course.creator,
+        userId,
+        "enrollment",
+        `${user.name} has enrolled in your course "${course.title}".`,
+        courseId
+      );
 
       return res.status(200).json({ message: "Payment verified and enrollment successful" });
     } else {
