@@ -22,6 +22,13 @@ const liveSessionSchema = new mongoose.Schema(
 			required: true,
 			unique: true,
 		},
+		roomName: {
+			type: String,
+		},
+		recordingUrl: {
+			type: String, // Link to recorded video (Drive, Youtube, etc)
+			default: "",
+		},
 		courseId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Course",

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { IoVideocamOutline } from "react-icons/io5";
 
 function MyEnrolledCourse() {
   const navigate = useNavigate()
@@ -41,7 +42,14 @@ function MyEnrolledCourse() {
                 <h2 className="text-lg font-semibold text-gray-800">{course?.title}</h2>
                 <p className="text-sm text-gray-600 mb-2">{course?.category}</p>
                 <p className="text-sm text-gray-700">{course?.level}</p>
-                <h1 className='px-[10px] text-center  py-[10px] border-2  bg-black border-black text-white  rounded-[10px] text-[15px] font-light flex items-center justify-center gap-2 cursor-pointer mt-[10px] hover:bg-gray-600' onClick={()=>navigate(`/viewlecture/${course._id}`)}>Watch Now</h1>
+                <div className="flex flex-col gap-2 mt-[15px]">
+                  <button className='w-full py-[10px] bg-black text-white rounded-[10px] text-[15px] font-bold hover:bg-gray-800 transition-all flex items-center justify-center gap-2' onClick={()=>navigate(`/viewlecture/${course._id}`)}>
+                    Watch Now
+                  </button>
+                  <button className='w-full py-[10px] bg-red-600 text-white rounded-[10px] font-bold text-[15px] hover:bg-red-700 transition-all flex items-center justify-center gap-2' onClick={()=>navigate(`/live/${course._id}`)}>
+                    <IoVideocamOutline size={18} /> Live Sessions
+                  </button>
+                </div>
               </div>
             </div>
           ))}

@@ -3,7 +3,8 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { serverUrl } from "../App";
-import { IoVideocamOutline, IoTimeOutline, IoCalendarOutline, IoChevronBackOutline, IoLockClosedOutline } from "react-icons/io5";
+import { IoVideocamOutline, IoTimeOutline, IoCalendarOutline, IoChevronBackOutline, IoLockClosedOutline, IoTrashOutline, IoPlayCircleOutline, IoLinkOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 const LiveSessions = () => {
 	const { courseId } = useParams();
@@ -13,12 +14,15 @@ const LiveSessions = () => {
 	const [showForm, setShowForm] = useState(false);
 	const [activeSession, setActiveSession] = useState(null);
 	const [error, setError] = useState(null);
+	const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 	
 	// Form state
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	const [startTime, setStartTime] = useState("");
 	const [duration, setDuration] = useState(60); // Default 60 mins
+	const [recordingLink, setRecordingLink] = useState("");
+	const [selectedSessionForRecording, setSelectedSessionForRecording] = useState(null);
 
 	const jitsiContainerRef = useRef(null);
 	const jitsiApiRef = useRef(null);
@@ -26,6 +30,18 @@ const LiveSessions = () => {
 	useEffect(() => {
 		fetchSessions();
 	}, [courseId]);
+
+	useEffect(() => {
+		if (activeSession && isScriptLoaded && !jitsiApiRef.current) {
+			// Small delay to ensure the ref the DOM element is rendered
+			const timer = setTimeout(() => {
+				if (jitsiContainerRef.current) {
+					initializeJitsi(activeSession);
+				}
+			}, 500);
+			return () => clearTimeout(timer);
+		}
+	}, [activeSession, isScriptLoaded]);
 
 	const fetchSessions = async () => {
 		try {
@@ -43,6 +59,35 @@ const LiveSessions = () => {
 				setError("Failed to load sessions. Please try again later.");
 			}
 			setLoading(false);
+		}
+	};
+
+	const handleDeleteSession = async (sessionId) => {
+		if (!window.confirm("Are you sure you want to delete this session?")) return;
+		try {
+			await axios.delete(`${serverUrl}/api/live-session/delete/${sessionId}`, { withCredentials: true });
+			toast.success("Session deleted");
+			fetchSessions();
+		} catch (error) {
+			console.error("Error deleting session:", error);
+			toast.error("Failed to delete session");
+		}
+	};
+
+	const handleAddRecording = async (e) => {
+		e.preventDefault();
+		try {
+			await axios.put(`${serverUrl}/api/live-session/recording/${selectedSessionForRecording}`, 
+				{ recordingUrl: recordingLink }, 
+				{ withCredentials: true }
+			);
+			toast.success("Recording link added!");
+			setRecordingLink("");
+			setSelectedSessionForRecording(null);
+			fetchSessions();
+		} catch (error) {
+			console.error("Error adding recording:", error);
+			toast.error("Failed to add link");
 		}
 	};
 
@@ -76,14 +121,39 @@ const LiveSessions = () => {
 			const script = document.createElement("script");
 			script.src = "https://meet.jit.si/external_api.js";
 			script.async = true;
-			script.onload = () => initializeJitsi(session);
+			script.onload = () => setIsScriptLoaded(true);
 			document.body.appendChild(script);
 		} else {
-			initializeJitsi(session);
+			setIsScriptLoaded(true);
+		}
+	};
+
+	const handleEndSession = async () => {
+		if (!activeSession) return;
+		
+		try {
+			// If educator, mark session as ended in DB
+			if (userData._id === activeSession.creatorId) {
+				await axios.put(`${serverUrl}/api/live-session/status/${activeSession._id}`, { status: "ended" }, { withCredentials: true });
+			}
+			
+			if (jitsiApiRef.current) {
+				jitsiApiRef.current.executeCommand('hangup');
+				jitsiApiRef.current.dispose();
+				jitsiApiRef.current = null;
+			}
+			
+			setActiveSession(null);
+			fetchSessions();
+		} catch (err) {
+			console.error("Error ending session:", err);
+			setActiveSession(null);
 		}
 	};
 
 	const initializeJitsi = (session) => {
+		if (!window.JitsiMeetExternalAPI || !jitsiContainerRef.current) return;
+
 		const domain = "meet.jit.si";
 		const options = {
 			roomName: session.meetingId,
@@ -100,13 +170,18 @@ const LiveSessions = () => {
 				prejoinPageEnabled: false,
 				enableWelcomePage: false,
 				disableDeepLinking: true,
+				disableLobby: true,
+				enableUserRolesBasedOnToken: false,
+				p2p: { enabled: true },
+				requireDisplayName: true,
 			},
 			interfaceConfigOverwrite: {
 				SHOW_JITSI_WATERMARK: false,
-				SHOW_WATERMARK_FOR_GUESTS: false,
+				SHOW_MARK_FOR_GUESTS: false,
 				SHOW_BRAND_WATERMARK: false,
 				MOBILE_APP_PROMO: false,
 				DEFAULT_REMOTE_DISPLAY_NAME: 'Student',
+				AUTHENTICATION_ENABLE: false,
 			},
 		};
 
@@ -122,12 +197,7 @@ const LiveSessions = () => {
 
 		api.addEventListeners({
 			videoConferenceLeft: () => {
-				if (userData._id === session.creatorId) {
-					axios.put(`${serverUrl}/api/live-session/status/${session._id}`, { status: "ended" }, { withCredentials: true });
-				}
-				setActiveSession(null);
-				jitsiApiRef.current = null;
-				fetchSessions();
+				handleEndSession();
 			}
 		});
 	};
@@ -141,16 +211,15 @@ const LiveSessions = () => {
 						<p className="text-sm text-gray-400">Live Classroom</p>
 					</div>
 					<button 
-						onClick={() => {
-							jitsiApiRef.current?.executeCommand('hangup');
-							setActiveSession(null);
-						}}
+						onClick={handleEndSession}
 						className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-full font-bold transition-all"
 					>
-						{userData.role === 'educator' ? 'End Class' : 'Leave Class'}
+						{userData._id === activeSession.creatorId ? 'End Class' : 'Leave Class'}
 					</button>
 				</div>
-				<div ref={jitsiContainerRef} className="flex-1"></div>
+				<div ref={jitsiContainerRef} className="flex-1 bg-gray-900 border-t border-gray-800 flex items-center justify-center">
+					{!jitsiApiRef.current && <div className="text-white animate-pulse font-medium">Connecting to secure classroom...</div>}
+				</div>
 			</div>
 		);
 	}
@@ -243,6 +312,24 @@ const LiveSessions = () => {
 					</div>
 				)}
 
+				{selectedSessionForRecording && (
+					<div className="bg-white p-8 rounded-3xl shadow-xl border border-blue-100 mb-10 animate-in fade-in zoom-in">
+						<h3 className="text-xl font-bold mb-4 text-gray-800">Add Class Recording</h3>
+						<form onSubmit={handleAddRecording} className="flex gap-4">
+							<input 
+								type="url" 
+								placeholder="Paste recording link (Youtube, Drive, etc.)"
+								className="flex-1 px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none"
+								value={recordingLink}
+								onChange={(e) => setRecordingLink(e.target.value)}
+								required
+							/>
+							<button type="submit" className="bg-black text-white px-8 rounded-2xl font-bold hover:bg-gray-800 transition-all">Save</button>
+							<button type="button" onClick={() => setSelectedSessionForRecording(null)} className="bg-gray-200 text-gray-700 px-8 rounded-2xl font-bold hover:bg-gray-300 transition-all">Cancel</button>
+						</form>
+					</div>
+				)}
+
 				<div className="grid gap-6">
 					{loading ? (
 						<div className="p-12 text-center text-gray-400 font-medium">Loading sessions...</div>
@@ -253,12 +340,23 @@ const LiveSessions = () => {
 						</div>
 					) : (
 						sessions.map((session) => (
-							<div key={session._id} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row justify-between items-center group">
+							<div key={session._id} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row justify-between items-center group relative">
+								
+								{/* Delete Button for Educators */}
+								{userData._id === session.creatorId && session.status !== 'live' && (
+									<button 
+										onClick={() => handleDeleteSession(session._id)}
+										className="absolute -top-2 -right-2 p-2 bg-white text-red-500 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 border border-red-100"
+									>
+										<IoTrashOutline size={20} />
+									</button>
+								)}
+
 								<div className="flex gap-6 items-center flex-1">
 									<div className={`p-5 rounded-2xl ${session.status === 'live' ? 'bg-red-50 text-red-600 animate-pulse' : 'bg-gray-50 text-gray-400'}`}>
 										<IoVideocamOutline size={32} />
 									</div>
-									<div>
+									<div className="flex-1">
 										<div className="flex items-center gap-3">
 											<h3 className="text-xl font-bold text-gray-900">{session.title}</h3>
 											{session.status === 'live' && (
@@ -285,18 +383,43 @@ const LiveSessions = () => {
 									</div>
 								</div>
 								
-								{session.status !== 'ended' && (
-									<button 
-										onClick={() => startMeeting(session)}
-										className={`mt-6 md:mt-0 px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg ${
-											session.status === 'live' 
-												? 'bg-red-600 text-white hover:bg-red-700 hover:shadow-red-200' 
-												: 'bg-black text-white hover:shadow-black/20'
-										}`}
-									>
-										{userData.role === 'educator' ? (session.status === 'live' ? 'Continue Session' : 'Start Session') : 'Join Class'}
-									</button>
-								)}
+								<div className="flex flex-col gap-2">
+									{session.status !== 'ended' ? (
+										<button 
+											onClick={() => startMeeting(session)}
+											className={`mt-6 md:mt-0 px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg ${
+												session.status === 'live' 
+													? 'bg-red-600 text-white hover:bg-red-700 hover:shadow-red-200' 
+													: 'bg-black text-white hover:shadow-black/20'
+											}`}
+										>
+											{userData._id === session.creatorId ? (session.status === 'live' ? 'Continue Session' : 'Start Session') : 'Join Class'}
+										</button>
+									) : (
+										// Finished Session Actions
+										<div className="flex gap-2">
+											{session.recordingUrl ? (
+												<a 
+													href={session.recordingUrl} 
+													target="_blank" 
+													rel="noopener noreferrer"
+													className="mt-6 md:mt-0 bg-blue-50 text-blue-600 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-blue-100 transition-all border border-blue-200 shadow-sm"
+												>
+													<IoPlayCircleOutline size={20} /> Watch Recording
+												</a>
+											) : (
+												userData._id === session.creatorId && (
+													<button 
+														onClick={() => setSelectedSessionForRecording(session._id)}
+														className="mt-6 md:mt-0 bg-gray-50 text-gray-600 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-gray-100 transition-all border border-gray-200 border-dashed"
+													>
+														<IoLinkOutline size={20} /> Add Recording
+													</button>
+												)
+											)}
+										</div>
+									)}
+								</div>
 							</div>
 						))
 					)}

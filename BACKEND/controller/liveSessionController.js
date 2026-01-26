@@ -16,8 +16,9 @@ export const createLiveSession = async (req, res) => {
 			return res.status(403).json({ message: "Only the course creator can start a live session" });
 		}
 
-		// Generate a unique meeting ID based on title and timestamp
-		const meetingId = `lms-${courseId}-${Date.now()}`;
+		// Generate a very unique and random meeting ID to avoid Jitsi moderator checks
+		const randomStr = Math.random().toString(36).substring(2, 12);
+		const meetingId = `LMS_${courseId.toString().slice(-4)}_${randomStr}`;
 
 		const newSession = new LiveSession({
 			title,
@@ -97,6 +98,46 @@ export const updateSessionStatus = async (req, res) => {
 		res.status(200).json(session);
 	} catch (error) {
 		console.log("Error in updateSessionStatus:", error.message);
+		res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+export const deleteLiveSession = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const session = await LiveSession.findById(id);
+		if (!session) return res.status(404).json({ message: "Session not found" });
+
+		if (session.creatorId.toString() !== req.user._id.toString()) {
+			return res.status(403).json({ message: "Unauthorized. Only the creator can delete this session." });
+		}
+
+		await LiveSession.findByIdAndDelete(id);
+		res.status(200).json({ message: "Session deleted successfully" });
+	} catch (error) {
+		console.log("Error in deleteLiveSession:", error.message);
+		res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+export const addRecordingUrl = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { recordingUrl } = req.body;
+
+		const session = await LiveSession.findById(id);
+		if (!session) return res.status(404).json({ message: "Session not found" });
+
+		if (session.creatorId.toString() !== req.user._id.toString()) {
+			return res.status(403).json({ message: "Unauthorized" });
+		}
+
+		session.recordingUrl = recordingUrl;
+		await session.save();
+
+		res.status(200).json(session);
+	} catch (error) {
+		console.log("Error in addRecordingUrl:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
