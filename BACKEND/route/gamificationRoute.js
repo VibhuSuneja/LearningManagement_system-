@@ -1,9 +1,9 @@
 import express from "express";
 import { getLeaderboard } from "../controller/gamificationController.js";
-import { isAuthenticated } from "../middleware/isAuthenticated.js";
+import isAuth from "../middleware/isAuth.js";
 
 const router = express.Router();
 
-router.get("/leaderboard", isAuthenticated, getLeaderboard);
+router.get("/leaderboard", isAuth, getLeaderboard);
 
 export default router;

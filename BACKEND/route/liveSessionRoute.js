@@ -7,15 +7,15 @@ import {
 	updateSessionDetails,
 	participateInSession
 } from "../controller/liveSessionController.js";
-import { isAuthenticated } from "../middleware/isAuthenticated.js";
+import isAuth from "../middleware/isAuth.js";
 
 const router = express.Router();
 
-router.post("/create", isAuthenticated, createLiveSession);
-router.get("/course/:courseId", isAuthenticated, getLiveSessionsByCourse);
-router.put("/status/:id", isAuthenticated, updateSessionStatus);
-router.delete("/delete/:id", isAuthenticated, deleteLiveSession);
-router.put("/details/:id", isAuthenticated, updateSessionDetails);
-router.post("/participate/:id", isAuthenticated, participateInSession);
+router.post("/create", isAuth, createLiveSession);
+router.get("/course/:courseId", isAuth, getLiveSessionsByCourse);
+router.put("/status/:id", isAuth, updateSessionStatus);
+router.delete("/delete/:id", isAuth, deleteLiveSession);
+router.put("/details/:id", isAuth, updateSessionDetails);
+router.post("/participate/:id", isAuth, participateInSession);
 
 export default router;

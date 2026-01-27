@@ -22,6 +22,7 @@ io.on("connection", (socket) => {
 	const userId = socket.handshake.query.userId;
 	if (userId !== "undefined") {
 		userSocketMap[userId] = socket.id;
+		socket.join(userId); // Join a room specifically for this user
 		console.log(`User connected: UserID=${userId}, SocketID=${socket.id}`);
 	}
 

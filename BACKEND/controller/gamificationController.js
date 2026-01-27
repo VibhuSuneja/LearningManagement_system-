@@ -17,14 +17,16 @@ export const awardPoints = async (userId, amount, reason) => {
         const newLevel = calculateLevel(user.points);
         if (newLevel > user.level) {
             user.level = newLevel;
-            // Emit socket event for level up
-            io.emit("levelUp", { userId, level: newLevel, message: `Congratulations! You've reached Level ${newLevel}` });
+            // Emit socket event for level up to the specific user
+            console.log(`[Gamification] Level up for user ${userId} to Level ${newLevel}`);
+            io.to(userId.toString()).emit("levelUp", { userId, level: newLevel, message: `Congratulations! You've reached Level ${newLevel}` });
         }
 
         await user.save();
+        console.log(`[Gamification] Awarded ${amount} XP to user ${userId}. Total: ${user.points}`);
         
-        // Emit update to refresh UI
-        io.emit("userUpdated", { userId });
+        // Emit update to refresh UI for the specific user
+        io.to(userId.toString()).emit("userUpdated", { userId });
         
         return user;
     } catch (error) {
@@ -61,15 +63,17 @@ export const checkBadges = async (userId, actionType) => {
             user.badges.push(...badgesToUnlock);
             await user.save();
             
+            console.log(`[Gamification] Unlocked ${badgesToUnlock.length} badges for user ${userId}`);
+            
             badgesToUnlock.forEach(badge => {
-                io.emit("badgeUnlocked", { 
+                io.to(userId.toString()).emit("badgeUnlocked", { 
                     userId, 
                     badgeName: badge.name, 
                     message: `Achievement Unlocked: ${badge.name}! ${badge.icon}` 
                 });
             });
             
-            io.emit("userUpdated", { userId });
+            io.to(userId.toString()).emit("userUpdated", { userId });
         }
     } catch (error) {
         console.error("Error checking badges:", error);

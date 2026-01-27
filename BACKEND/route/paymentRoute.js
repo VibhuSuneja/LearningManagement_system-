@@ -1,11 +1,10 @@
 import express from "express"
 import { RazorpayOrder, verifyPayment } from "../controller/orderController.js";
+import isAuth from "../middleware/isAuth.js";
 
+const paymentRouter = express.Router()
 
-let paymentRouter = express.Router()
+paymentRouter.post("/razorpay-order", isAuth, RazorpayOrder);
+paymentRouter.post("/verify-payment", isAuth, verifyPayment);
 
-paymentRouter.post("/razorpay-order", RazorpayOrder);
-paymentRouter.post("/verify-payment", verifyPayment);
-
-
-export default paymentRouter
+export default paymentRouter;

@@ -35,12 +35,15 @@ export const RazorpayOrder = async (req, res) => {
 
 import { createNotification } from "./notificationController.js";
 import { awardPoints, checkBadges } from "./gamificationController.js";
+import { io } from "../socket/socket.js";
 
 export const verifyPayment = async (req, res) => {
   try {
-    const { razorpay_order_id, courseId, userId } = req.body;
+    const { razorpay_order_id, courseId } = req.body;
+    const userId = req.user._id; // Get from auth middleware
     const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
     if (orderInfo.status === 'paid') {
+      console.log(`[Payment] Success for user ${userId} on course ${courseId}`);
       // Update user and course enrollment
       const user = await User.findById(userId);
       if (!user.enrolledCourses.includes(courseId)) {
