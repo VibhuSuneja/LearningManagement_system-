@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { serverUrl } from "../App";
 import { useSocketContext } from "../context/SocketContext";
 import useGetMessages from "../customHooks/useGetMessages";
@@ -16,6 +17,7 @@ const Chat = () => {
 	const [audioBlob, setAudioBlob] = useState(null);
 	const [recording, setRecording] = useState(false);
 	
+	const navigate = useNavigate();
 	const { onlineUsers } = useSocketContext();
 	const { userData } = useSelector((state) => state.user);
 	const { messages, setMessages, loading: messagesLoading } = useGetMessages(selectedUser?._id);
@@ -128,7 +130,18 @@ const Chat = () => {
 			{/* Sidebar - Hidden on mobile if user selected */}
 			<div className={`w-full md:w-1/4 bg-white border-r border-gray-200 overflow-y-auto ${selectedUser ? 'hidden md:block' : 'block'}`}>
 				<div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
-					<h2 className="text-xl font-bold text-gray-800">Messages</h2>
+					<div className="flex items-center gap-3">
+						<button 
+							onClick={() => navigate('/')}
+							className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+							title="Back to Home"
+						>
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+							</svg>
+						</button>
+						<h2 className="text-xl font-bold text-gray-800 flex-1">Messages</h2>
+					</div>
 				</div>
 				<div className="divide-y divide-gray-50">
 					{users.map((user) => (
