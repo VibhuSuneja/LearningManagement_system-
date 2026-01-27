@@ -29,6 +29,8 @@ import Chatbot from "./component/Chatbot.jsx";
 import Chat from "./pages/Chat.jsx";
 import LiveSessions from "./pages/LiveSessions.jsx";
 import Leaderboard from "./pages/Leaderboard.jsx";
+import Forum from "./pages/Forum.jsx";
+import ThreadView from "./pages/ThreadView.jsx";
 import { useSocketContext } from "./context/SocketContext";
 
 export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
@@ -51,11 +53,6 @@ function App() {
         toast.success(message, {
             position: "top-center",
             autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             theme: "dark",
             icon: "⭐"
         });
@@ -70,9 +67,31 @@ function App() {
         });
     });
 
+    socket.on("pointsAwarded", ({ message }) => {
+        toast.success(message, {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            theme: "colored",
+            icon: "⚡"
+        });
+    });
+
+    socket.on("newNotification", (notification) => {
+        // Only toast if it's NOT a message (messages are handled by chat)
+        if (notification.type !== 'message') {
+            toast.info(notification.content, {
+                position: "top-right",
+                autoClose: 4000,
+            });
+        }
+    });
+
     return () => {
         socket.off("levelUp");
         socket.off("badgeUnlocked");
+        socket.off("pointsAwarded");
+        socket.off("newNotification");
     };
   }, [socket]);
 
@@ -116,6 +135,7 @@ function App() {
         <Route path="/signup" element={!userData ? <SignUp /> : <Navigate to="/" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={userData ? <Profile /> : <Navigate to="/signup" />} />
+        <Route path="/profile/:userId" element={userData ? <Profile /> : <Navigate to="/signup" />} />
         <Route path="/forget" element={!userData ? <ForgetPassword /> : <Navigate to="/signup" />} />
         <Route path="/editprofile" element={userData ? <EditProfile /> : <Navigate to="/signup" />} />
         <Route path="/dashboard" element={userData?.role === "educator" ? <Dashboard /> : <Navigate to="/signup" />} />
@@ -132,6 +152,8 @@ function App() {
           <Route path="/chat" element={userData ? <Chat /> : <Navigate to="/signup" />} /> 
           <Route path="/leaderboard" element={userData ? <Leaderboard /> : <Navigate to="/signup" />} /> 
           <Route path="/live/:courseId" element={userData ? <LiveSessions /> : <Navigate to="/signup" />} /> 
+          <Route path="/forum" element={userData ? <Forum /> : <Navigate to="/signup" />} /> 
+          <Route path="/forum/:id" element={userData ? <ThreadView /> : <Navigate to="/signup" />} /> 
       </Routes>
     </>
   );

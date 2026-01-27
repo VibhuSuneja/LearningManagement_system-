@@ -16,6 +16,7 @@ import notificationRouter from "./route/notificationRoute.js";
 import messageRouter from "./route/messageRoute.js";
 import liveSessionRouter from "./route/liveSessionRoute.js";
 import gamificationRouter from "./route/gamificationRoute.js";
+import forumRouter from "./route/forumRoute.js";
 import { app, server } from "./socket/socket.js";
 
 const port = process.env.PORT || 8080;
@@ -61,10 +62,12 @@ app.use("/api/notification", notificationRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/live-session", liveSessionRouter);
 app.use("/api/gamification", gamificationRouter);
+app.use("/api/forum", forumRouter);
 
 // ✅ This message will appear in your terminal if the file is loaded correctly.
 console.log("✅ Course router has been successfully loaded.");
 console.log("✅ Gamification router has been successfully loaded.");
+console.log("✅ Forum router has been successfully loaded.");
 
 // --- Health check ---
 app.get("/", (req, res) => {

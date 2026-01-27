@@ -63,7 +63,28 @@ const userSchema = new mongoose.Schema({
             type: Date,
             default: Date.now
         }
-    }]
+    }],
+    followers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }],
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }],
+    blockedUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }],
+    bio: {
+        type: String,
+        default: ""
+    },
+    socialLinks: {
+        twitter: String,
+        linkedin: String,
+        website: String
+    }
 },{timestamps:true})
 //creating model for User schema is userSchema 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

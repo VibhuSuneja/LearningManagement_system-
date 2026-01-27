@@ -3,7 +3,7 @@ import { FaArrowLeftLong, FaStar } from "react-icons/fa6";
 import { useNavigate, useParams } from 'react-router-dom';
 import { setSelectedCourse } from '../redux/courseSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaLock, FaPlayCircle } from "react-icons/fa";
+import { FaLock, FaPlayCircle, FaComments } from "react-icons/fa";
 import { IoVideocamOutline } from "react-icons/io5";
 import { serverUrl } from '../App';
 import img from "../assets/empty.jpg"
@@ -214,6 +214,12 @@ const avgRating = calculateAvgReview(selectedCourse?.reviews)
                     onClick={() => navigate(`/viewlecture/${courseId}`)}
                   >
                     <FaPlayCircle /> Watch Now
+                  </button>
+                  <button
+                    className='bg-blue-100 text-blue-500 px-6 py-2 hover:bg-blue-200 rounded mt-3 cursor-pointer transition-all flex items-center gap-2 font-semibold' 
+                    onClick={() => navigate(`/forum?courseId=${courseId}`)}
+                  >
+                    <FaComments /> Course Community
                   </button>
                 </>
               )}

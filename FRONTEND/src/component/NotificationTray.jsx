@@ -33,7 +33,6 @@ const NotificationTray = () => {
 		if (socket) {
 			socket.on("newNotification", (notification) => {
 				setNotifications((prev) => [notification, ...prev]);
-				toast.info(`New notification: ${notification.content}`);
 			});
 
 			return () => socket.off("newNotification");

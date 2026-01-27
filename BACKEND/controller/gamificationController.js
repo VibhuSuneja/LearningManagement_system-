@@ -29,8 +29,15 @@ export const awardPoints = async (userId, amount, reason) => {
         await user.save();
         console.log(`[Gamification] Awarded ${amount} XP to user ${userId}. Total: ${user.points}`);
         
-        // Emit update to refresh UI for the specific user
-        getIO().to(userId.toString()).emit("userUpdated", { userId });
+        // Emit events to refresh UI and show feedback to the specific user
+        const io = getIO();
+        io.to(userId.toString()).emit("userUpdated", { userId });
+        io.to(userId.toString()).emit("pointsAwarded", { 
+            points: user.points, 
+            amount, 
+            reason,
+            message: `+${amount} XP: ${reason}` 
+        });
         
         return user;
     } catch (error) {

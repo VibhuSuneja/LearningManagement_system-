@@ -1,5 +1,5 @@
 import Notification from "../model/notificationModel.js";
-import { getReceiverSocketId, io } from "../socket/socket.js";
+import { getReceiverSocketId, getIO } from "../socket/socket.js";
 
 export const getNotifications = async (req, res) => {
 	try {
@@ -50,9 +50,11 @@ export const createNotification = async (recipient, sender, type, content, relat
 		await notification.save();
 
 		const receiverSocketId = getReceiverSocketId(recipient);
+		// Targeted notification using both room and specific socket ID if available
+		getIO().to(recipient.toString()).emit("newNotification", notification);
+		
 		if (receiverSocketId) {
-			// io.to(<socket_id>).emit() used to send events to specific client
-			io.to(receiverSocketId).emit("newNotification", notification);
+			console.log(`Real-time notification sent to user ${recipient}`);
 		}
 	} catch (error) {
 		console.log("Error creating notification:", error.message);
