@@ -28,15 +28,36 @@ const useGetMessages = (selectedConversationId) => {
 
 	useEffect(() => {
 		if (socket) {
+			console.log(`[Messages] Setting up listener for conversation: ${selectedConversationId}`);
+			
 			socket.on("newMessage", (newMessage) => {
-				if (newMessage.senderId === selectedConversationId) {
-					setMessages((prev) => [...prev, newMessage]);
+				console.log(`[Messages] Received newMessage:`, newMessage);
+				console.log(`[Messages] Current conversation: ${selectedConversationId}`);
+				console.log(`[Messages] Message senderId: ${newMessage.senderId}`);
+				
+				// If the message is from the currently selected conversation
+				if (newMessage.senderId === selectedConversationId || newMessage.receiverId === selectedConversationId) {
+					console.log(`[Messages] ✅ Adding message to conversation`);
+					setMessages((prev) => {
+						// Prevent duplicate messages
+						const isDuplicate = prev.some(msg => msg._id === newMessage._id);
+						if (isDuplicate) {
+							console.log(`[Messages] ⚠️ Duplicate message detected, skipping`);
+							return prev;
+						}
+						return [...prev, newMessage];
+					});
+				} else {
+					console.log(`[Messages] ⏭️ Message not for this conversation`);
 				}
 			});
 
-			return () => socket.off("newMessage");
+			return () => {
+				console.log(`[Messages] Cleaning up listener for conversation: ${selectedConversationId}`);
+				socket.off("newMessage");
+			};
 		}
-	}, [socket, selectedConversationId]);
+	}, [socket, selectedConversationId, setMessages]);
 
 	return { messages, setMessages, loading };
 };

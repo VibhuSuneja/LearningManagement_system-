@@ -47,11 +47,22 @@ export const sendMessage = async (req, res) => {
 
 		await Promise.all([conversation.save(), newMessage.save()]);
 
-		// SOCKET IO FUNCTIONALITY
+		// SOCKET IO FUNCTIONALITY - Send to receiver
 		const receiverSocketId = getReceiverSocketId(receiverId);
+		console.log(`[Message] Sending from ${senderId} to ${receiverId}`);
+		console.log(`[Message] Receiver socket ID: ${receiverSocketId}`);
+		
 		if (receiverSocketId) {
+			// Emit to receiver's specific socket
 			io.to(receiverSocketId).emit("newMessage", newMessage);
+			console.log(`[Message] ✅ Sent to receiver socket: ${receiverSocketId}`);
+		} else {
+			console.log(`[Message] ⚠️ Receiver ${receiverId} is offline`);
 		}
+		
+		// Also emit to receiver's user room (backup delivery method)
+		io.to(receiverId.toString()).emit("newMessage", newMessage);
+		console.log(`[Message] ✅ Sent to receiver room: ${receiverId}`);
 
 		// Create notification for the receiver
 		let notificationContent = message ? `New message: ${message.substring(0, 20)}...` : "";

@@ -16,24 +16,47 @@ export const SocketContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (userData) {
+			console.log(`[Socket] Initializing connection for user: ${userData._id}`);
+			
 			const socket = io(serverUrl, {
 				query: {
 					userId: userData._id,
 				},
-				transports: ["polling", "websocket"], // Polling first is safer for mobile cross-origin
+				transports: ["websocket", "polling"], // WebSocket first for better real-time performance
 				withCredentials: true,
+				reconnection: true,
+				reconnectionAttempts: 5,
+				reconnectionDelay: 1000,
 			});
 
 			setSocket(socket);
 
-			// socket.on() is used to listen to the events. can be used both on client and server side
+			// Connection event handlers
+			socket.on("connect", () => {
+				console.log(`[Socket] ✅ Connected with socket ID: ${socket.id}`);
+			});
+
+			socket.on("connect_error", (error) => {
+				console.error(`[Socket] ❌ Connection error:`, error.message);
+			});
+
+			socket.on("reconnect", (attemptNumber) => {
+				console.log(`[Socket] 🔄 Reconnected after ${attemptNumber} attempts`);
+			});
+
+			// Listen to online users updates
 			socket.on("getOnlineUsers", (users) => {
+				console.log(`[Socket] Online users updated:`, users);
 				setOnlineUsers(users);
 			});
 
-			return () => socket.close();
+			return () => {
+				console.log(`[Socket] Disconnecting user: ${userData._id}`);
+				socket.close();
+			};
 		} else {
 			if (socket) {
+				console.log(`[Socket] User logged out, closing socket`);
 				socket.close();
 				setSocket(null);
 			}
