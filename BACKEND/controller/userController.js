@@ -1,5 +1,6 @@
 import User from "../model/UserModel.js";
 import uploadToCloudinary from "../config/cloudinary.js";
+import { io } from "../socket/socket.js";
 
 // Get current logged-in user
 export const getCurrentUser = async (req,res) => {
@@ -51,6 +52,10 @@ export const updateProfile = async (req, res) => {
       },
       { new: true }
     ).select("-password");
+
+    // Emit socket event to notify all clients that a user profile was updated
+    console.log(`[Profile] User ${updatedUser._id} updated their profile`);
+    io.emit("profileUpdated", { userId: updatedUser._id, role: updatedUser.role });
 
     res.status(200).json(updatedUser);
   } catch (error) {
