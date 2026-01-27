@@ -40,6 +40,7 @@ const LiveSessions = () => {
     useEffect(() => {
         if (!socket) return;
         socket.on("sessionEnded", ({ sessionId }) => {
+            console.log(`[Socket] Received sessionEnded for ${sessionId}. Active: ${activeSession?._id}`);
             if (activeSession && activeSession._id === sessionId) {
                 toast.info("The educator has ended the session.");
                 // Force leave without calling backend API again

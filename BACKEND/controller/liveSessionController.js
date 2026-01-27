@@ -96,6 +96,7 @@ export const updateSessionStatus = async (req, res) => {
 		await session.save();
 
         if (status === 'ended') {
+            console.log(`[Socket] Emitting sessionEnded for session ID: ${id}`);
             io.emit("sessionEnded", { sessionId: id });
         }
 
