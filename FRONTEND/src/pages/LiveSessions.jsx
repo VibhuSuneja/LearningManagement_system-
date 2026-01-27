@@ -189,7 +189,7 @@ const LiveSessions = () => {
 		const options = {
 			roomName: session.meetingId,
 			width: "100%",
-			height: "600px",
+			height: window.innerWidth < 768 ? "calc(100vh - 80px)" : "600px",
 			parentNode: jitsiContainerRef.current,
 			lang: 'en',
 			configOverwrite: {

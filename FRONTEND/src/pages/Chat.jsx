@@ -117,8 +117,8 @@ const Chat = () => {
 
 	return (
 		<div className="flex h-[calc(100vh-70px)] mt-[70px] bg-gray-100 overflow-hidden font-sans">
-			{/* Sidebar */}
-			<div className="w-1/4 bg-white border-r border-gray-200 overflow-y-auto">
+			{/* Sidebar - Hidden on mobile if user selected */}
+			<div className={`w-full md:w-1/4 bg-white border-r border-gray-200 overflow-y-auto ${selectedUser ? 'hidden md:block' : 'block'}`}>
 				<div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
 					<h2 className="text-xl font-bold text-gray-800">Messages</h2>
 				</div>
@@ -152,36 +152,44 @@ const Chat = () => {
 				</div>
 			</div>
 
-			{/* Chat Area */}
-			<div className="flex-1 flex flex-col bg-white">
+			{/* Chat Area - Hidden on mobile if no user selected */}
+			<div className={`flex-1 flex-col bg-white ${selectedUser ? 'flex' : 'hidden md:flex'}`}>
 				{selectedUser ? (
 					<>
 						{/* Chat Header */}
-						<div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white shadow-sm z-10">
-							<div className="flex items-center gap-3">
-								<div className="relative">
-									{selectedUser.photoUrl && selectedUser.photoUrl !== "" ? (
-										<img src={selectedUser.photoUrl} alt="" className="w-10 h-10 rounded-full object-cover shadow-sm" />
-									) : (
-										<div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">
-											{selectedUser.name.charAt(0).toUpperCase()}
-										</div>
-									)}
-									{onlineUsers.includes(selectedUser._id) && (
-										<div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
-									)}
-								</div>
-								<div>
-									<h3 className="font-semibold text-gray-900 leading-none">{selectedUser.name}</h3>
-									<span className="text-[10px] text-gray-400 mt-1 block">
-										{onlineUsers.includes(selectedUser._id) ? "Active Now" : "Offline"}
-									</span>
-								</div>
+						<div className="p-4 border-b border-gray-100 flex items-center gap-3 bg-white shadow-sm z-10">
+							{/* Back Button for Mobile */}
+							<button 
+								onClick={() => setSelectedUser(null)}
+								className="md:hidden p-2 -ml-2 text-gray-600 hover:text-black"
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+								</svg>
+							</button>
+
+							<div className="relative">
+								{selectedUser.photoUrl && selectedUser.photoUrl !== "" ? (
+									<img src={selectedUser.photoUrl} alt="" className="w-10 h-10 rounded-full object-cover shadow-sm" />
+								) : (
+									<div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">
+										{selectedUser.name.charAt(0).toUpperCase()}
+									</div>
+								)}
+								{onlineUsers.includes(selectedUser._id) && (
+									<div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
+								)}
+							</div>
+							<div>
+								<h3 className="font-semibold text-gray-900 leading-none">{selectedUser.name}</h3>
+								<span className="text-[10px] text-gray-400 mt-1 block">
+									{onlineUsers.includes(selectedUser._id) ? "Active Now" : "Offline"}
+								</span>
 							</div>
 						</div>
 
 						{/* Messages */}
-						<div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#f9fafb]">
+						<div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6 bg-[#f9fafb]">
 							{messages.map((msg, idx) => {
 								const isMe = msg.senderId === userData?._id;
 								return (
@@ -191,7 +199,7 @@ const Chat = () => {
 										className={`flex ${isMe ? "justify-end" : "justify-start"} animate-in fade-in slide-in-from-bottom-2 duration-300`}
 									>
 										<div
-											className={`max-w-[70%] group relative ${
+											className={`max-w-[85%] md:max-w-[70%] group relative ${
 												isMe
 													? "bg-black text-white rounded-2xl rounded-tr-none shadow-lg px-4 py-3"
 													: "bg-white text-gray-800 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm px-4 py-3"
