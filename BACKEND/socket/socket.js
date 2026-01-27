@@ -12,6 +12,13 @@ const io = new Server(server, {
 	},
 });
 
+export const getIO = () => {
+    if (!io) {
+        console.warn("Socket.io not initialized yet!");
+    }
+    return io;
+};
+
 export const getReceiverSocketId = (receiverId) => {
 	return userSocketMap[receiverId?.toString()];
 };

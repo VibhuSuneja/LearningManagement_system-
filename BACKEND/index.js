@@ -64,6 +64,7 @@ app.use("/api/gamification", gamificationRouter);
 
 // ✅ This message will appear in your terminal if the file is loaded correctly.
 console.log("✅ Course router has been successfully loaded.");
+console.log("✅ Gamification router has been successfully loaded.");
 
 // --- Health check ---
 app.get("/", (req, res) => {

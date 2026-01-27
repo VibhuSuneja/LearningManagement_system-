@@ -1,5 +1,9 @@
 import User from "../model/UserModel.js";
-import { io } from "../socket/socket.js";
+import { getIO } from "../socket/socket.js";
+
+export const testRoute = (req, res) => {
+    res.status(200).json({ status: "active", message: "Gamification controller reachable" });
+};
 
 // Utility to calculate level based on points
 const calculateLevel = (points) => {
@@ -19,14 +23,14 @@ export const awardPoints = async (userId, amount, reason) => {
             user.level = newLevel;
             // Emit socket event for level up to the specific user
             console.log(`[Gamification] Level up for user ${userId} to Level ${newLevel}`);
-            io.to(userId.toString()).emit("levelUp", { userId, level: newLevel, message: `Congratulations! You've reached Level ${newLevel}` });
+            getIO().to(userId.toString()).emit("levelUp", { userId, level: newLevel, message: `Congratulations! You've reached Level ${newLevel}` });
         }
 
         await user.save();
         console.log(`[Gamification] Awarded ${amount} XP to user ${userId}. Total: ${user.points}`);
         
         // Emit update to refresh UI for the specific user
-        io.to(userId.toString()).emit("userUpdated", { userId });
+        getIO().to(userId.toString()).emit("userUpdated", { userId });
         
         return user;
     } catch (error) {
@@ -66,14 +70,14 @@ export const checkBadges = async (userId, actionType) => {
             console.log(`[Gamification] Unlocked ${badgesToUnlock.length} badges for user ${userId}`);
             
             badgesToUnlock.forEach(badge => {
-                io.to(userId.toString()).emit("badgeUnlocked", { 
+                getIO().to(userId.toString()).emit("badgeUnlocked", { 
                     userId, 
                     badgeName: badge.name, 
                     message: `Achievement Unlocked: ${badge.name}! ${badge.icon}` 
                 });
             });
             
-            io.to(userId.toString()).emit("userUpdated", { userId });
+            getIO().to(userId.toString()).emit("userUpdated", { userId });
         }
     } catch (error) {
         console.error("Error checking badges:", error);
