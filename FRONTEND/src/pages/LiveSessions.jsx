@@ -146,7 +146,7 @@ const LiveSessions = () => {
 	const startMeeting = (session) => {
 		// Mobile Optimization: Redirect to Native App/Full Browser logic
 		if (window.innerWidth < 768) {
-			window.location.href = `https://meet.jit.si/${session.meetingId}#config.startWithAudioMuted=false&config.startWithVideoMuted=false`;
+			window.location.href = `https://meet.jit.si/${session.meetingId}#config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false&config.lobbyModeEnabled=false`;
 			return;
 		}
 
@@ -202,6 +202,7 @@ const LiveSessions = () => {
 				startWithAudioMuted: false,
 				startWithVideoMuted: false,
 				prejoinPageEnabled: false,
+                lobbyModeEnabled: false, // DISABLE WAITING ROOM
 				defaultLanguage: 'en',
 			},
 			interfaceConfigOverwrite: {
