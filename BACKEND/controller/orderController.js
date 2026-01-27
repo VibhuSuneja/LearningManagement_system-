@@ -72,6 +72,10 @@ export const verifyPayment = async (req, res) => {
         courseId
       );
 
+
+      // Emit socket event to refresh user data globally
+      io.emit("userUpdated", { userId });
+
       return res.status(200).json({ message: "Payment verified and enrollment successful" });
     } else {
       return res.status(400).json({ message: "Payment verification failed (invalid signature)" });

@@ -157,8 +157,8 @@ const LiveSessions = () => {
 		// Mobile Optimization: Redirect to Native App/Full Browser logic
 		if (window.innerWidth < 768) {
 			// CRITICAL FIX: Use the SAME specific domain as the desktop version (meet.guifi.net)
-			// and ENFORCE ENGLISH
-			window.location.href = `https://meet.guifi.net/${session.meetingId}#config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false&config.lobbyModeEnabled=false&config.defaultLanguage="en"&config.lang="en"`;
+			// and ENFORCE ENGLISH (No quotes for URL hash params)
+			window.location.href = `https://meet.guifi.net/${session.meetingId}#config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false&config.lobbyModeEnabled=false&config.defaultLanguage=en&config.lang=en`;
 			return;
 		}
 
