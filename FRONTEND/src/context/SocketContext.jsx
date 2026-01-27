@@ -20,6 +20,8 @@ export const SocketContextProvider = ({ children }) => {
 				query: {
 					userId: userData._id,
 				},
+				transports: ["polling", "websocket"], // Polling first is safer for mobile cross-origin
+				withCredentials: true,
 			});
 
 			setSocket(socket);

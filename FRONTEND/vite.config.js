@@ -42,26 +42,16 @@ export default defineConfig({
         ]
       },
       workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
         maximumFileSizeToCacheInBytes: 4000000,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}'],
         runtimeCaching: [
           {
-            // Only cache same-origin GET requests for the API
-            urlPattern: ({ url, request }) => 
-              url.origin === self.location.origin && 
-              url.pathname.startsWith('/api/') && 
-              request.method === 'GET',
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'api-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 // 1 day
-              },
-              cacheableResponse: {
-                statuses: [200]
-              }
-            }
+            // FORCE all API calls to skip the Service Worker Cache
+            // This stops the ERR_INTERNET_DISCONNECTED on mobile
+            urlPattern: ({ url }) => url.origin !== self.location.origin,
+            handler: 'NetworkOnly',
           },
           {
             urlPattern: ({ request }) => request.destination === 'image',
