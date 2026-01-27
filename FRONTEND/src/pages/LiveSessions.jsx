@@ -462,7 +462,11 @@ const LiveSessions = () => {
 											
 											{userData._id === session.creatorId && (
 												<button 
-													onClick={() => setSelectedSessionForUpdate(session._id)}
+													onClick={() => {
+                                                        setSelectedSessionForUpdate(session._id);
+                                                        setRecordingLink(session.recordingUrl || "");
+                                                        setNotesLink(session.notes || "");
+                                                    }}
 													className="bg-gray-50 text-gray-600 px-4 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-gray-100 transition-all border border-gray-200 border-dashed"
 												>
 													<IoLinkOutline size={20} /> Edit Res.
