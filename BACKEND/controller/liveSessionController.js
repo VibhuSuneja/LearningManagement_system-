@@ -1,6 +1,7 @@
 import LiveSession from "../model/liveSessionModel.js";
 import Course from "../model/courseModel.js";
 import { createNotification } from "./notificationController.js";
+import { io } from "../socket/socket.js";
 
 export const createLiveSession = async (req, res) => {
 	try {
@@ -16,9 +17,8 @@ export const createLiveSession = async (req, res) => {
 			return res.status(403).json({ message: "Only the course creator can start a live session" });
 		}
 
-		// Generate a very unique and random meeting ID to avoid Jitsi moderator checks
-		const randomStr = Math.random().toString(36).substring(2, 12);
-		const meetingId = `LMS_${courseId.toString().slice(-4)}_${randomStr}`;
+		// Use a pure random hex string to bypass Jitsi's 'Reserved Room' logic
+		const meetingId = 'Room' + [...Array(20)].map(() => (Math.random() * 36 | 0).toString(36)).join('');
 
 		const newSession = new LiveSession({
 			title,
@@ -65,7 +65,7 @@ export const getLiveSessionsByCourse = async (req, res) => {
 		const course = await Course.findById(courseId);
 		if (!course) return res.status(404).json({ message: "Course not found" });
 
-		const isEnrolled = course.enrolledStudents.some(id => id.toString() === userId.toString());
+		const isEnrolled = (course.enrolledStudents || []).some(id => id.toString() === userId.toString());
 		const isCreator = course.creator.toString() === userId.toString();
 
 		if (!isEnrolled && !isCreator) {
@@ -95,6 +95,10 @@ export const updateSessionStatus = async (req, res) => {
 		session.status = status;
 		await session.save();
 
+        if (status === 'ended') {
+            io.emit("sessionEnded", { sessionId: id });
+        }
+
 		res.status(200).json(session);
 	} catch (error) {
 		console.log("Error in updateSessionStatus:", error.message);
@@ -120,10 +124,10 @@ export const deleteLiveSession = async (req, res) => {
 	}
 };
 
-export const addRecordingUrl = async (req, res) => {
+export const updateSessionDetails = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const { recordingUrl } = req.body;
+		const { recordingUrl, notes } = req.body;
 
 		const session = await LiveSession.findById(id);
 		if (!session) return res.status(404).json({ message: "Session not found" });
@@ -132,12 +136,14 @@ export const addRecordingUrl = async (req, res) => {
 			return res.status(403).json({ message: "Unauthorized" });
 		}
 
-		session.recordingUrl = recordingUrl;
+		if (recordingUrl !== undefined) session.recordingUrl = recordingUrl;
+		if (notes !== undefined) session.notes = notes;
+		
 		await session.save();
 
 		res.status(200).json(session);
 	} catch (error) {
-		console.log("Error in addRecordingUrl:", error.message);
+		console.log("Error in updateSessionDetails:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };

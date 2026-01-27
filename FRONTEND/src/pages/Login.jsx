@@ -97,8 +97,29 @@ import { FaArrowLeftLong } from 'react-icons/fa6';
                 <img src={google} className='w-[25px]' alt="" />
                 <span className='text-[18px] text-gray-500'>oogle</span>
               </div>
-                          <div className='text-[#6f6f6f]'> already have an account?
-              <span className='underline underline-offset-1 text-[black]' onClick ={()=>navigate ("/signup")}>SignUp</span>
+            <div className='text-[#6f6f6f]'> need an account?
+              <span className='underline underline-offset-1 text-[black] cursor-pointer ml-1' onClick ={()=>navigate ("/signup")}>SignUp</span>
+            </div>
+            
+            <div className='flex gap-4 w-[80%] mt-4'>
+              <button 
+                className='flex-1 py-2 text-xs font-bold border border-gray-300 rounded hover:bg-gray-100 transition-all'
+                onClick={() => {
+                  setEmail("user123@gmail.com");
+                  setPassword("12345678");
+                }}
+              >
+                Demo Student
+              </button>
+              <button 
+                className='flex-1 py-2 text-xs font-bold border border-gray-300 rounded hover:bg-gray-100 transition-all'
+                onClick={() => {
+                  setEmail("educator123@gmail.com");
+                  setPassword("12345678");
+                }}
+              >
+                Demo Educator
+              </button>
             </div>
           </div>
    

@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { serverUrl } from "../App";
-import { IoVideocamOutline, IoTimeOutline, IoCalendarOutline, IoChevronBackOutline, IoLockClosedOutline, IoTrashOutline, IoPlayCircleOutline, IoLinkOutline } from "react-icons/io5";
+import { IoVideocamOutline, IoTimeOutline, IoCalendarOutline, IoChevronBackOutline, IoLockClosedOutline, IoTrashOutline, IoPlayCircleOutline, IoLinkOutline, IoDocumentTextOutline } from "react-icons/io5"; // Added icon
 import { toast } from "react-toastify";
+
+import { useSocketContext } from "../context/SocketContext";
 
 const LiveSessions = () => {
 	const { courseId } = useParams();
+    const navigate = useNavigate(); 
 	const { userData } = useSelector((state) => state.user);
+    const { socket } = useSocketContext();
 	const [sessions, setSessions] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [showForm, setShowForm] = useState(false);
@@ -22,14 +26,37 @@ const LiveSessions = () => {
 	const [startTime, setStartTime] = useState("");
 	const [duration, setDuration] = useState(60); // Default 60 mins
 	const [recordingLink, setRecordingLink] = useState("");
-	const [selectedSessionForRecording, setSelectedSessionForRecording] = useState(null);
+	const [notesLink, setNotesLink] = useState(""); // New state for notes
+	const [selectedSessionForUpdate, setSelectedSessionForUpdate] = useState(null); // Renamed
 
 	const jitsiContainerRef = useRef(null);
 	const jitsiApiRef = useRef(null);
 
-	useEffect(() => {
+    // ... (useEffect hooks remain same)
+    	useEffect(() => {
 		fetchSessions();
 	}, [courseId]);
+
+    useEffect(() => {
+        if (!socket) return;
+        socket.on("sessionEnded", ({ sessionId }) => {
+            if (activeSession && activeSession._id === sessionId) {
+                toast.info("The educator has ended the session.");
+                // Force leave without calling backend API again
+                if (jitsiApiRef.current) {
+                    jitsiApiRef.current.executeCommand('hangup');
+                    jitsiApiRef.current.dispose();
+                    jitsiApiRef.current = null;
+                }
+                setActiveSession(null);
+                fetchSessions();
+            }
+        });
+
+        return () => {
+            socket.off("sessionEnded");
+        };
+    }, [socket, activeSession]);
 
 	useEffect(() => {
 		if (activeSession && isScriptLoaded && !jitsiApiRef.current) {
@@ -53,8 +80,9 @@ const LiveSessions = () => {
 			setLoading(false);
 		} catch (error) {
 			console.error("Error fetching sessions:", error);
-			if (error.response?.status === 403) {
+			if (error.response?.status === 403 || error.response?.status === 401) {
 				setError("You must be enrolled in this course to access live sessions.");
+                if (error.response?.status === 401) navigate("/login");
 			} else {
 				setError("Failed to load sessions. Please try again later.");
 			}
@@ -74,20 +102,21 @@ const LiveSessions = () => {
 		}
 	};
 
-	const handleAddRecording = async (e) => {
+	const handleUpdateSessionDetails = async (e) => {
 		e.preventDefault();
 		try {
-			await axios.put(`${serverUrl}/api/live-session/recording/${selectedSessionForRecording}`, 
-				{ recordingUrl: recordingLink }, 
+			await axios.put(`${serverUrl}/api/live-session/details/${selectedSessionForUpdate}`, 
+				{ recordingUrl: recordingLink, notes: notesLink }, 
 				{ withCredentials: true }
 			);
-			toast.success("Recording link added!");
+			toast.success("Session details updated!");
 			setRecordingLink("");
-			setSelectedSessionForRecording(null);
+			setNotesLink("");
+			setSelectedSessionForUpdate(null);
 			fetchSessions();
 		} catch (error) {
-			console.error("Error adding recording:", error);
-			toast.error("Failed to add link");
+			console.error("Error updating session:", error);
+			toast.error("Failed to update details");
 		}
 	};
 
@@ -154,34 +183,29 @@ const LiveSessions = () => {
 	const initializeJitsi = (session) => {
 		if (!window.JitsiMeetExternalAPI || !jitsiContainerRef.current) return;
 
-		const domain = "meet.jit.si";
+		// connecting to a community instance that allows anonymous room creation
+		const domain = "meet.guifi.net";
 		const options = {
 			roomName: session.meetingId,
 			width: "100%",
 			height: "600px",
 			parentNode: jitsiContainerRef.current,
-			userInfo: {
-				displayName: userData.name,
-				email: userData.email,
-			},
+			lang: 'en',
 			configOverwrite: {
-				startWithAudioMuted: true,
-				disableThirdPartyRequests: true,
+				startWithAudioMuted: false,
+				startWithVideoMuted: false,
 				prejoinPageEnabled: false,
-				enableWelcomePage: false,
-				disableDeepLinking: true,
-				disableLobby: true,
-				enableUserRolesBasedOnToken: false,
-				p2p: { enabled: true },
-				requireDisplayName: true,
+				defaultLanguage: 'en',
 			},
 			interfaceConfigOverwrite: {
 				SHOW_JITSI_WATERMARK: false,
-				SHOW_MARK_FOR_GUESTS: false,
 				SHOW_BRAND_WATERMARK: false,
-				MOBILE_APP_PROMO: false,
-				DEFAULT_REMOTE_DISPLAY_NAME: 'Student',
-				AUTHENTICATION_ENABLE: false,
+				DEFAULT_REMOTE_DISPLAY_NAME: userData.name,
+				TOOLBAR_BUTTONS: [
+					'microphone', 'camera', 'desktop', 'fullscreen',
+					'fodeviceselection', 'hangup', 'chat', 'recording',
+					'settings', 'raisehand', 'videoquality', 'filmstrip', 'tileview'
+				],
 			},
 		};
 
@@ -226,8 +250,10 @@ const LiveSessions = () => {
 
 	return (
 		<div className="min-h-screen bg-gray-50 pt-[100px] px-6 pb-12">
+            {/* Header and Create Form Logic remains same */}
 			<div className="max-w-5xl mx-auto">
-				<div className="flex justify-between items-center mb-8">
+				{/* ... Header ... */}
+                <div className="flex justify-between items-center mb-8">
 					<div>
 						<h1 className="text-3xl font-extrabold text-gray-900 flex items-center gap-3">
 							<div className="p-3 bg-black text-white rounded-2xl shadow-lg">
@@ -259,8 +285,10 @@ const LiveSessions = () => {
 
 				{showForm && (
 					<div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 mb-10 animate-in fade-in slide-in-from-top-4">
+                        {/* ... Create Form ... */}
 						<h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-4">Session Details</h3>
 						<form onSubmit={handleCreateSession} className="space-y-6">
+                            {/* ... Inputs ... */}
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div className="space-y-2">
 									<label className="text-sm font-semibold text-gray-600 ml-1">Session Title</label>
@@ -312,20 +340,30 @@ const LiveSessions = () => {
 					</div>
 				)}
 
-				{selectedSessionForRecording && (
+				{selectedSessionForUpdate && (
 					<div className="bg-white p-8 rounded-3xl shadow-xl border border-blue-100 mb-10 animate-in fade-in zoom-in">
-						<h3 className="text-xl font-bold mb-4 text-gray-800">Add Class Recording</h3>
-						<form onSubmit={handleAddRecording} className="flex gap-4">
-							<input 
-								type="url" 
-								placeholder="Paste recording link (Youtube, Drive, etc.)"
-								className="flex-1 px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none"
-								value={recordingLink}
-								onChange={(e) => setRecordingLink(e.target.value)}
-								required
-							/>
-							<button type="submit" className="bg-black text-white px-8 rounded-2xl font-bold hover:bg-gray-800 transition-all">Save</button>
-							<button type="button" onClick={() => setSelectedSessionForRecording(null)} className="bg-gray-200 text-gray-700 px-8 rounded-2xl font-bold hover:bg-gray-300 transition-all">Cancel</button>
+						<h3 className="text-xl font-bold mb-4 text-gray-800">Add Recording & Notes</h3>
+						<form onSubmit={handleUpdateSessionDetails} className="flex flex-col gap-4">
+							<div className="flex gap-4">
+								<input 
+									type="url" 
+									placeholder="Paste recording link (Youtube, Drive, etc.)"
+									className="flex-1 px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none"
+									value={recordingLink}
+									onChange={(e) => setRecordingLink(e.target.value)}
+								/>
+								<input 
+									type="text" 
+									placeholder="Paste notes link or short text"
+									className="flex-1 px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black outline-none"
+									value={notesLink}
+									onChange={(e) => setNotesLink(e.target.value)}
+								/>
+							</div>
+							<div className="flex gap-4 justify-end">
+								<button type="submit" className="bg-black text-white px-8 py-3 rounded-2xl font-bold hover:bg-gray-800 transition-all">Save Details</button>
+								<button type="button" onClick={() => setSelectedSessionForUpdate(null)} className="bg-gray-200 text-gray-700 px-8 py-3 rounded-2xl font-bold hover:bg-gray-300 transition-all">Cancel</button>
+							</div>
 						</form>
 					</div>
 				)}
@@ -397,25 +435,37 @@ const LiveSessions = () => {
 										</button>
 									) : (
 										// Finished Session Actions
-										<div className="flex gap-2">
-											{session.recordingUrl ? (
+										<div className="flex gap-2 flex-wrap justify-end">
+											{session.recordingUrl && (
 												<a 
 													href={session.recordingUrl} 
 													target="_blank" 
 													rel="noopener noreferrer"
-													className="mt-6 md:mt-0 bg-blue-50 text-blue-600 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-blue-100 transition-all border border-blue-200 shadow-sm"
+													className="bg-blue-50 text-blue-600 px-4 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-blue-100 transition-all border border-blue-200 shadow-sm"
 												>
-													<IoPlayCircleOutline size={20} /> Watch Recording
+													<IoPlayCircleOutline size={20} /> Recording
 												</a>
-											) : (
-												userData._id === session.creatorId && (
-													<button 
-														onClick={() => setSelectedSessionForRecording(session._id)}
-														className="mt-6 md:mt-0 bg-gray-50 text-gray-600 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-gray-100 transition-all border border-gray-200 border-dashed"
-													>
-														<IoLinkOutline size={20} /> Add Recording
-													</button>
-												)
+											)}
+											{session.notes && (
+												<a 
+													href={session.notes.startsWith('http') ? session.notes : '#'}
+													onClick={(e) => !session.notes.startsWith('http') && e.preventDefault()} 
+													target={session.notes.startsWith('http') ? "_blank" : "_self"}
+													rel="noopener noreferrer"
+													className="bg-yellow-50 text-yellow-600 px-4 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-yellow-100 transition-all border border-yellow-200 shadow-sm"
+													title={session.notes} // Show text on hover if not a link
+												>
+													<IoDocumentTextOutline size={20} /> Notes
+												</a>
+											)}
+											
+											{userData._id === session.creatorId && (
+												<button 
+													onClick={() => setSelectedSessionForUpdate(session._id)}
+													className="bg-gray-50 text-gray-600 px-4 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-gray-100 transition-all border border-gray-200 border-dashed"
+												>
+													<IoLinkOutline size={20} /> Edit Res.
+												</button>
 											)}
 										</div>
 									)}

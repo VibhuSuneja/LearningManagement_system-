@@ -215,12 +215,6 @@ const avgRating = calculateAvgReview(selectedCourse?.reviews)
                   >
                     <FaPlayCircle /> Watch Now
                   </button>
-                  <button
-                    className='bg-red-50 text-red-600 px-6 py-2 hover:bg-red-100 rounded mt-3 cursor-pointer transition-all flex items-center gap-2 font-semibold'
-                    onClick={() => navigate(`/live/${courseId}`)}
-                  >
-                    <IoVideocamOutline size={20} /> Live Class
-                  </button>
                 </>
               )}
             </div>
