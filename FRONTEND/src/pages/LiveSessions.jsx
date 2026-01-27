@@ -146,7 +146,9 @@ const LiveSessions = () => {
 	const startMeeting = (session) => {
 		// Mobile Optimization: Redirect to Native App/Full Browser logic
 		if (window.innerWidth < 768) {
-			window.location.href = `https://meet.jit.si/${session.meetingId}#config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false&config.lobbyModeEnabled=false`;
+			// CRITICAL FIX: Use the SAME specific domain as the desktop version (meet.guifi.net)
+			// otherwise students and teachers are on different servers!
+			window.location.href = `https://meet.guifi.net/${session.meetingId}#config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false&config.lobbyModeEnabled=false`;
 			return;
 		}
 
