@@ -11,13 +11,22 @@ import axios from 'axios';
 import Card from '../component/Card';
 import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
+import { useSocketContext } from '../context/SocketContext';
 
 function ViewCourse() {
   const navigate = useNavigate();
   const { courseId } = useParams();
   const { courseData, selectedCourse } = useSelector(state => state.course);
   const { userData } = useSelector(state => state.user);
+  const { socket } = useSocketContext();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (socket && courseId) {
+      socket.emit("joinCourse", courseId);
+      return () => socket.emit("leaveCourse", courseId);
+    }
+  }, [socket, courseId]);
   const [selectedLecture, setSelectedLecture] = useState(null);
   const [creatorData, setCreatorData] = useState(null);
   const [creatorCourses, setCreatorCourses] = useState(null);

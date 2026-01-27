@@ -36,6 +36,28 @@ io.on("connection", (socket) => {
 	// Send current online users to all clients
 	io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
+    // Room Management for targeted updates
+    socket.on("joinCourse", (courseId) => {
+        socket.join(`course_${courseId}`);
+        console.log(`[Socket] User ${userId} joined room: course_${courseId}`);
+    });
+
+    socket.on("leaveCourse", (courseId) => {
+        socket.leave(`course_${courseId}`);
+        console.log(`[Socket] User ${userId} left room: course_${courseId}`);
+    });
+
+    socket.on("integrityAlert", ({ courseId, userName, eventType }) => {
+        // Send to everyone in the course room (Educator is the target)
+        io.to(`course_${courseId}`).emit("proctorAlert", { 
+            studentName: userName, 
+            studentId: userId,
+            eventType, 
+            time: new Date().toLocaleTimeString() 
+        });
+        console.log(`[Proctor] Alert from ${userName} in ${courseId}: ${eventType}`);
+    });
+
 	socket.on("disconnect", () => {
 		if (userId !== "undefined") {
 			console.log(`User disconnected: UserID=${userId}, SocketID=${socket.id}`);

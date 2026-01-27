@@ -72,8 +72,9 @@ export const createLiveSession = async (req, res) => {
 		}
 
 
-		// Emit socket event for real-time updates
-		io.emit("newSession", { courseId });
+		// Emit socket event for real-time updates ONLY to students in this course
+		const io = getIO();
+		io.to(`course_${courseId}`).emit("newSession", { courseId });
 
 		res.status(201).json(newSession);
 	} catch (error) {
@@ -118,17 +119,18 @@ export const updateSessionStatus = async (req, res) => {
 			return res.status(403).json({ message: "Unauthorized" });
 		}
 
+        const courseId = session.courseId;
 		session.status = status;
 		await session.save();
 
-        
+        const io = getIO();
 		if (status === 'ended') {
 			console.log(`[Socket] Emitting sessionEnded for session ID: ${id}`);
-			io.emit("sessionEnded", { sessionId: id });
+			io.to(`course_${courseId}`).emit("sessionEnded", { sessionId: id });
 		}
 
 		// Emit general update for real-time status changes
-		io.emit("sessionUpdated", { sessionId: id, status });
+		io.to(`course_${courseId}`).emit("sessionUpdated", { sessionId: id, status });
 
 		res.status(200).json(session);
 	} catch (error) {

@@ -7,6 +7,7 @@ import { IoVideocamOutline, IoTimeOutline, IoCalendarOutline, IoChevronBackOutli
 import { toast } from "react-toastify";
 
 import { useSocketContext } from "../context/SocketContext";
+import useIntegrityMonitor from "../customHooks/useIntegrityMonitor";
 
 const LiveSessions = () => {
 	const { courseId } = useParams();
@@ -26,16 +27,25 @@ const LiveSessions = () => {
 	const [startTime, setStartTime] = useState("");
 	const [duration, setDuration] = useState(60); // Default 60 mins
 	const [recordingLink, setRecordingLink] = useState("");
-	const [notesLink, setNotesLink] = useState(""); // New state for notes
-	const [selectedSessionForUpdate, setSelectedSessionForUpdate] = useState(null); // Renamed
+	const [notesLink, setNotesLink] = useState(""); 
+	const [selectedSessionForUpdate, setSelectedSessionForUpdate] = useState(null);
 
 	const jitsiContainerRef = useRef(null);
 	const jitsiApiRef = useRef(null);
+    
+    // Integrity Monitoring for students during active sessions
+    useIntegrityMonitor(courseId, userData, !!activeSession);
 
-    // ... (useEffect hooks remain same)
-    	useEffect(() => {
+    useEffect(() => {
 		fetchSessions();
 	}, [courseId]);
+
+    useEffect(() => {
+        if (socket && courseId) {
+            socket.emit("joinCourse", courseId);
+            return () => socket.emit("leaveCourse", courseId);
+        }
+    }, [socket, courseId]);
 
     useEffect(() => {
         if (!socket) return;
@@ -62,12 +72,24 @@ const LiveSessions = () => {
             fetchSessions();
         });
 
+        // Educator specific: Receive focus alerts
+        socket.on("proctorAlert", ({ studentName, eventType, time }) => {
+            if (userData.role === 'educator') {
+                toast.warning(`INTEGRITY ALERT: ${studentName} - ${eventType} at ${time}`, {
+                    position: "bottom-left",
+                    autoClose: 10000,
+                    theme: "dark"
+                });
+            }
+        });
+
         return () => {
             socket.off("sessionEnded");
             socket.off("newSession");
             socket.off("sessionUpdated");
+            socket.off("proctorAlert");
         };
-    }, [socket, activeSession, courseId]);
+    }, [socket, activeSession, courseId, userData]);
 
 	useEffect(() => {
 		if (activeSession && isScriptLoaded && !jitsiApiRef.current) {
