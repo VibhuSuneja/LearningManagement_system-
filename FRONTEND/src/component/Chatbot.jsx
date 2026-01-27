@@ -69,11 +69,13 @@ const Chatbot = () => {
 
     // Hide chatbot on chat page to prevent blocking UI
     const location = useLocation();
+    const draggableRef = useRef(null);
+    
     if (location.pathname === "/chat") return null;
 
     return (
-        <Draggable>
-            <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end cursor-move">
+        <Draggable nodeRef={draggableRef}>
+            <div ref={draggableRef} className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end cursor-move">
                 {/* Chat Window */}
                 {isOpen && (
                     <div className="w-[calc(100vw-3rem)] md:w-[400px] h-[60vh] md:h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden mb-4 animate-in fade-in slide-in-from-bottom-5 duration-300 cursor-default" onMouseDown={(e) => e.stopPropagation()}>
