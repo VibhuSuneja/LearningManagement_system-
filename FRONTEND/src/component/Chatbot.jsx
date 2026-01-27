@@ -74,11 +74,15 @@ const Chatbot = () => {
     if (location.pathname === "/chat") return null;
 
     return (
-        <Draggable nodeRef={draggableRef}>
+        <Draggable nodeRef={draggableRef} cancel="input, button, textarea, .cursor-default">
             <div ref={draggableRef} className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end cursor-move">
                 {/* Chat Window */}
                 {isOpen && (
-                    <div className="w-[calc(100vw-3rem)] md:w-[400px] h-[60vh] md:h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden mb-4 animate-in fade-in slide-in-from-bottom-5 duration-300 cursor-default" onMouseDown={(e) => e.stopPropagation()}>
+                    <div 
+                        className="w-[calc(100vw-2rem)] md:w-[400px] h-[60vh] md:h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden mb-4 animate-in fade-in slide-in-from-bottom-5 duration-300 cursor-default" 
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onTouchStart={(e) => e.stopPropagation()}
+                    >
                         {/* Header */}
                         <div className="bg-black p-4 flex items-center justify-between text-white cursor-move" onMouseDown={(e) => e.target.closest('.draggable-container')?.dispatchEvent(new MouseEvent('mousedown', e))}> 
                             <div className="flex items-center gap-2">
@@ -141,6 +145,7 @@ const Chatbot = () => {
                 {/* Toggle Button */}
                 <button 
                     onClick={() => setIsOpen(!isOpen)}
+                    onTouchStart={(e) => e.stopPropagation()}
                     className={`w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 active:scale-90 ${
                         isOpen ? 'bg-red-500 rotate-90' : 'bg-black'
                     }`}
