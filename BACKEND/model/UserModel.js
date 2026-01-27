@@ -45,7 +45,25 @@ const userSchema = new mongoose.Schema({
     isOtpVerified:{
         type:Boolean,
         default:false
-    }
+    },
+    // Gamification fields
+    points: {
+        type: Number,
+        default: 0
+    },
+    level: {
+        type: Number,
+        default: 1
+    },
+    badges: [{
+        name: String,
+        description: String,
+        icon: String, // Icon name/URL
+        unlockedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 },{timestamps:true})
 //creating model for User schema is userSchema 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

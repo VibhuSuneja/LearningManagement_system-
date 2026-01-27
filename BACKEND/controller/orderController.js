@@ -34,6 +34,7 @@ export const RazorpayOrder = async (req, res) => {
 
 
 import { createNotification } from "./notificationController.js";
+import { awardPoints, checkBadges } from "./gamificationController.js";
 
 export const verifyPayment = async (req, res) => {
   try {
@@ -45,6 +46,10 @@ export const verifyPayment = async (req, res) => {
       if (!user.enrolledCourses.includes(courseId)) {
         user.enrolledCourses.push(courseId);
         await user.save();
+        
+        // --- GAMIFICATION ---
+        await awardPoints(userId, 100, "Course Enrollment");
+        await checkBadges(userId, "first_enrollment");
       }
 
       const course = await Course.findById(courseId).populate("lectures");

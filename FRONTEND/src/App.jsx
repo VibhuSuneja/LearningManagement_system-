@@ -6,7 +6,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import ForgetPassword from "./pages/ForgetPassword";
 import EditProfile from "./pages/EditProfile";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
 import useGetCurrentUser from "./customHooks/getCurrentUser";
 import useGetCreatorCourse from "./customHooks/getCreatorCourse";
@@ -28,6 +28,8 @@ import SearchWithAi from "./pages/SearchWithAi.jsx";
 import Chatbot from "./component/Chatbot.jsx";
 import Chat from "./pages/Chat.jsx";
 import LiveSessions from "./pages/LiveSessions.jsx";
+import Leaderboard from "./pages/Leaderboard.jsx";
+import { useSocketContext } from "./context/SocketContext";
 
 export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
 console.log("Using Server URL:", serverUrl);
@@ -38,9 +40,41 @@ function App() {
   getPublishedCourse();
   getAllReviews();
 
-  
+  const { socket } = useSocketContext();
   const { userData } = useSelector((state) => state.user);
   const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+
+  React.useEffect(() => {
+    if (!socket) return;
+
+    socket.on("levelUp", ({ level, message }) => {
+        toast.success(message, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            icon: "⭐"
+        });
+    });
+
+    socket.on("badgeUnlocked", ({ badgeName, message }) => {
+        toast.info(message, {
+            position: "top-right",
+            autoClose: 5000,
+            theme: "dark",
+            icon: "🏆"
+        });
+    });
+
+    return () => {
+        socket.off("levelUp");
+        socket.off("badgeUnlocked");
+    };
+  }, [socket]);
 
   React.useEffect(() => {
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -96,6 +130,7 @@ function App() {
           <Route path="/mycourses" element={userData ? <MyEnrolledCourses /> : <Navigate to="/signup" />} /> 
           <Route path="/search" element={userData ? <SearchWithAi /> : <Navigate to="/signup" />} /> 
           <Route path="/chat" element={userData ? <Chat /> : <Navigate to="/signup" />} /> 
+          <Route path="/leaderboard" element={userData ? <Leaderboard /> : <Navigate to="/signup" />} /> 
           <Route path="/live/:courseId" element={userData ? <LiveSessions /> : <Navigate to="/signup" />} /> 
       </Routes>
     </>

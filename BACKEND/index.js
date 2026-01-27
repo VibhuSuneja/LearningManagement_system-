@@ -15,6 +15,7 @@ import chatbotRouter from "./route/chatbotRoute.js";
 import notificationRouter from "./route/notificationRoute.js";
 import messageRouter from "./route/messageRoute.js";
 import liveSessionRouter from "./route/liveSessionRoute.js";
+import gamificationRouter from "./route/gamificationRoute.js";
 import { app, server } from "./socket/socket.js";
 
 const port = process.env.PORT || 8080;
@@ -59,6 +60,7 @@ app.use("/api/chatbot", chatbotRouter);
 app.use("/api/notification", notificationRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/live-session", liveSessionRouter);
+app.use("/api/gamification", gamificationRouter);
 
 // ✅ This message will appear in your terminal if the file is loaded correctly.
 console.log("✅ Course router has been successfully loaded.");

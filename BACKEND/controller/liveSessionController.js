@@ -2,6 +2,28 @@ import LiveSession from "../model/liveSessionModel.js";
 import Course from "../model/courseModel.js";
 import { createNotification } from "./notificationController.js";
 import { io } from "../socket/socket.js";
+import { awardPoints, checkBadges } from "./gamificationController.js";
+
+export const participateInSession = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const userId = req.user._id;
+
+		const session = await LiveSession.findById(id);
+		if (!session) return res.status(404).json({ message: "Session not found" });
+
+		if (req.user.role === "student") {
+			// Award points for participation (Once per session usually, but we'll keep it simple)
+			await awardPoints(userId, 50, "Live Session Participation");
+			await checkBadges(userId, "live_session_join");
+		}
+
+		res.status(200).json({ message: "Participation recorded" });
+	} catch (error) {
+		console.log("Error in participateInSession:", error.message);
+		res.status(500).json({ error: "Internal server error" });
+	}
+};
 
 export const createLiveSession = async (req, res) => {
 	try {

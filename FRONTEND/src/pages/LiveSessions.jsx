@@ -154,6 +154,12 @@ const LiveSessions = () => {
 	};
 
 	const startMeeting = (session) => {
+		// Record participation for gamification (if student)
+		if (userData.role === "student") {
+			axios.post(`${serverUrl}/api/live-session/participate/${session._id}`, {}, { withCredentials: true })
+				.catch(err => console.error("Participation tracking failed:", err));
+		}
+
 		// Mobile Optimization: Redirect to Native App/Full Browser logic
 		if (window.innerWidth < 768) {
 			// CRITICAL FIX: Use the SAME specific domain as the desktop version (meet.guifi.net)
