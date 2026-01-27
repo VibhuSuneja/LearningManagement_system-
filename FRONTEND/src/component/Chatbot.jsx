@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { BsChatDotsFill, BsX, BsSendFill } from 'react-icons/bs';
 import { SiGoogleassistant } from 'react-icons/si';
 import axios from 'axios';
@@ -64,6 +65,10 @@ const Chatbot = () => {
     };
 
     // if (!userData) return null; // REMOVED: Now visible to everyone
+
+    // Hide chatbot on chat page to prevent blocking UI
+    const location = useLocation();
+    if (location.pathname === "/chat") return null;
 
     return (
         <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end">
