@@ -46,7 +46,11 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}'],
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
+            // Only cache same-origin GET requests for the API
+            urlPattern: ({ url, request }) => 
+              url.origin === self.location.origin && 
+              url.pathname.startsWith('/api/') && 
+              request.method === 'GET',
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
@@ -55,7 +59,7 @@ export default defineConfig({
                 maxAgeSeconds: 60 * 60 * 24 // 1 day
               },
               cacheableResponse: {
-                statuses: [0, 200]
+                statuses: [200]
               }
             }
           },

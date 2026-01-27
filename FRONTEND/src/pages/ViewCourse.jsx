@@ -85,7 +85,14 @@ function ViewCourse() {
   }, [creatorData, courseData, courseId]);
 
   const handleEnroll = async (userId, courseId) => {
+    // 1. Check if Razorpay is loaded (Mobile browsers sometimes block this)
+    if (!window.Razorpay) {
+      toast.error("Payment system failed to load. Please disable ad-blockers and try again.");
+      return;
+    }
+
     try {
+      console.log(`[Enrollment] Creating order for course: ${courseId}`);
       const orderData = await axios.post(
         serverUrl + "/api/order/razorpay-order",
         { userId, courseId },
@@ -97,45 +104,52 @@ function ViewCourse() {
         amount: orderData.data.amount,
         currency: 'INR',
         name: "V-LMS PREMIUM",
-        description: "FOR TESTING: Use success@razorpay as email",
+        description: "Course Enrollment",
         order_id: orderData.data.id,
         prefill: {
-          name: userData.name,
-          email: userData.email,
+          name: userData?.name || "",
+          email: userData?.email || "",
         },
-        notes: {
-            "instruction": "USE 'success@razorpay' for testing"
+        theme: {
+          color: "#000000" // Premium black theme for mobile
         },
         handler: async function (response) {
           try {
+            console.log("[Enrollment] Payment authorized, verifying...");
             const verifyPayment = await axios.post(
               serverUrl + "/api/order/verify-payment",
               { ...response, courseId, userId },
               { withCredentials: true }
             );
             setIsEnrolled(true);
-            toast.success("Enrollment Successful! Welcome to the course.");
+            toast.success("Enrollment Successful!");
           } catch (error) {
+            console.error("Payment Verification Error:", error);
             toast.error(error.response?.data?.message || "Payment verification failed");
           }
         },
         modal: {
-            ondismiss: function() {
-                toast.info("Enrollment cancelled. Use 'success@razorpay' to enroll for free in test mode.");
-            }
+          ondismiss: function() {
+              toast.info("Payment cancelled.");
+          }
         }
       };
 
-      toast.info("Pro Tip: Use 'success@razorpay' in the payment field for free testing!", {
-        position: "top-center",
-        autoClose: 5000,
-      });
+      // 2. Extra hint for testers
+      toast.info("Use 'success@razorpay' as the email for testing!", { autoClose: 3000 });
 
       const rzp = new window.Razorpay(options);
       rzp.open();
+
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong while enrolling");
+      console.error("Enrollment Request Failed:", error);
+      
+      // Specifically handle the "Network Error" often seen on mobile
+      if (error.message === "Network Error") {
+        toast.error("Connection failed. The server might be waking up or your mobile data is blocking the request. Please try again in a few seconds.");
+      } else {
+        toast.error(error.response?.data?.message || "Something went wrong while enrolling");
+      }
     }
   };
 
