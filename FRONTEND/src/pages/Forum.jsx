@@ -5,8 +5,9 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Nav from '../component/Nav';
 import Footer from '../component/Footer';
-import { FaPlus, FaComments, FaHeart, FaChevronRight, FaFilter, FaSearch, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaComments, FaHeart, FaChevronRight, FaFilter, FaSearch, FaTimes, FaChevronLeft } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-toastify';
 
 const Forum = () => {
     const { userData } = useSelector(state => state.user);
