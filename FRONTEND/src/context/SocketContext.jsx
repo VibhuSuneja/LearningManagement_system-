@@ -16,8 +16,6 @@ export const SocketContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (userData) {
-			console.log(`[Socket] Initializing connection for user: ${userData._id}`);
-			
 			const socket = io(serverUrl, {
 				query: {
 					userId: userData._id,
@@ -33,30 +31,27 @@ export const SocketContextProvider = ({ children }) => {
 
 			// Connection event handlers
 			socket.on("connect", () => {
-				console.log(`[Socket] ✅ Connected with socket ID: ${socket.id}`);
+				// Connected
 			});
 
 			socket.on("connect_error", (error) => {
-				console.error(`[Socket] ❌ Connection error:`, error.message);
+				// Connection error
 			});
 
 			socket.on("reconnect", (attemptNumber) => {
-				console.log(`[Socket] 🔄 Reconnected after ${attemptNumber} attempts`);
+				// Reconnected
 			});
 
 			// Listen to online users updates
 			socket.on("getOnlineUsers", (users) => {
-				console.log(`[Socket] Online users updated:`, users);
 				setOnlineUsers(users);
 			});
 
 			return () => {
-				console.log(`[Socket] Disconnecting user: ${userData._id}`);
 				socket.close();
 			};
 		} else {
 			if (socket) {
-				console.log(`[Socket] User logged out, closing socket`);
 				socket.close();
 				setSocket(null);
 			}

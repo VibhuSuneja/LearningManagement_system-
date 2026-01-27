@@ -19,9 +19,6 @@ export const getCurrentUser = async (req,res) => {
 // Update profile
 export const updateProfile = async (req, res) => {
   try {
-    console.log("Request Body:", req.body);
-    console.log("Request File:", req.file);
-
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized: No user found." });
     }
@@ -31,9 +28,7 @@ export const updateProfile = async (req, res) => {
 
     // Check if a new file has been uploaded
     if (req.file) {
-      console.log("Uploading to Cloudinary...");
       photoUrl = await uploadToCloudinary(req.file.buffer);
-      console.log("Cloudinary URL:", photoUrl);
 
       // --- ADDED ERROR HANDLING ---
       // If the file exists but the upload fails, stop and send an error.
@@ -53,8 +48,6 @@ export const updateProfile = async (req, res) => {
       { new: true }
     ).select("-password");
 
-    // Emit socket event to notify all clients that a user profile was updated
-    console.log(`[Profile] User ${updatedUser._id} updated their profile`);
     io.emit("profileUpdated", { userId: updatedUser._id, role: updatedUser.role });
 
     res.status(200).json(updatedUser);

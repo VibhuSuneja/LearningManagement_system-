@@ -54,7 +54,6 @@ export const createLiveSession = async (req, res) => {
 		});
 
 		await newSession.save();
-		console.log(`[LiveSession] Created session: ${newSession._id} for course: ${courseId}`);
 
 		// Notify all enrolled students
 		const populatedCourse = await Course.findById(courseId).populate("enrolledStudents");
@@ -73,7 +72,6 @@ export const createLiveSession = async (req, res) => {
 		}
 
 		// Emit socket event for real-time updates to course room
-		console.log(`[LiveSession] Emitting newSession event to course_${courseId}`);
 		io.to(`course_${courseId}`).emit("newSession", { courseId, session: newSession });
 
 		res.status(201).json(newSession);
@@ -124,12 +122,10 @@ export const updateSessionStatus = async (req, res) => {
 		await session.save();
 
 		if (status === 'ended') {
-			console.log(`[Socket] Emitting sessionEnded for session ID: ${id}`);
 			io.to(`course_${courseId}`).emit("sessionEnded", { sessionId: id });
 		}
 
 		// Emit general update for real-time status changes
-		console.log(`[Socket] Emitting sessionUpdated for session ID: ${id}`);
 		io.to(`course_${courseId}`).emit("sessionUpdated", { sessionId: id, status });
 
 		res.status(200).json(session);
