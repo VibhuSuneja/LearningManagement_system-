@@ -49,6 +49,10 @@ export const createLiveSession = async (req, res) => {
 			}
 		}
 
+
+		// Emit socket event for real-time updates
+		io.emit("newSession", { courseId });
+
 		res.status(201).json(newSession);
 	} catch (error) {
 		console.log("Error in createLiveSession:", error.message);
@@ -95,10 +99,14 @@ export const updateSessionStatus = async (req, res) => {
 		session.status = status;
 		await session.save();
 
-        if (status === 'ended') {
-            console.log(`[Socket] Emitting sessionEnded for session ID: ${id}`);
-            io.emit("sessionEnded", { sessionId: id });
-        }
+        
+		if (status === 'ended') {
+			console.log(`[Socket] Emitting sessionEnded for session ID: ${id}`);
+			io.emit("sessionEnded", { sessionId: id });
+		}
+
+		// Emit general update for real-time status changes
+		io.emit("sessionUpdated", { sessionId: id, status });
 
 		res.status(200).json(session);
 	} catch (error) {

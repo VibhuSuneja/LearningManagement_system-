@@ -39,11 +39,11 @@ const LiveSessions = () => {
 
     useEffect(() => {
         if (!socket) return;
+        
         socket.on("sessionEnded", ({ sessionId }) => {
-            console.log(`[Socket] Received sessionEnded for ${sessionId}. Active: ${activeSession?._id}`);
+            console.log(`[Socket] Received sessionEnded for ${sessionId}`);
             if (activeSession && activeSession._id === sessionId) {
                 toast.info("The educator has ended the session.");
-                // Force leave without calling backend API again
                 if (jitsiApiRef.current) {
                     jitsiApiRef.current.executeCommand('hangup');
                     jitsiApiRef.current.dispose();
@@ -54,10 +54,20 @@ const LiveSessions = () => {
             }
         });
 
+        socket.on("newSession", () => {
+            fetchSessions();
+        });
+
+        socket.on("sessionUpdated", () => {
+            fetchSessions();
+        });
+
         return () => {
             socket.off("sessionEnded");
+            socket.off("newSession");
+            socket.off("sessionUpdated");
         };
-    }, [socket, activeSession]);
+    }, [socket, activeSession, courseId]);
 
 	useEffect(() => {
 		if (activeSession && isScriptLoaded && !jitsiApiRef.current) {
@@ -147,8 +157,8 @@ const LiveSessions = () => {
 		// Mobile Optimization: Redirect to Native App/Full Browser logic
 		if (window.innerWidth < 768) {
 			// CRITICAL FIX: Use the SAME specific domain as the desktop version (meet.guifi.net)
-			// otherwise students and teachers are on different servers!
-			window.location.href = `https://meet.guifi.net/${session.meetingId}#config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false&config.lobbyModeEnabled=false`;
+			// and ENFORCE ENGLISH
+			window.location.href = `https://meet.guifi.net/${session.meetingId}#config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false&config.lobbyModeEnabled=false&config.defaultLanguage="en"&config.lang="en"`;
 			return;
 		}
 
@@ -206,6 +216,7 @@ const LiveSessions = () => {
 				prejoinPageEnabled: false,
                 lobbyModeEnabled: false, // DISABLE WAITING ROOM
 				defaultLanguage: 'en',
+                lang: 'en'
 			},
 			interfaceConfigOverwrite: {
 				SHOW_JITSI_WATERMARK: false,

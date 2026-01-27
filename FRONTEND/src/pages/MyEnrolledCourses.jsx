@@ -5,10 +5,12 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoVideocamOutline } from "react-icons/io5";
-
+import useGetCurrentUser from '../customHooks/getCurrentUser';
+ 
 function MyEnrolledCourse() {
   const navigate = useNavigate()
-
+  useGetCurrentUser();
+ 
   const { userData } = useSelector((state) => state.user);
 
      
