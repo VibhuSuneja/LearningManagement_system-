@@ -40,12 +40,42 @@ function App() {
 
   
   const { userData } = useSelector((state) => state.user);
+  const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+
+  React.useEffect(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      console.log('PWA Install Triggered');
+      setDeferredPrompt(e);
+    });
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   return (
     <>
       <ToastContainer />
       <ScrollToTop />
       <Chatbot />
+      
+      {deferredPrompt && (
+        <button 
+          onClick={handleInstallClick}
+          className="fixed bottom-24 right-5 z-50 bg-black text-white px-4 py-2 rounded-full shadow-xl flex items-center gap-2 font-bold animate-bounce border border-gray-700 hover:scale-105 transition-all"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Install App
+        </button>
+      )}
       
       <Routes>
         <Route path="/" element={<Home />} />

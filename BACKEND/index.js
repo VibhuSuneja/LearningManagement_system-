@@ -25,6 +25,10 @@ app.use(cookieParser());
 const allowedOrigins = [
   "https://learning-management-system-kappa-black.vercel.app",
   "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "http://localhost:4173",
+  "http://localhost:4174",
   process.env.FRONTEND_URL
 ].filter(Boolean); // Remove undefined/null values
 
