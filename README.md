@@ -46,16 +46,27 @@ The system serves multiple user types including students, instructors, and admin
   - Enrollment management system
 
 - **AI-Powered Features**
-  - Intelligent search using Gemini AI
-  - Personalized course recommendations
-  - Natural language query processing
-  - Adaptive learning path suggestions
+  - Intelligent search & recommendation engine using Gemini AI
+  - Natural language query processing for course discovery
+  - AI-driven chatbot for instant student assistance
+  - Automated summary and categorization features
+
+- **Social & Community (New!)**
+  - **Community Forums**: Categorized discussion boards (General, Questions, Resources, etc.)
+  - **Engagement Logic**: Like, comment, and threaded discussions
+  - **User Following**: Build personal learning networks by following peers and educators
+  - **Public Profiles**: Discoverable profiles showcasing achievements and social links
+
+- **Gamification & Rewards (New!)**
+  - **XP System**: Earn experience points for active learning and enrollment
+  - **Leveling Logic**: Progress through dynamic levels (Level up every 500 XP)
+  - **Badge Achievements**: Unlock milestones like 'Fast Learner' and 'Live Scholar'
+  - **Leaderboard**: Compete globally on the top-student rankings
 
 - **Payment Integration**
   - Secure payment processing via Razorpay
   - Multiple payment method support
-  - Automatic enrollment upon successful payment
-  - Transaction history and receipts
+  - Automatic enrollment and gamification triggers upon payment
 
 ### 📱 User Experience
 - **Responsive Design**
@@ -106,17 +117,17 @@ The system serves multiple user types including students, instructors, and admin
 
 ## 🤖 AI Integration
 
-### Gemini AI Features
-- **Smart Search**: Natural language processing for intelligent course discovery
-- **Recommendation Engine**: Personalized content suggestions based on user behavior
-- **Content Analysis**: Automated categorization and tagging of educational materials
-- **Learning Path Optimization**: AI-driven curriculum sequencing
+### Advanced Platform Features
+- **Real-Time Live Sessions**: Integrated Jitsi-based virtual classrooms with participation tracking.
+- **Socket Efficiency**: Optimized communication using targeted course rooms.
+- **Educator Proctoring**: Real-time integrity monitoring during live sessions with focus-loss alerts.
+- **Smart Chatbot**: Integrated AI assistant for navigation and common student queries.
 
-### Implementation Benefits
-- Enhanced user engagement through personalized experiences
-- Improved content discoverability with intelligent search
-- Reduced administrative overhead with automated processes
-- Data-driven insights for educational optimization
+### Gemini AI Features
+- **Smart Search**: Natural language processing for intelligent course discovery.
+- **Topic Extractor**: Automated categorization and tagging of educational materials.
+- **AI Chatbot**: Context-aware assistance for platform navigation and FAQs.
+- **Personalized Recommendations**: Tailored course suggestions based on user interests.
 
 ## 📦 Installation
 
@@ -419,18 +430,16 @@ SOFTWARE.
 ## 🚀 Future Enhancements
 
 ### Short-term Goals
-- [ ] Mobile application development
-- [ ] Advanced analytics dashboard
-- [ ] Video conferencing integration
-- [ ] Discussion forums and communities
-- [ ] Assignment and quiz system
+- [ ] Mobile app (iOS/Android) using React Native
+- [ ] Video playback tracking (Resuming lectures)
+- [ ] Downloadable certificates in PDF format
+- [ ] Advanced Quiz & Assessment engine
 
 ### Long-term Vision
-- [ ] Virtual Reality (VR) learning experiences
-- [ ] Blockchain-based certification system
-- [ ] Advanced AI tutoring and mentorship
-- [ ] Multi-language localization
-- [ ] IoT device integration for enhanced learning
+- [ ] Virtual Reality (VR) learning classrooms
+- [ ] Blockchain-based certificate verification
+- [ ] Multi-language localization (Spanish, Hindi, French)
+- [ ] AI-driven personalized study planners
 
 ## 📊 Project Statistics
 
