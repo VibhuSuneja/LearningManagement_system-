@@ -9,6 +9,7 @@ export const createThread = async (req, res) => {
     try {
         const { title, content, courseId, category, tags } = req.body;
         const author = req.user._id;
+        console.log(`[Forum] Creating thread: ${title} by ${author}`);
 
         const newThread = new ForumThread({
             title,
@@ -29,6 +30,7 @@ export const createThread = async (req, res) => {
 export const getAllThreads = async (req, res) => {
     try {
         const { courseId, category } = req.query;
+        console.log(`[Forum] Fetching threads. Category: ${category}, Course: ${courseId}`);
         let query = {};
         if (courseId) query.courseId = courseId;
         if (category) query.category = category;

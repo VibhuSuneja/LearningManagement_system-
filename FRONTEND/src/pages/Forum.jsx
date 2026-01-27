@@ -37,11 +37,13 @@ const Forum = () => {
     const fetchThreads = async () => {
         setLoading(true);
         try {
-            let url = `${serverUrl}/api/forum/threads?`;
-            if (category) url += `category=${category}&`;
-            if (courseIdParam) url += `courseId=${courseIdParam}&`;
-            
-            const res = await axios.get(url, { withCredentials: true });
+            const res = await axios.get(`${serverUrl}/api/forum/threads`, { 
+                params: {
+                    category: category || undefined,
+                    courseId: courseIdParam || undefined
+                },
+                withCredentials: true 
+            });
             setThreads(res.data);
         } catch (err) {
             console.error(err);
@@ -53,12 +55,15 @@ const Forum = () => {
     const handleCreateThread = async (e) => {
         e.preventDefault();
         try {
+            console.log("Posting discussion...", newThread);
             await axios.post(`${serverUrl}/api/forum/threads`, newThread, { withCredentials: true });
             setShowCreateModal(false);
-            setNewThread({ title: '', content: '', category: 'General' });
+            setNewThread({ title: '', content: '', category: 'General', courseId: courseIdParam || null });
             fetchThreads();
+            toast.success("Thread created successfully!");
         } catch (err) {
-            console.error(err);
+            console.error("Error creating thread:", err);
+            toast.error(err.response?.data?.message || "Failed to create thread");
         }
     };
 
