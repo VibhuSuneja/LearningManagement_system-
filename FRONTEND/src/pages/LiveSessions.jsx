@@ -144,6 +144,12 @@ const LiveSessions = () => {
 	};
 
 	const startMeeting = (session) => {
+		// Mobile Optimization: Redirect to Native App/Full Browser logic
+		if (window.innerWidth < 768) {
+			window.location.href = `https://meet.jit.si/${session.meetingId}#config.startWithAudioMuted=false&config.startWithVideoMuted=false`;
+			return;
+		}
+
 		setActiveSession(session);
 		
 		// Load Jitsi script if not already loaded
