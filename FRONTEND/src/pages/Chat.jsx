@@ -85,9 +85,17 @@ const Chat = () => {
 		e.preventDefault();
 		if (!message.trim() && !image && !audioBlob || !selectedUser) return;
 		
+		console.log(`[Chat] Sending message to: ${selectedUser._id}`);
+		console.log(`[Chat] Message content:`, message);
+		
 		const sentMessage = await sendMessage(selectedUser._id, message, image, audioBlob);
+		console.log(`[Chat] Sent message response:`, sentMessage);
+		
 		if (sentMessage) {
+			console.log(`[Chat] ✅ Adding sent message to own UI`);
 			setMessages((prev) => [...prev, sentMessage]);
+		} else {
+			console.error(`[Chat] ❌ Failed to send message`);
 		}
 		
 		// Reset state

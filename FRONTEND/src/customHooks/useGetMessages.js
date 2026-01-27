@@ -27,20 +27,30 @@ const useGetMessages = (selectedConversationId) => {
 	}, [selectedConversationId]);
 
 	useEffect(() => {
-		if (socket) {
+		if (socket && selectedConversationId) {
 			console.log(`[Messages] Setting up listener for conversation: ${selectedConversationId}`);
 			
 			socket.on("newMessage", (newMessage) => {
 				console.log(`[Messages] Received newMessage:`, newMessage);
 				console.log(`[Messages] Current conversation: ${selectedConversationId}`);
 				console.log(`[Messages] Message senderId: ${newMessage.senderId}`);
+				console.log(`[Messages] Message receiverId: ${newMessage.receiverId}`);
 				
-				// If the message is from the currently selected conversation
-				if (newMessage.senderId === selectedConversationId || newMessage.receiverId === selectedConversationId) {
+				// Convert to strings for safe comparison
+				const selectedId = selectedConversationId?.toString();
+				const messageSenderId = newMessage.senderId?.toString();
+				const messageReceiverId = newMessage.receiverId?.toString();
+				
+				console.log(`[Messages] Comparing: senderId(${messageSenderId}) or receiverId(${messageReceiverId}) with selected(${selectedId})`);
+				
+				// Message belongs to this conversation if either sender or receiver is the selected user
+				const belongsToConversation = messageSenderId === selectedId || messageReceiverId === selectedId;
+				
+				if (belongsToConversation) {
 					console.log(`[Messages] ✅ Adding message to conversation`);
 					setMessages((prev) => {
 						// Prevent duplicate messages
-						const isDuplicate = prev.some(msg => msg._id === newMessage._id);
+						const isDuplicate = prev.some(msg => msg._id?.toString() === newMessage._id?.toString());
 						if (isDuplicate) {
 							console.log(`[Messages] ⚠️ Duplicate message detected, skipping`);
 							return prev;
@@ -48,7 +58,7 @@ const useGetMessages = (selectedConversationId) => {
 						return [...prev, newMessage];
 					});
 				} else {
-					console.log(`[Messages] ⏭️ Message not for this conversation`);
+					console.log(`[Messages] ⏭️ Message not for this conversation (senderId: ${messageSenderId}, receiverId: ${messageReceiverId}, selected: ${selectedId})`);
 				}
 			});
 
