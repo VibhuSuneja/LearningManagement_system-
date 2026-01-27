@@ -169,6 +169,13 @@ function Nav() {
                 My Courses
               </div>
 
+               <div
+                className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
+                onClick={() => navigate("/chat")}
+              >
+                Messages
+              </div>
+
               {userData?.role === "educator" && (
                 <div
                   className="w-[200px] h-[65px] border-2 border-white text-white bg-black flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
