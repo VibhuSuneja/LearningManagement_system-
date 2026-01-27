@@ -11,7 +11,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 function EditProfile() {
      let {userData} = useSelector(state=>state.user)
      let [name,setName] = useState(userData.name || "")
-     let [description,setDescription] = useState(userData.description || "")
+     let [bio,setBio] = useState(userData.bio || "")
      let [photoUrl,setPhotoUrl] = useState(null)
      let dispatch = useDispatch()
      let [loading,setLoading] = useState(false)
@@ -19,7 +19,7 @@ function EditProfile() {
 
       const formData = new FormData()
       formData.append("name",name)
-      formData.append("description",description)
+      formData.append("bio",bio)
       formData.append("photoUrl",photoUrl)
 
 
@@ -29,7 +29,7 @@ function EditProfile() {
     try {
       const formData = new FormData();
       formData.append("name", name);
-      formData.append("description", description);
+      formData.append("bio", bio);
       if (photoUrl) formData.append("photoUrl", photoUrl);
 
       const result = await axios.post(
@@ -40,7 +40,7 @@ function EditProfile() {
 
       dispatch(setUserData(result.data));
       toast.success("Profile Updated Successfully");
-      navigate("/profile");
+      navigate("/profile", { replace: true });
     } catch (error) {
       console.log("Profile Update Error", error);
       toast.error(error.response?.data?.message || "Profile update failed");
@@ -51,7 +51,7 @@ function EditProfile() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-10">
       <div className="bg-white rounded-2xl shadow-lg p-8 max-w-xl w-full relative">
-        <FaArrowLeftLong  className='absolute top-[5%] left-[5%] w-[22px] h-[22px] cursor-pointer' onClick={()=>navigate("/profile")}/>
+        <FaArrowLeftLong  className='absolute top-[5%] left-[5%] w-[22px] h-[22px] cursor-pointer' onClick={()=>navigate("/")}/>
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Edit Profile</h2>
 
         <form  className="space-y-5" onSubmit={(e)=>e.preventDefault()}>
@@ -106,17 +106,17 @@ function EditProfile() {
 
          
 
-          {/* Description */}
+          {/* Bio */}
           <div>
-            <label className="text-sm font-medium text-gray-700">Description</label>
+            <label className="text-sm font-medium text-gray-700">Bio</label>
             <textarea
-              name="description"
+              name="bio"
              
               className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-[black]"
               rows={3}
               placeholder="Tell us about yourself"
-              onChange={(e)=>setDescription(e.target.value)}
-              value={description}
+              onChange={(e)=>setBio(e.target.value)}
+              value={bio}
             />
           </div>
 

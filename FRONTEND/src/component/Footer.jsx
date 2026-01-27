@@ -60,6 +60,15 @@ function Footer() {
           </p>
         </div>
 
+        {/* Legal */}
+        <div>
+          <h3 className="text-white font-bold mb-4 uppercase text-xs tracking-[0.2em]">Legal</h3>
+          <ul className="space-y-2 text-sm">
+            <li className="hover:text-white transition-colors cursor-pointer" onClick={() => navigate("/terms")}>Terms & Conditions</li>
+            <li className="hover:text-white transition-colors cursor-pointer" onClick={() => navigate("/privacy")}>Privacy Policy</li>
+          </ul>
+        </div>
+
       </div>
 
       {/* Bottom Bar */}

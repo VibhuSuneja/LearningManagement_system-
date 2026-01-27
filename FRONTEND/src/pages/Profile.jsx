@@ -61,7 +61,7 @@ function Profile() {
   return (
     <div className="min-h-screen bg-[#f8f9fa] px-4 py-10 flex items-center justify-center font-sans">
       <div className="bg-white shadow-2xl rounded-[40px] p-10 max-w-2xl w-full relative border border-gray-100">
-        <FaArrowLeftLong className='absolute top-10 left-10 w-6 h-6 cursor-pointer hover:-translate-x-2 transition-transform' onClick={()=>navigate(-1)}/>
+        <FaArrowLeftLong className='absolute top-10 left-10 w-6 h-6 cursor-pointer hover:-translate-x-2 transition-transform' onClick={()=>navigate("/")}/>
         
         <div className="flex flex-col items-center text-center">
           <div className="relative mb-6">

@@ -32,6 +32,8 @@ import Leaderboard from "./pages/Leaderboard.jsx";
 import Forum from "./pages/Forum.jsx";
 import ThreadView from "./pages/ThreadView.jsx";
 import { useSocketContext } from "./context/SocketContext";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 
 export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
 console.log("Using Server URL:", serverUrl);
@@ -154,7 +156,8 @@ function App() {
           <Route path="/live/:courseId" element={userData ? <LiveSessions /> : <Navigate to="/signup" />} /> 
           <Route path="/forum" element={userData ? <Forum /> : <Navigate to="/signup" />} /> 
           <Route path="/forum/:id" element={userData ? <ThreadView /> : <Navigate to="/signup" />} /> 
-      </Routes>
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />      </Routes>
     </>
   );
 }

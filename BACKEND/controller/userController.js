@@ -25,7 +25,7 @@ export const updateProfile = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized: No user found." });
     }
 
-    const { name, description } = req.body;
+    const { name, bio } = req.body;
     let photoUrl;
 
     // Check if a new file has been uploaded
@@ -45,7 +45,7 @@ export const updateProfile = async (req, res) => {
       req.user._id,
       {
         name: name || req.user.name,
-        description: description || req.user.description,
+        bio: bio || req.user.bio,
         // Only add photoUrl to the update if it's a new, valid URL
         ...(photoUrl && { photoUrl }),
       },

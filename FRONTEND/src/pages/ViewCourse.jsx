@@ -96,9 +96,16 @@ function ViewCourse() {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: orderData.data.amount,
         currency: 'INR',
-        name: "VIRTUAL COURSES",
-        description: "COURSE ENROLLMENT PAYMENT",
+        name: "V-LMS PREMIUM",
+        description: "FOR TESTING: Use success@razorpay as email",
         order_id: orderData.data.id,
+        prefill: {
+          name: userData.name,
+          email: userData.email,
+        },
+        notes: {
+            "instruction": "USE 'success@razorpay' for testing"
+        },
         handler: async function (response) {
           try {
             const verifyPayment = await axios.post(
@@ -107,12 +114,22 @@ function ViewCourse() {
               { withCredentials: true }
             );
             setIsEnrolled(true);
-            toast.success(verifyPayment.data.message);
+            toast.success("Enrollment Successful! Welcome to the course.");
           } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || "Payment verification failed");
           }
         },
+        modal: {
+            ondismiss: function() {
+                toast.info("Enrollment cancelled. Use 'success@razorpay' to enroll for free in test mode.");
+            }
+        }
       };
+
+      toast.info("Pro Tip: Use 'success@razorpay' in the payment field for free testing!", {
+        position: "top-center",
+        autoClose: 5000,
+      });
 
       const rzp = new window.Razorpay(options);
       rzp.open();
