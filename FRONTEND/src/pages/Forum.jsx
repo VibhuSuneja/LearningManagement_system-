@@ -103,9 +103,20 @@ const Forum = () => {
                 <div className="flex-1 space-y-4 pb-12">
                     <div className="flex justify-between items-center mb-6">
                         <div className="flex flex-col">
-                            <h1 className="text-3xl font-black text-black tracking-tight">COMMUNITY FORUM</h1>
+                            <div className="flex items-center gap-4">
+                                <button 
+                                    onClick={() => navigate('/')}
+                                    className="p-3 bg-white border border-gray-200 rounded-2xl shadow-sm hover:bg-gray-50 transition-all group"
+                                    title="Back to Home"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600 group-hover:text-black transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                    </svg>
+                                </button>
+                                <h1 className="text-3xl font-black text-black tracking-tight">COMMUNITY FORUM</h1>
+                            </div>
                             {courseIdParam && (
-                                <div className="flex items-center gap-2 mt-2">
+                                <div className="flex items-center gap-2 mt-2 ml-14">
                                     <span className="text-xs font-black bg-blue-100 text-blue-600 px-3 py-1 rounded-full flex items-center gap-2">
                                         COURSE DISCUSSIONS <FaTimes className="cursor-pointer" onClick={() => navigate('/forum')} />
                                     </span>
@@ -114,7 +125,7 @@ const Forum = () => {
                         </div>
                         <div className="relative">
                            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                           <input type="text" placeholder="Search threads..." className="pl-10 pr-4 py-2 bg-white rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black w-64 text-sm" />
+                           <input type="text" placeholder="Search threads..." className="pl-10 pr-4 py-2 bg-white rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black w-64 text-sm font-bold" />
                         </div>
                     </div>
 
