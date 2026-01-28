@@ -37,7 +37,7 @@ function SignUp() {
     } catch (error) {
       console.log(error)
       setLoading(false)
-      toast.error(error.response?.data?.message || "Signup failed")
+      toast.error(error.response?.data?.message || "Network Error: Please check your connection")
     }
   }
 

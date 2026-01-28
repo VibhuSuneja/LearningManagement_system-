@@ -36,7 +36,7 @@ try {
         setLoading(false)
 } catch (error) {
           console.log(error)
-        toast.error(error.response.data.message)
+        toast.error(error.response?.data?.message || "Update failed")
         setLoading(false)
 }
     }
@@ -51,7 +51,7 @@ const removeLecture = async () => {
       } catch (error) {
         setLoading1(false)
         console.log(error)
-        toast.error(error.response.data.message)
+        toast.error(error.response?.data?.message || "Removal failed")
       }
       
     }

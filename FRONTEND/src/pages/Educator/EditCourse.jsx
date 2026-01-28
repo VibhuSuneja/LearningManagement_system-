@@ -105,7 +105,7 @@ function EditCourse() {
    } catch (error) {
     console.log(error)
         setLoading1(false);
-    toast.error(error.response.data.message);
+    toast.error(error.response?.data?.message || "Removal failed");
    }
   
   }

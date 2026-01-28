@@ -45,11 +45,24 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         maximumFileSizeToCacheInBytes: 4000000,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,json}'],
+        navigateFallbackDenylist: [/^\/api/], // Ensure API routes are never handled as navigations
         runtimeCaching: [
           {
-            // FORCE all API calls to skip the Service Worker Cache
-            // This stops the ERR_INTERNET_DISCONNECTED on mobile
+            // Specifically exclude all API calls from the Service Worker
+            urlPattern: /^https?:\/\/.*\.onrender\.com\/api\/.*/,
+            handler: 'NetworkOnly',
+            options: {
+              backgroundSync: {
+                name: 'apiQueue',
+                options: {
+                  maxRetentionTime: 24 * 60 // Retry for 24 hours
+                }
+              }
+            }
+          },
+          {
+            // Fallback for any other cross-origin request
             urlPattern: ({ url }) => url.origin !== self.location.origin,
             handler: 'NetworkOnly',
           },
@@ -59,7 +72,7 @@ export default defineConfig({
             options: {
               cacheName: 'images-cache',
               expiration: {
-                maxEntries: 50,
+                maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
               }
             }

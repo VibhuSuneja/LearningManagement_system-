@@ -166,7 +166,7 @@ function ViewCourse() {
     } catch (error) {
       console.log(error)
       setLoading(false)
-      toast.error(error.response.data.message)
+      toast.error(error.response?.data?.message || "Something went wrong while submitting review")
       setRating(0)
       setComment("")
     }

@@ -22,6 +22,7 @@ import { app, server } from "./socket/socket.js";
 const port = process.env.PORT || 8080;
 
 // --- Middleware ---
+app.set("trust proxy", 1); // Trust Render's proxy for secure cookies
 app.use(express.json());
 app.use(cookieParser());
 const allowedOrigins = [
@@ -32,12 +33,12 @@ const allowedOrigins = [
   "http://localhost:4173",
   "http://localhost:4174",
   process.env.FRONTEND_URL
-].filter(Boolean); // Remove undefined/null values
+].filter(Boolean); 
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
         callback(null, true);
       } else {
         console.log("CORS blocked origin:", origin);

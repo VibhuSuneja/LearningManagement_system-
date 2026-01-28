@@ -48,6 +48,7 @@ const Forum = () => {
             setThreads(res.data);
         } catch (err) {
             console.error(err);
+            toast.error("Failed to load forum threads");
         } finally {
             setLoading(false);
         }
