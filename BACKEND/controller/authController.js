@@ -29,7 +29,7 @@ res.cookie("token", token, {
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });
 
-    res.status(201).json(user);
+    res.status(201).json({ ...user._doc, token });
   } catch (error) {
     res.status(500).json({ message: `Signup error: ${error}` });
   }
@@ -53,7 +53,7 @@ export const login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json(user);
+    res.status(200).json({ ...user._doc, token });
   } catch (error) {
     res.status(500).json({ message: `Login error: ${error}` });
   }
@@ -155,7 +155,7 @@ export const googleSignup = async (req,res) => {
             sameSite: "none", 
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        return res.status(200).json(user)
+        return res.status(200).json({ ...user._doc, token })
 
 
     } catch (error) {

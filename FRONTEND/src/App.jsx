@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import SignUp from "./pages/SignUp";
@@ -37,6 +38,20 @@ import Privacy from "./pages/Privacy";
 
 export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
 console.log("Using Server URL:", serverUrl);
+
+// Axios Interceptor for Mobile Auth (Fallback for Cookie Blocking)
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 function App() {
   useGetCurrentUser();

@@ -26,6 +26,7 @@ import { FaArrowLeftLong } from 'react-icons/fa6';
         setLoading(true)
         try {
           const result = await axios.post(serverUrl +"/api/auth/login",{email,password},{withCredentials:true})
+          if (result.data.token) localStorage.setItem("token", result.data.token)
           dispatch(setUserData(result.data))
           setLoading(false)
           toast.success("Login Successfully")
@@ -47,6 +48,7 @@ import { FaArrowLeftLong } from 'react-icons/fa6';
     
     
           const result = await axios.post(serverUrl + "/api/auth/googlesignup", { name, email, role}, { withCredentials: true })
+          if (result.data.token) localStorage.setItem("token", result.data.token)
           dispatch(setUserData(result.data))
           navigate("/")
           toast.success("Google Login Successfully")

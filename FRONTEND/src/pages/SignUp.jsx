@@ -30,6 +30,7 @@ function SignUp() {
         { name, password, email, role },
         { withCredentials:true }
       )
+      if (result.data.token) localStorage.setItem("token", result.data.token)
       dispatch(setUserData(result.data))
       setLoading(false)
       navigate("/")
@@ -50,6 +51,7 @@ function SignUp() {
 
 
       const result = await axios.post(serverUrl + "/api/auth/googlesignup", { name, email, role}, { withCredentials: true })
+      if (result.data.token) localStorage.setItem("token", result.data.token)
       dispatch(setUserData(result.data))
       navigate("/")
       toast.success("SignUp Successfully")

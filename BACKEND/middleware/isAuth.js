@@ -4,8 +4,20 @@ import User from "../model/UserModel.js";
 export const isAuth = async (req, res, next) => {
   try {
     console.log("Incoming cookies:", req.cookies);
+    console.log("Incoming headers:", req.headers.authorization);
 
-    const { token } = req.cookies;
+    // Try to get token from cookies or Authorization header
+    let token = req.cookies?.token;
+    
+    // Check Authorization header (Bearer <token>)
+    if (!token && req.headers.authorization) {
+      const parts = req.headers.authorization.split(" ");
+      if (parts.length === 2 && parts[0] === "Bearer") {
+        token = parts[1];
+        console.log("Token found in Authorization header");
+      }
+    }
+
     if (!token) {
       console.log("No token found in request!");
       return res

@@ -23,6 +23,7 @@ function Nav() {
       const result = await axios.get(serverUrl + "/api/auth/logout", {
         withCredentials: true,
       });
+      localStorage.removeItem("token");
       dispatch(setUserData(null));
       console.log(result.data);
       toast.success("Logout successfully");
