@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaArrowLeftLong, FaGraduationCap, FaRobot, FaCheckCircle, FaExclamationCircle, FaUser, FaFileAlt, FaLink, FaCalendarAlt } from 'react-icons/fa';
+import { FaGraduationCap, FaRobot, FaCheckCircle, FaExclamationCircle, FaUser, FaFileAlt, FaLink, FaCalendarAlt } from 'react-icons/fa';
+import { FaArrowLeftLong } from 'react-icons/fa6';
 import axios from 'axios';
 import { serverUrl } from '../../App';
 import { toast } from 'react-toastify';

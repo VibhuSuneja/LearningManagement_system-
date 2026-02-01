@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaArrowLeftLong, FaCloudUploadAlt, FaCalendarAlt, FaStar, FaInfoCircle, FaFileAlt } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaCalendarAlt, FaStar, FaInfoCircle, FaFileAlt } from 'react-icons/fa';
+import { FaArrowLeftLong } from 'react-icons/fa6';
 import axios from 'axios';
 import { serverUrl } from '../../App';
 import { toast } from 'react-toastify';
