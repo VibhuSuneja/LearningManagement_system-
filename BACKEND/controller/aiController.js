@@ -10,7 +10,8 @@ import { createNotification } from "./notificationController.js";
 dotenv.config();
 
 const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY
+    apiKey: process.env.GEMINI_API_KEY,
+    apiVersion: "v1"
 });
 
 // AI Quiz Generator
