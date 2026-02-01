@@ -37,7 +37,18 @@ export const generateQuiz = async (req, res) => {
             return res.status(404).json({ message: "Course not found" });
         }
 
+        // Debug logging
+        console.log("=== AI Quiz Generation Authorization Debug ===");
+        console.log("course.creator type:", typeof course.creator);
+        console.log("course.creator:", course.creator);
+        console.log("course.creator._id:", course.creator._id);
+        console.log("req.userId:", req.userId);
+        
         const creatorId = course.creator._id ? course.creator._id.toString() : course.creator.toString();
+        console.log("creatorId after conversion:", creatorId);
+        console.log("Match result:", creatorId === req.userId);
+        console.log("===========================================");
+        
         if (creatorId !== req.userId) {
             return res.status(403).json({ 
                 message: "You are not authorized to generate quiz for this course" 
