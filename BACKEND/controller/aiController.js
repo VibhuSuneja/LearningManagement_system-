@@ -10,8 +10,7 @@ import { createNotification } from "./notificationController.js";
 dotenv.config();
 
 const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    apiVersion: "v1"
+    apiKey: process.env.GEMINI_API_KEY
 });
 
 // AI Quiz Generator
@@ -101,7 +100,7 @@ Generate the quiz now. Respond ONLY with valid JSON, no additional text.`;
         console.log("Generating quiz with AI...");
 
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: prompt
         });
 
@@ -225,7 +224,7 @@ Respond ONLY with valid JSON, no additional text.`;
         console.log("AI grading submission...");
 
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: prompt
         });
 
@@ -351,7 +350,7 @@ Student Question: ${question}`;
         console.log("AI Study Assistant processing question...");
 
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: [
                 ...conversationHistory.map(msg => ({
                     role: msg.role === "assistant" ? "model" : "user",
@@ -437,7 +436,7 @@ Format as JSON:
 Respond ONLY with valid JSON.`;
 
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: prompt
         });
 
