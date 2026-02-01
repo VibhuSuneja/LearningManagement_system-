@@ -37,7 +37,8 @@ export const generateQuiz = async (req, res) => {
             return res.status(404).json({ message: "Course not found" });
         }
 
-        if (course.creator.toString() !== req.userId) {
+        const creatorId = course.creator._id ? course.creator._id.toString() : course.creator.toString();
+        if (creatorId !== req.userId) {
             return res.status(403).json({ 
                 message: "You are not authorized to generate quiz for this course" 
             });
@@ -166,7 +167,8 @@ export const aiGradeSubmission = async (req, res) => {
 
         // Check authorization - only course creator can use AI grading
         const course = await Course.findById(assignment.course);
-        if (!course || course.creator.toString() !== req.userId) {
+        const creatorId = course?.creator._id ? course.creator._id.toString() : course?.creator.toString();
+        if (!course || creatorId !== req.userId) {
             return res.status(403).json({ 
                 message: "You are not authorized to grade this submission" 
             });
@@ -279,7 +281,8 @@ export const studyAssistant = async (req, res) => {
         const isEnrolled = course.enrolledStudents.some(
             studentId => studentId.toString() === req.userId
         );
-        const isCreator = course.creator.toString() === req.userId;
+        const creatorId = course.creator._id ? course.creator._id.toString() : course.creator.toString();
+        const isCreator = creatorId === req.userId;
 
         if (!isEnrolled && !isCreator) {
             return res.status(403).json({ 
@@ -371,7 +374,8 @@ export const getCourseInsights = async (req, res) => {
         }
 
         // Check authorization
-        if (course.creator.toString() !== req.userId) {
+        const creatorId = course.creator._id ? course.creator._id.toString() : course.creator.toString();
+        if (creatorId !== req.userId) {
             return res.status(403).json({ 
                 message: "Only course creators can view AI insights" 
             });
