@@ -2,7 +2,7 @@ import React from 'react'
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 import img from "../../assets/empty.jpg"
-import { FaEdit, FaVideo, FaClipboardList } from "react-icons/fa";
+import { FaEdit, FaVideo, FaClipboardList, FaListUl } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import axios from 'axios';
@@ -72,6 +72,7 @@ function Courses() {
                 <FaEdit className='text-gray-600 hover:text-blue-600 cursor-pointer' onClick={() => navigate(`/editcourse/${course?._id}`)}/> 
                 <FaVideo className='text-gray-600 hover:text-red-600 cursor-pointer' onClick={() => navigate(`/live/${course._id}`)} title="Live Session" />
                 <FaClipboardList className='text-gray-600 hover:text-green-600 cursor-pointer' onClick={() => navigate(`/create-quiz/${course._id}`)} title="Create Quiz" />
+                <FaListUl className='text-gray-600 hover:text-purple-600 cursor-pointer' onClick={() => navigate(`/manage-quizzes/${course._id}`)} title="Manage Quizzes" />
               </td>
             </tr>
             ))}
@@ -96,6 +97,7 @@ function Courses() {
                     <FaEdit className='text-gray-600 hover:text-blue-600 cursor-pointer' onClick={() => navigate(`/editcourse/${course?._id}`)}/>
                     <FaVideo className='text-gray-600 hover:text-red-600 cursor-pointer' onClick={() => navigate(`/live/${course._id}`)}/>
                     <FaClipboardList className='text-gray-600 hover:text-green-600 cursor-pointer' onClick={() => navigate(`/create-quiz/${course._id}`)} title="Create Quiz"/>
+                    <FaListUl className='text-gray-600 hover:text-purple-600 cursor-pointer' onClick={() => navigate(`/manage-quizzes/${course._id}`)} title="Manage Quizzes"/>
                   </div>
                 </div>
                 <span className={`w-fit px-3 py-1 text-xs rounded-full ${course.isPublished ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}`}>{course?.isPublished ? "Published" : "Draft"}</span>
