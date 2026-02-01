@@ -1,4 +1,4 @@
-import { createGoogleGenerativeAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import Quiz from "../model/quizModel.js";
 import Submission from "../model/submissionModel.js";
@@ -9,7 +9,7 @@ import { createNotification } from "./notificationController.js";
 
 dotenv.config();
 
-const ai = createGoogleGenerativeAI({
+const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 });
 
