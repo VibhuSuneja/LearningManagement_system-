@@ -99,10 +99,9 @@ Generate the quiz now. Respond ONLY with valid JSON, no additional text.`;
 
         console.log("Generating quiz with AI...");
 
-        const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
-            contents: prompt,
-        });
+        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
 
         let quizData;
         try {
@@ -223,10 +222,9 @@ Respond ONLY with valid JSON, no additional text.`;
 
         console.log("AI grading submission...");
 
-        const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
-            contents: prompt,
-        });
+        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
 
         let gradingData;
         try {
@@ -349,10 +347,16 @@ Student Question: ${question}`;
 
         console.log("AI Study Assistant processing question...");
 
-        const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
-            contents: contents,
+        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const chat = model.startChat({
+            history: conversationHistory.map(msg => ({
+                role: msg.role === "assistant" ? "model" : "user",
+                parts: [{ text: msg.content }]
+            }))
         });
+        
+        const result = await chat.sendMessage(question);
+        const response = await result.response;
 
         const answer = response.text;
 
@@ -429,10 +433,9 @@ Format as JSON:
 
 Respond ONLY with valid JSON.`;
 
-        const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
-            contents: prompt,
-        });
+        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
 
         let insights;
         try {
