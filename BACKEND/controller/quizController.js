@@ -18,7 +18,9 @@ export const createQuiz = async (req, res) => {
         }
 
         // Check if user is the creator of the course
-        if (course.creator.toString() !== req.userId) {
+        // Handle both populated (creator._id) and non-populated (creator) cases
+        const creatorId = course.creator._id ? course.creator._id.toString() : course.creator.toString();
+        if (creatorId !== req.userId) {
             return res.status(403).json({ message: "You are not authorized to create quiz for this course" });
         }
 
@@ -313,7 +315,8 @@ export const getCourseQuizAttempts = async (req, res) => {
         }
 
         // Check if user is the creator
-        if (course.creator.toString() !== req.userId) {
+        const creatorId = course.creator._id ? course.creator._id.toString() : course.creator.toString();
+        if (creatorId !== req.userId) {
             return res.status(403).json({ message: "You are not authorized to view quiz attempts" });
         }
 
