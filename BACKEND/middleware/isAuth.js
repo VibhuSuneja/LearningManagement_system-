@@ -49,8 +49,9 @@ export const isAuth = async (req, res, next) => {
 
     // Attach user to request
     req.user = user;
-    req.userId = user._id;
+    req.userId = user._id.toString(); // CRITICAL: Convert ObjectId to string
     console.log("Authenticated user:", req.user);
+    console.log("req.userId (string):", req.userId);
 
     next(); // proceed to next middleware or route
   } catch (error) {
