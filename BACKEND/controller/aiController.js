@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { createGoogleGenerativeAI } from "@google/genai";
 import dotenv from "dotenv";
 import Quiz from "../model/quizModel.js";
 import Submission from "../model/submissionModel.js";
@@ -9,7 +9,7 @@ import { createNotification } from "./notificationController.js";
 
 dotenv.config();
 
-const ai = new GoogleGenAI({
+const ai = createGoogleGenerativeAI({
     apiKey: process.env.GEMINI_API_KEY
 });
 
@@ -99,9 +99,10 @@ Generate the quiz now. Respond ONLY with valid JSON, no additional text.`;
 
         console.log("Generating quiz with AI...");
 
-        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
+        const response = await ai.models.generateContent({
+            model: "gemini-1.5-flash",
+            contents: prompt
+        });
 
         let quizData;
         try {
@@ -222,9 +223,10 @@ Respond ONLY with valid JSON, no additional text.`;
 
         console.log("AI grading submission...");
 
-        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
+        const response = await ai.models.generateContent({
+            model: "gemini-1.5-flash",
+            contents: prompt
+        });
 
         let gradingData;
         try {
@@ -347,16 +349,16 @@ Student Question: ${question}`;
 
         console.log("AI Study Assistant processing question...");
 
-        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const chat = model.startChat({
-            history: conversationHistory.map(msg => ({
-                role: msg.role === "assistant" ? "model" : "user",
-                parts: [{ text: msg.content }]
-            }))
+        const response = await ai.models.generateContent({
+            model: "gemini-1.5-flash",
+            contents: [
+                ...conversationHistory.map(msg => ({
+                    role: msg.role === "assistant" ? "model" : "user",
+                    parts: [{ text: msg.content }]
+                })),
+                { role: "user", parts: [{ text: question }] }
+            ]
         });
-        
-        const result = await chat.sendMessage(question);
-        const response = await result.response;
 
         const answer = response.text;
 
@@ -433,9 +435,10 @@ Format as JSON:
 
 Respond ONLY with valid JSON.`;
 
-        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
+        const response = await ai.models.generateContent({
+            model: "gemini-1.5-flash",
+            contents: prompt
+        });
 
         let insights;
         try {

@@ -22,7 +22,7 @@ function ManageQuizzes() {
 
   const fetchCourseDetails = async () => {
     try {
-      const response = await axios.get(`${serverUrl}/api/course/${courseId}`, {
+      const response = await axios.get(`${serverUrl}/api/course/getcourse/${courseId}`, {
         withCredentials: true
       });
       setCourseName(response.data.title);
