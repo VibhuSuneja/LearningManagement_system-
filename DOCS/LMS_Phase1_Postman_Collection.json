@@ -1,0 +1,446 @@
+{
+    "info": {
+        "name": "LMS Phase 1 - Quiz, Assignment, Progress",
+        "description": "API endpoints for testing Phase 1 features",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Quiz APIs",
+            "item": [
+                {
+                    "name": "Create Quiz",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"JavaScript Basics Quiz\",\n  \"description\": \"Test your JS knowledge\",\n  \"courseId\": \"REPLACE_WITH_COURSE_ID\",\n  \"questions\": [\n    {\n      \"questionText\": \"What is 2 + 2?\",\n      \"questionType\": \"multiple-choice\",\n      \"options\": [\n        { \"text\": \"3\", \"isCorrect\": false },\n        { \"text\": \"4\", \"isCorrect\": true },\n        { \"text\": \"5\", \"isCorrect\": false }\n      ],\n      \"points\": 1,\n      \"explanation\": \"Basic arithmetic\"\n    },\n    {\n      \"questionText\": \"JavaScript is single-threaded\",\n      \"questionType\": \"true-false\",\n      \"options\": [\n        { \"text\": \"True\", \"isCorrect\": true },\n        { \"text\": \"False\", \"isCorrect\": false }\n      ],\n      \"points\": 1\n    }\n  ],\n  \"duration\": 10,\n  \"passingScore\": 60,\n  \"attempts\": 3\n}"
+                        },
+                        "url": {
+                            "raw": "{{backend_url}}/api/quiz/create",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "quiz",
+                                "create"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Course Quizzes",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{backend_url}}/api/quiz/course/:courseId",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "quiz",
+                                "course",
+                                ":courseId"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "courseId",
+                                    "value": "REPLACE_WITH_COURSE_ID"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Quiz Details",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{backend_url}}/api/quiz/:quizId",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "quiz",
+                                ":quizId"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "quizId",
+                                    "value": "REPLACE_WITH_QUIZ_ID"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Submit Quiz Attempt",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"answers\": [\n    {\n      \"questionId\": \"REPLACE_WITH_QUESTION_ID\",\n      \"selectedAnswer\": \"1\"\n    }\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{backend_url}}/api/quiz/:quizId/submit",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "quiz",
+                                ":quizId",
+                                "submit"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "quizId",
+                                    "value": "REPLACE_WITH_QUIZ_ID"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Quiz Results",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{backend_url}}/api/quiz/:quizId/results",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "quiz",
+                                ":quizId",
+                                "results"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "quizId",
+                                    "value": "REPLACE_WITH_QUIZ_ID"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Assignment APIs",
+            "item": [
+                {
+                    "name": "Create Assignment",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "title",
+                                    "value": "Essay on Clean Code",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "Write a 1000-word essay on clean code principles",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "courseId",
+                                    "value": "REPLACE_WITH_COURSE_ID",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "dueDate",
+                                    "value": "2026-02-15T23:59:59.000Z",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "maxPoints",
+                                    "value": "100",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "instructions",
+                                    "value": "Follow MLA format",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{backend_url}}/api/assignment/create",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "assignment",
+                                "create"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Course Assignments",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{backend_url}}/api/assignment/course/:courseId",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "assignment",
+                                "course",
+                                ":courseId"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "courseId",
+                                    "value": "REPLACE_WITH_COURSE_ID"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Submit Assignment",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "submissionText",
+                                    "value": "Here is my assignment submission...",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "files",
+                                    "type": "file",
+                                    "src": "path/to/your/file.pdf"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{backend_url}}/api/assignment/:assignmentId/submit",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "assignment",
+                                ":assignmentId",
+                                "submit"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "assignmentId",
+                                    "value": "REPLACE_WITH_ASSIGNMENT_ID"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Grade Submission",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"grade\": 85,\n  \"feedback\": \"Excellent work! Well-structured and thorough.\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{backend_url}}/api/assignment/submission/:submissionId/grade",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "assignment",
+                                "submission",
+                                ":submissionId",
+                                "grade"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "submissionId",
+                                    "value": "REPLACE_WITH_SUBMISSION_ID"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Assignment Submissions",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{backend_url}}/api/assignment/:assignmentId/submissions",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "assignment",
+                                ":assignmentId",
+                                "submissions"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "assignmentId",
+                                    "value": "REPLACE_WITH_ASSIGNMENT_ID"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Progress APIs",
+            "item": [
+                {
+                    "name": "Get Course Progress",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{backend_url}}/api/progress/course/:courseId",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "progress",
+                                "course",
+                                ":courseId"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "courseId",
+                                    "value": "REPLACE_WITH_COURSE_ID"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mark Lecture Complete",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"watchTime\": 120\n}"
+                        },
+                        "url": {
+                            "raw": "{{backend_url}}/api/progress/course/:courseId/lecture/:lectureId/complete",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "progress",
+                                "course",
+                                ":courseId",
+                                "lecture",
+                                ":lectureId",
+                                "complete"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "courseId",
+                                    "value": "REPLACE_WITH_COURSE_ID"
+                                },
+                                {
+                                    "key": "lectureId",
+                                    "value": "REPLACE_WITH_LECTURE_ID"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get My Overall Progress",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{backend_url}}/api/progress/my-progress",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "progress",
+                                "my-progress"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Course Students Progress (Educator)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{backend_url}}/api/progress/course/:courseId/students",
+                            "host": [
+                                "{{backend_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "progress",
+                                "course",
+                                ":courseId",
+                                "students"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "courseId",
+                                    "value": "REPLACE_WITH_COURSE_ID"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "backend_url",
+            "value": "https://your-backend.vercel.app",
+            "type": "string"
+        }
+    ]
+}
