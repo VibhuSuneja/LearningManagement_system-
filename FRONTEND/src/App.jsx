@@ -35,6 +35,8 @@ import ThreadView from "./pages/ThreadView.jsx";
 import { useSocketContext } from "./context/SocketContext";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import CreateQuiz from "./pages/Educator/CreateQuiz";
+import TakeQuiz from "./pages/TakeQuiz";
 
 export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
 console.log("Using Server URL:", serverUrl);
@@ -170,7 +172,9 @@ function App() {
           <Route path="/leaderboard" element={userData ? <Leaderboard /> : <Navigate to="/signup" />} /> 
           <Route path="/live/:courseId" element={userData ? <LiveSessions /> : <Navigate to="/signup" />} /> 
           <Route path="/forum" element={userData ? <Forum /> : <Navigate to="/signup" />} /> 
-          <Route path="/forum/:id" element={userData ? <ThreadView /> : <Navigate to="/signup" />} /> 
+          <Route path="/forum/:id" element={userData ? <ThreadView /> : <Navigate to="/signup" />} />
+          <Route path="/create-quiz/:courseId" element={userData?.role === "educator" ? <CreateQuiz /> : <Navigate to="/signup" />} />
+          <Route path="/take-quiz/:quizId" element={userData ? <TakeQuiz /> : <Navigate to="/signup" />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />      </Routes>
     </>

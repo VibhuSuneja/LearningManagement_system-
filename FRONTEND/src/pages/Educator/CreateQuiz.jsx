@@ -1,0 +1,509 @@
+import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { FaArrowLeft, FaPlus, FaTrash, FaRobot } from 'react-icons/fa';
+import axios from 'axios';
+import { serverUrl } from '../../App';
+import { toast } from 'react-toastify';
+import { ClipLoader } from 'react-spinners';
+
+function CreateQuiz() {
+  const { courseId } = useParams();
+  const navigate = useNavigate();
+  
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [duration, setDuration] = useState(30);
+  const [passingScore, setPassingScore] = useState(60);
+  const [attempts, setAttempts] = useState(3);
+  const [questions, setQuestions] = useState([{
+    questionText: '',
+    questionType: 'multiple-choice',
+    options: [
+      { text: '', isCorrect: false },
+      { text: '', isCorrect: false }
+    ],
+    points: 1,
+    explanation: ''
+  }]);
+  
+  const [loading, setLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+ 
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [lectureContent, setLectureContent] = useState('');
+  const [aiNumQuestions, setAiNumQuestions] = useState(5);
+  const [aiDifficulty, setAiDifficulty] = useState('medium');
+
+  // Add new question
+  const addQuestion = () => {
+    setQuestions([...questions, {
+      questionText: '',
+      questionType: 'multiple-choice',
+      options: [
+        { text: '', isCorrect: false },
+        { text: '', isCorrect: false }
+      ],
+      points: 1,
+      explanation: ''
+    }]);
+  };
+
+  // Remove question
+  const removeQuestion = (index) => {
+    const newQuestions = questions.filter((_, i) => i !== index);
+    setQuestions(newQuestions);
+  };
+
+  // Update question
+  const updateQuestion = (index, field, value) => {
+    const newQuestions = [...questions];
+    newQuestions[index][field] = value;
+    setQuestions(newQuestions);
+  };
+
+  // Add option to question
+  const addOption = (questionIndex) => {
+    const newQuestions = [...questions];
+    newQuestions[questionIndex].options.push({ text: '', isCorrect: false });
+    setQuestions(newQuestions);
+  };
+
+  // Update option
+  const updateOption = (questionIndex, optionIndex, field, value) => {
+    const newQuestions = [...questions];
+    newQuestions[questionIndex].options[optionIndex][field] = value;
+    
+    // If marking as correct, unmark others
+    if (field === 'isCorrect' && value === true) {
+      newQuestions[questionIndex].options.forEach((opt, idx) => {
+        if (idx !== optionIndex) opt.isCorrect = false;
+      });
+    }
+    
+    setQuestions(newQuestions);
+  };
+
+  // Remove option
+  const removeOption = (questionIndex, optionIndex) => {
+    const newQuestions = [...questions];
+    newQuestions[questionIndex].options = newQuestions[questionIndex].options.filter((_, i) => i !== optionIndex);
+    setQuestions(newQuestions);
+  };
+
+  // Create quiz manually
+  const handleCreateQuiz = async () => {
+    
+    // Validation
+    if (!title.trim()) {
+      toast.error('Quiz title is required');
+      return;
+    }
+
+    if (questions.length === 0) {
+      toast.error('Add at least one question');
+      return;
+    }
+
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i];
+      if (!q.questionText.trim()) {
+        toast.error(`Question ${i + 1} text is required`);
+        return;
+      }
+      if (q.options.length < 2) {
+        toast.error(`Question ${i + 1} must have at least  2 options`);
+        return;
+      }
+      const hasCorrect = q.options.some(opt => opt.isCorrect);
+      if (!hasCorrect) {
+        toast.error(`Question ${i + 1} must have a correct answer`);
+        return;
+      }
+    }
+
+    setLoading(true);
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/quiz/create`,
+        {
+          title,
+          description,
+          courseId,
+          questions,
+          duration,
+          passingScore,
+          attempts
+        },
+        { withCredentials: true }
+      );
+
+      toast.success('Quiz created successfully!');
+      navigate(`/courses`);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || 'Failed to create quiz');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // AI Generate Quiz
+  const handleAiGenerate = async () => {
+    if (!lectureContent.trim()) {
+      toast.error('Please provide lecture content for AI to generate quiz');
+      return;
+    }
+
+    setAiLoading(true);
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/ai-features/generate-quiz`,
+        {
+          courseId,
+          lectureContent,
+          numQuestions: aiNumQuestions,
+          difficulty: aiDifficulty,
+          questionTypes: ['multiple-choice', 'true-false']
+        },
+        { withCredentials: true }
+      );
+
+      toast.success('Quiz generated by AI successfully!');
+      setShowAiModal(false);
+      navigate(`/courses`);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || 'Failed to generate quiz with AI');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  return (
+    <div className='min-h-screen bg-gray-50 p-6'>
+      <div className='max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-6'>
+        
+        {/* Header */}
+        <div className='flex items-center justify-between mb-6'>
+          <div className='flex items-center gap-3'>
+            <FaArrowLeft 
+              className='text-gray-600 cursor-pointer hover:text-black' 
+              onClick={() => navigate('/courses')}
+            />
+            <h1 className='text-2xl font-bold text-gray-800'>Create Quiz</h1>
+          </div>
+          
+          {/* AI Generate Button */}
+          <button
+            onClick={() => setShowAiModal(true)}
+            className='bg-gradient-to-r from-purple-600 to-blue-600 text-white px-5 py-2 rounded-lg flex items-center gap-2 hover:from-purple-700 hover:to-blue-700 transition-all shadow-md'
+          >
+            <FaRobot className='text-xl' />
+            Generate with AI
+          </button>
+        </div>
+
+        {/* AI Modal */}
+        {showAiModal && (
+          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'>
+            <div className='bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto'>
+              <h2 className='text-2xl font-bold mb-4 flex items-center gap-2'>
+                <FaRobot className='text-purple-600' />
+                AI Quiz Generator
+              </h2>
+              
+              <div className='space-y-4'>
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-2'>
+                    Lecture Content *
+                  </label>
+                  <textarea
+                    value={lectureContent}
+                    onChange={(e) => setLectureContent(e.target.value)}
+                    className='w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 focus:outline-none'
+                    rows={8}
+                    placeholder='Paste your lecture content, transcript, or notes here... The AI will generate quiz questions based on this content.'
+                  />
+                </div>
+
+                <div className='grid grid-cols-2 gap-4'>
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                      Number of Questions
+                    </label>
+                    <input
+                      type='number'
+                      value={aiNumQuestions}
+                      onChange={(e) => setAiNumQuestions(parseInt(e.target.value))}
+                      min={1}
+                      max={20}
+                      className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-purple-500 focus:outline-none'
+                    />
+                  </div>
+
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                      Difficulty Level
+                    </label>
+                    <select
+                      value={aiDifficulty}
+                      onChange={(e) => setAiDifficulty(e.target.value)}
+                      className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-purple-500 focus:outline-none'
+                    >
+                      <option value='easy'>Easy</option>
+                      <option value='medium'>Medium</option>
+                      <option value='hard'>Hard</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className='flex gap-3 pt-4'>
+                  <button
+                    onClick={handleAiGenerate}
+                    disabled={aiLoading}
+                    className='flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all disabled:opacity-50'
+                  >
+                    {aiLoading ? <ClipLoader size={20} color='white' /> : 'Generate Quiz'}
+                  </button>
+                  <button
+                    onClick={() => setShowAiModal(false)}
+                    className='px-6 bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all'
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Quiz Basic Info */}
+        <div className='space-y-4 mb-6'>
+          <div>
+            <label className='block text-sm font-medium text-gray-700 mb-1'>
+              Quiz Title *
+            </label>
+            <input
+              type='text'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className='w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-black focus:outline-none'
+              placeholder='e.g., JavaScript Basics Quiz'
+            />
+          </div>
+
+          <div>
+            <label className='block text-sm font-medium text-gray-700 mb-1'>
+              Description (Optional)
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className='w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-black focus:outline-none'
+              rows={2}
+              placeholder='Brief description of what this quiz covers'
+            />
+          </div>
+
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>
+                Duration (minutes)
+              </label>
+              <input
+                type='number'
+                value={duration}
+                onChange={(e) => setDuration(parseInt(e.target.value))}
+                min={1}
+                className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black focus:outline-none'
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>
+                Passing Score (%)
+              </label>
+              <input
+                type='number'
+                value={passingScore}
+                onChange={(e) => setPassingScore(parseInt(e.target.value))}
+                min={0}
+                max={100}
+                className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black focus:outline-none'
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>
+                Attempts Allowed
+              </label>
+              <input
+                type='number'
+                value={attempts}
+                onChange={(e) => setAttempts(parseInt(e.target.value))}
+                min={0}
+                className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black focus:outline-none'
+              />
+              <p className='text-xs text-gray-500 mt-1'>0 = unlimited</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Questions */}
+<div className='space-y-6'>
+          <div className='flex items-center justify-between'>
+            <h2 className='text-xl font-semibold text-gray-800'>Questions</h2>
+            <button
+              onClick={addQuestion}
+              className='bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-all'
+            >
+              <FaPlus /> Add Question
+            </button>
+          </div>
+
+          {questions.map((question, qIndex) => (
+            <div key={qIndex} className='border border-gray-300 rounded-lg p-4 bg-gray-50'>
+              <div className='flex items-center justify-between mb-4'>
+                <h3 className='font-semibold text-gray-800'>Question {qIndex + 1}</h3>
+                {questions.length > 1 && (
+                  <button
+                    onClick={() => removeQuestion(qIndex)}
+                    className='text-red-600 hover:text-red-800 flex items-center gap-1'
+                  >
+                    <FaTrash /> Remove
+                  </button>
+                )}
+              </div>
+
+              <div className='space-y-3'>
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>
+                    Question Text *
+                  </label>
+                  <input
+                    type='text'
+                    value={question.questionText}
+                    onChange={(e) => updateQuestion(qIndex, 'questionText', e.target.value)}
+                    className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black focus:outline-none'
+                    placeholder='Enter your question'
+                  />
+                </div>
+
+                <div className='grid grid-cols-2 gap-3'>
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Question Type
+                    </label>
+                    <select
+                      value={question.questionType}
+                      onChange={(e) => {
+                        updateQuestion(qIndex, 'questionType', e.target.value);
+                        // Reset options for true/false
+                        if (e.target.value === 'true-false') {
+                          const newQuestions = [...questions];
+                          newQuestions[qIndex].options = [
+                            { text: 'True', isCorrect: false },
+                            { text: 'False', isCorrect: false }
+                          ];
+                          setQuestions(newQuestions);
+                        }
+                      }}
+                      className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black focus:outline-none'
+                    >
+                      <option value='multiple-choice'>Multiple Choice</option>
+                      <option value='true-false'>True/False</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Points
+                    </label>
+                    <input
+                      type='number'
+                      value={question.points}
+                      onChange={(e) => updateQuestion(qIndex, 'points', parseInt(e.target.value))}
+                      min={1}
+                      className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black focus:outline-none'
+                    />
+                  </div>
+                </div>
+
+                {/* Options */}
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-2'>
+                    Options *
+                  </label>
+                  <div className='space-y-2'>
+                    {question.options.map((option, oIndex) => (
+                      <div key={oIndex} className='flex gap-2 items-center'>
+                        <input
+                          type='radio'
+                          name={`correct-${qIndex}`}
+                          checked={option.isCorrect}
+                          onChange={() => updateOption(qIndex, oIndex, 'isCorrect', true)}
+                          className='accent-green-600 h-4 w-4'
+                        />
+                        <input
+                          type='text'
+                          value={option.text}
+                          onChange={(e) => updateOption(qIndex, oIndex, 'text', e.target.value)}
+                          className='flex-1 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black focus:outline-none'
+                          placeholder={`Option ${oIndex + 1}`}
+                          disabled={question.questionType === 'true-false'}
+                        />
+                        {question.questionType !== 'true-false' && question.options.length > 2 && (
+                          <button
+                            onClick={() => removeOption(qIndex, oIndex)}
+                            className='text-red-600 hover:text-red-800'
+                          >
+                            <FaTrash />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {question.questionType !== 'true-false' && (
+                    <button
+                      onClick={() => addOption(qIndex)}
+                      className='mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1'
+                    >
+                      <FaPlus size={12} /> Add Option
+                    </button>
+                  )}
+                </div>
+
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>
+                    Explanation (Optional)
+                  </label>
+                  <textarea
+                    value={question.explanation}
+                    onChange={(e) => updateQuestion(qIndex, 'explanation', e.target.value)}
+                    className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black focus:outline-none'
+                    rows={2}
+                    placeholder='Explain why this is the correct answer'
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Submit Button */}
+        <div className='mt-8'>
+          <button
+            onClick={handleCreateQuiz}
+            disabled={loading}
+            className='w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-all disabled:opacity-50'
+          >
+            {loading ? <ClipLoader size={20} color='white' /> : 'Create Quiz'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default CreateQuiz;

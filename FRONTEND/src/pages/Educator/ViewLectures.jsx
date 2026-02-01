@@ -6,6 +6,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useEffect } from 'react';
 import axios from 'axios';
 import { serverUrl } from '../../App';
+import QuizList from '../../component/QuizList';
 
 function ViewLecture() {
   const { courseId } = useParams();
@@ -16,6 +17,7 @@ function ViewLecture() {
   const [selectedLecture, setSelectedLecture] = useState(
     selectedCourse?.lectures?.[0] || null
   );
+  const [activeTab, setActiveTab] = useState('lectures'); // 'lectures' or 'quizzes'
   const navigate = useNavigate()
   const courseCreator = userData?._id === selectedCourse?.creator ? userData : null;
 
@@ -78,32 +80,70 @@ function ViewLecture() {
         </div>
       </div>
 
-      {/* Right - All Lectures + Creator Info */}
+      {/* Right - Tabs: Lectures & Quizzes + Creator Info */}
       <div className="w-full md:w-1/3 bg-white rounded-2xl shadow-md p-6 border border-gray-200 h-fit">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">All Lectures</h2>
-        <div className="flex flex-col gap-3 mb-6">
-          {selectedCourse?.lectures?.length > 0 ? (
-            selectedCourse.lectures.map((lecture, index) => (
-              <button
-                key={index}
-                onClick={() => setSelectedLecture(lecture)}
-                className={`flex items-center justify-between p-3 rounded-lg border transition text-left ${
-                  selectedLecture?._id === lecture._id
-                    ? 'bg-gray-200 border-gray-500'
-                    : 'hover:bg-gray-50 border-gray-300'
-                }`}
-              >
-                <div>
-                  <h4 className="text-sm font-semibold text-gray-800">{lecture.lectureTitle}</h4>
-                  
-                </div>
-                <FaPlayCircle className="text-black text-xl" />
-              </button>
-            ))
-          ) : (
-            <p className="text-gray-500">No lectures available.</p>
-          )}
+        
+        {/* Tabs */}
+        <div className='flex gap-2 mb-4 border-b border-gray-200'>
+          <button
+            onClick={() => setActiveTab('lectures')}
+            className={`px-4 py-2 font-semibold border-b-2 transition-all ${
+              activeTab === 'lectures'
+                ? 'border-black text-black'
+                : 'border-transparent text-gray-500 hover:text-gray-800'
+            }`}
+          >
+            Lectures
+          </button>
+          <button
+            onClick={() => setActiveTab('quizzes')}
+            className={`px-4 py-2 font-semibold border-b-2 transition-all ${
+              activeTab === 'quizzes'
+                ? 'border-black text-black'
+                : 'border-transparent text-gray-500 hover:text-gray-800'
+            }`}
+          >
+            Quizzes
+          </button>
         </div>
+
+        {/* Lectures Tab Content */}
+        {activeTab === 'lectures' && (
+          <>
+            <h2 className="text-xl font-bold mb-4 text-gray-800">All Lectures</h2>
+            <div className="flex flex-col gap-3 mb-6">
+              {selectedCourse?.lectures?.length > 0 ? (
+                selectedCourse.lectures.map((lecture, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedLecture(lecture)}
+                    className={`flex items-center justify-between p-3 rounded-lg border transition text-left ${
+                      selectedLecture?._id === lecture._id
+                        ? 'bg-gray-200 border-gray-500'
+                        : 'hover:bg-gray-50 border-gray-300'
+                    }`}
+                  >
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800">{lecture.lectureTitle}</h4>
+                      
+                    </div>
+                    <FaPlayCircle className="text-black text-xl" />
+                  </button>
+                ))
+              ) : (
+                <p className="text-gray-500">No lectures available.</p>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Quizzes Tab Content */}
+        {activeTab === 'quizzes' && (
+          <div>
+            <h2 className="text-xl font-bold mb-4 text-gray-800">Course Quizzes</h2>
+            <QuizList courseId={courseId} />
+          </div>
+        )}
 
         {/* Creator Info */}
         {creatorData && (
