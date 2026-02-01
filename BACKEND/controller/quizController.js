@@ -63,10 +63,18 @@ export const getCourseQuizzes = async (req, res) => {
     try {
         const { courseId } = req.params;
 
-        const quizzes = await Quiz.find({ course: courseId })
+        let quizzes = await Quiz.find({ course: courseId })
             .populate("creator", "name email")
-            .populate("lecture", "lectureTitle")
-            .select("-studentAttempts"); // Don't send all student attempts
+            .populate("lecture", "lectureTitle");
+
+        // If not an educator, remove studentAttempts for privacy
+        if (req.user.role !== "educator") {
+            quizzes = quizzes.map(quiz => {
+                const quizObj = quiz.toObject();
+                delete quizObj.studentAttempts;
+                return quizObj;
+            });
+        }
 
         return res.status(200).json({ quizzes });
     } catch (error) {
