@@ -85,8 +85,7 @@ export const markLectureComplete = async (req, res) => {
 
         // Check if course is complete (100%)
         if (completionPercentage === 100 && !progress.completedAt) {
-            progress.completedAt = Date.now();
-            // TODO: Trigger certificate generation in Phase 2
+            progress.completedAt = new Date();
             await progress.save();
         }
 

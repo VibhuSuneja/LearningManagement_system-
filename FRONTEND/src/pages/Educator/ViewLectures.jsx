@@ -11,6 +11,7 @@ import AssignmentList from '../../component/AssignmentList';
 import { toast } from 'react-toastify';
 import { FaCheckCircle, FaRegCircle } from 'react-icons/fa';
 import { ClipLoader } from 'react-spinners';
+import CertificateDownload from '../../component/CertificateDownload';
 
 function ViewLecture() {
   const { courseId } = useParams();
@@ -171,9 +172,21 @@ function ViewLecture() {
                 style={{ width: `${progress.completionPercentage}%` }}
               ></div>
             </div>
-            <p className="text-xs text-gray-500 font-medium">
+            <p className="text-xs text-gray-500 font-medium mb-4">
               {progress.completedLectures.length} of {selectedCourse?.lectures?.length} lectures completed
             </p>
+            {progress.completionPercentage === 100 && (
+                <CertificateDownload 
+                    studentName={userData?.name}
+                    courseTitle={selectedCourse?.title}
+                    date={new Date(progress?.completedAt || Date.now()).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                    certificateId={`LMS-${courseId.substr(-4)}-${userData?._id?.substr(-4)}`.toUpperCase()}
+                />
+            )}
           </div>
         )}
 

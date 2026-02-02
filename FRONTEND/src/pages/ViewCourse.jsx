@@ -12,6 +12,7 @@ import Card from '../component/Card';
 import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import { useSocketContext } from '../context/SocketContext';
+import CertificateDownload from '../component/CertificateDownload';
 
 function ViewCourse() {
   const navigate = useNavigate();
@@ -20,6 +21,9 @@ function ViewCourse() {
   const { userData } = useSelector(state => state.user);
   const { socket } = useSocketContext();
   const dispatch = useDispatch();
+
+  const [courseProgress, setCourseProgress] = useState(null);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
     if (socket && courseId) {
@@ -70,10 +74,31 @@ function ViewCourse() {
     }
   };
 
+  const fetchProgress = async () => {
+    if (!userData || !isEnrolled) return;
+    try {
+      const { data } = await axios.get(`${serverUrl}/api/progress/course/${courseId}`, {
+        withCredentials: true
+      });
+      setCourseProgress(data.progress);
+      if (data.progress.completionPercentage === 100) {
+        setIsCompleted(true);
+      }
+    } catch (err) {
+      console.error("Error fetching progress:", err);
+    }
+  };
+
   useEffect(() => {
     fetchCourseData();
     checkEnrollment();
   }, [courseData, courseId, userData]);
+
+  useEffect(() => {
+    if (isEnrolled) {
+      fetchProgress();
+    }
+  }, [isEnrolled, courseId]);
 
   useEffect(() => {
     if (creatorData?._id && courseData.length > 0) {
@@ -261,6 +286,20 @@ const avgRating = calculateAvgReview(selectedCourse?.reviews)
                   >
                     <FaComments /> Course Community
                   </button>
+                  {isCompleted && (
+                    <div className="mt-3">
+                      <CertificateDownload 
+                        studentName={userData?.name}
+                        courseTitle={selectedCourse?.title}
+                        date={new Date(courseProgress?.completedAt || Date.now()).toLocaleDateString('en-GB', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric'
+                        })}
+                        certificateId={`LMS-${courseId.substr(-4)}-${userData?._id?.substr(-4)}`.toUpperCase()}
+                      />
+                    </div>
+                  )}
                 </>
               )}
             </div>
