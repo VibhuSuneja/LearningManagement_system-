@@ -1,5 +1,3 @@
-import { next } from '@vercel/edge';
-
 // List of known social media and search engine crawler user agents
 const CRAWLER_USER_AGENTS = [
   'facebookexternalhit',
@@ -41,6 +39,6 @@ export default function middleware(request) {
     }
   }
 
-  // For regular users, continue to the SPA
-  return next();
+  // For regular users, continue to the SPA by returning nothing
+  return;
 }
