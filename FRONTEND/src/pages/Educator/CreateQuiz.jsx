@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { FaArrowLeft, FaPlus, FaTrash, FaRobot } from 'react-icons/fa';
 import axios from 'axios';
 import { serverUrl } from '../../App';
@@ -9,6 +9,13 @@ import { ClipLoader } from 'react-spinners';
 function CreateQuiz() {
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  React.useEffect(() => {
+    if (location.state?.autoOpenAI) {
+      setShowAiModal(true);
+    }
+  }, [location]);
   
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');

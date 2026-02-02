@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaClock, FaTrophy, FaEdit, FaTrash, FaPlus, FaUsers } from 'react-icons/fa';
+import { FaClock, FaTrophy, FaEdit, FaTrash, FaPlus, FaUsers, FaRobot } from 'react-icons/fa';
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import axios from 'axios';
 import { serverUrl } from '../../App';
@@ -85,12 +85,20 @@ function ManageQuizzes() {
             <h1 className='text-3xl font-bold text-gray-800'>Manage Quizzes</h1>
             <p className='text-gray-600 mt-1'>{courseName}</p>
           </div>
-          <button
-            onClick={() => navigate(`/create-quiz/${courseId}`)}
-            className='bg-black text-white px-5 py-2.5 rounded-lg hover:bg-gray-800 transition-all flex items-center gap-2 font-semibold'
-          >
-            <FaPlus /> Create Quiz
-          </button>
+          <div className='flex gap-2'>
+            <button
+              onClick={() => navigate(`/create-quiz/${courseId}`)}
+              className='bg-black text-white px-5 py-2.5 rounded-lg hover:bg-gray-800 transition-all flex items-center gap-2 font-semibold'
+            >
+              <FaPlus /> Create Quiz
+            </button>
+            <button
+              onClick={() => navigate(`/create-quiz/${courseId}`, { state: { autoOpenAI: true } })}
+              className='bg-gradient-to-r from-purple-600 to-blue-600 text-white px-5 py-2.5 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all flex items-center gap-2 font-semibold shadow-md'
+            >
+              <FaRobot /> Generate with AI
+            </button>
+          </div>
         </div>
 
         {/* Quiz List */}
