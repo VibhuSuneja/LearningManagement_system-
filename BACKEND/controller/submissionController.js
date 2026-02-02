@@ -32,7 +32,11 @@ export const submitAssignment = async (req, res) => {
                     });
                 }
 
-                const fileUrl = await uploadOnCloudinary(file.buffer);
+                // Determine resource type based on extension
+                const isImage = /\.(jpg|jpeg|png|gif|webp|avif)$/i.test(file.originalname);
+                const resourceType = isImage ? "image" : "raw";
+
+                const fileUrl = await uploadOnCloudinary(file.buffer, resourceType);
                 files.push({
                     fileName: file.originalname,
                     fileUrl,

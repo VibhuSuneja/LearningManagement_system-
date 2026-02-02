@@ -32,7 +32,11 @@ export const createAssignment = async (req, res) => {
         let attachments = [];
         if (req.files && req.files.length > 0) {
             for (const file of req.files) {
-                const fileUrl = await uploadOnCloudinary(file.buffer);
+                // Determine resource type based on extension
+                const isImage = /\.(jpg|jpeg|png|gif|webp|avif)$/i.test(file.originalname);
+                const resourceType = isImage ? "image" : "raw";
+                
+                const fileUrl = await uploadOnCloudinary(file.buffer, resourceType);
                 attachments.push({
                     fileName: file.originalname,
                     fileUrl
@@ -167,7 +171,11 @@ export const updateAssignment = async (req, res) => {
         if (req.files && req.files.length > 0) {
             const newAttachments = [];
             for (const file of req.files) {
-                const fileUrl = await uploadOnCloudinary(file.buffer);
+                // Determine resource type based on extension
+                const isImage = /\.(jpg|jpeg|png|gif|webp|avif)$/i.test(file.originalname);
+                const resourceType = isImage ? "image" : "raw";
+
+                const fileUrl = await uploadOnCloudinary(file.buffer, resourceType);
                 newAttachments.push({
                     fileName: file.originalname,
                     fileUrl

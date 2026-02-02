@@ -143,18 +143,27 @@ function SubmitAssignment() {
                 <div className='space-y-3'>
                   <h4 className='text-xs font-black text-gray-400 uppercase tracking-widest'>Resource Files</h4>
                   <div className='flex flex-wrap gap-3'>
-                    {assignment.attachments.map((file, idx) => (
-                      <a 
-                        key={idx} 
-                        href={file.fileUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className='flex items-center gap-3 px-4 py-2.5 bg-white border border-gray-200 rounded-xl hover:border-black transition-all'
-                      >
-                        <FaFileAlt className='text-gray-400' />
-                        <span className='text-sm font-bold text-gray-700'>{file.fileName}</span>
-                      </a>
-                    ))}
+                    {assignment.attachments.map((file, idx) => {
+                      // Fix for Cloudinary PDF viewing issues: Force download for PDFs
+                      let downloadUrl = file.fileUrl;
+                      if (downloadUrl.includes('cloudinary.com') && downloadUrl.toLowerCase().endsWith('.pdf') && !downloadUrl.includes('fl_attachment')) {
+                        downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
+                      }
+
+                      return (
+                        <a 
+                          key={idx} 
+                          href={downloadUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          download={file.fileName}
+                          className='flex items-center gap-3 px-4 py-2.5 bg-white border border-gray-200 rounded-xl hover:border-black transition-all group'
+                        >
+                          <FaFileAlt className='text-gray-400 group-hover:text-blue-500 transition-colors' />
+                          <span className='text-sm font-bold text-gray-700'>{file.fileName}</span>
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
               )}

@@ -205,11 +205,19 @@ function GradeAssignment() {
                           <div>
                             <h4 className='text-xs font-black text-gray-400 uppercase tracking-widest mb-3'>Uploaded Files</h4>
                             <div className='space-y-2'>
-                              {selectedSubmission.files.map((file, idx) => (
-                                <a key={idx} href={file.fileUrl} target="_blank" className='flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold hover:border-black transition-all'>
-                                  <FaFileAlt className='text-gray-300' /> {file.fileName}
-                                </a>
-                              ))}
+                              {selectedSubmission.files.map((file, idx) => {
+                                // Fix for Cloudinary PDF viewing issues: Force download for PDFs
+                                let downloadUrl = file.fileUrl;
+                                if (downloadUrl.includes('cloudinary.com') && downloadUrl.toLowerCase().endsWith('.pdf') && !downloadUrl.includes('fl_attachment')) {
+                                  downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
+                                }
+                                
+                                return (
+                                  <a key={idx} href={downloadUrl} target="_blank" download={file.fileName} className='flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold hover:border-black transition-all group'>
+                                    <FaFileAlt className='text-gray-300 group-hover:text-blue-500' /> {file.fileName}
+                                  </a>
+                                );
+                              })}
                             </div>
                           </div>
                         )}

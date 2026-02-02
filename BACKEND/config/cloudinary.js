@@ -9,7 +9,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const uploadToCloudinary = async (fileInput) => {
+const uploadToCloudinary = async (fileInput, resourceType = "auto") => {
   if (!fileInput) return null;
 
   try {
@@ -17,7 +17,7 @@ const uploadToCloudinary = async (fileInput) => {
     if (Buffer.isBuffer(fileInput)) {
       return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-          { resource_type: "auto" },
+          { resource_type: resourceType },
           (error, result) => {
             if (error) reject(error);
             else resolve(result.secure_url);
@@ -27,7 +27,7 @@ const uploadToCloudinary = async (fileInput) => {
       });
     } else {
       // Your existing file path logic
-      const uploadResult = await cloudinary.uploader.upload(fileInput, { resource_type: "auto" });
+      const uploadResult = await cloudinary.uploader.upload(fileInput, { resource_type: resourceType });
       fs.unlinkSync(fileInput); // remove temp file
       return uploadResult.secure_url;
     }
