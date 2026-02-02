@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import AboutPage from "./pages/AboutPage";
 import ForgetPassword from "./pages/ForgetPassword";
 import EditProfile from "./pages/EditProfile";
 import { toast, ToastContainer } from "react-toastify";
@@ -203,6 +204,7 @@ function App() {
           <Route path="/grade-assignment/:assignmentId" element={userData?.role === "educator" ? <GradeAssignment /> : <Navigate to="/signup" />} />
           <Route path="/manage-assignments/:courseId" element={userData?.role === "educator" ? <ManageAssignments /> : <Navigate to="/signup" />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<Privacy />} />      </Routes>
     </>
   );

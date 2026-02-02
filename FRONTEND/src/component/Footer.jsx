@@ -26,6 +26,7 @@ function Footer() {
           <ul className="space-y-2 text-sm">
             <li className="hover:text-white transition-colors cursor-pointer" onClick={() => navigate("/")}>Home</li>
             <li className="hover:text-white transition-colors cursor-pointer" onClick={() => navigate("/allcourses")}>Explore Courses</li>
+            <li className="hover:text-white transition-colors cursor-pointer" onClick={() => navigate("/about")}>About Us</li>
             <li className="hover:text-white transition-colors cursor-pointer" onClick={() => navigate("/login")}>Login / Sign Up</li>
             <li className="hover:text-white transition-colors cursor-pointer" onClick={() => navigate("/profile")}>My Profile</li>
           </ul>
