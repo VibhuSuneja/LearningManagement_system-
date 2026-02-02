@@ -74,11 +74,16 @@ The system serves multiple user types including students, instructors, and admin
   - **Role-Specific Onboarding**: Tailored tours for Educators and Students
   - **Auto-Scrolling Guidance**: Intelligent UI tracking that scrolls the bridge to the focused feature
 
-- **Security & Compliance (Production Ready!)**
-  - **GDPR & DPDP Compliant**: Mandatory T&C agreements and "Right to be Forgotten" (Account Deletion) logic
-  - **Cybersecurity Hardening**: Helmet.js secure headers, Mongo-sanitization, and XSS filtering
-  - **Abuse Prevention**: Role-based Rate Limiting (100 req/15m general, 20 req/1h for high-cost AI features)
-  - **Input Sanitization**: Backend-level `dompurify` integration for all community and assignment content
+- **Growth & SEO (Advanced) (New!)**
+  - **Dynamic Social Previews**: Custom Vercel Edge Middleware that detects social media crawlers and serves dynamic Open Graph/Twitter meta tags.
+  - **SEO Infrastructure**: Public-facing course API endpoints allowing crawlers to fetch data without authentication barriers.
+  - **Direct HTML Serving**: Bypassing SPA limitations by serving pre-rendered static HTML directly to crawlers for perfect link previews on WhatsApp, LinkedIn, and Twitter.
+
+- **Security & Compliance (Production Hardened!)**
+  - **GDPR & DPDP Compliant**: Mandatory T&C agreements and "Right to be Forgotten" (Account Deletion) logic.
+  - **Cybersecurity Hardening**: Helmet.js secure headers, Mongo-sanitization, and XSS filtering.
+  - **Abuse Prevention**: Role-based Rate Limiting (100 req/15m general, 20 req/1h for high-cost AI features).
+  - **Input Sanitization**: Backend-level `dompurify` integration for all community and assignment content.
 
 ### 📱 User Experience
 - **Responsive Design**
@@ -99,10 +104,12 @@ The system serves multiple user types including students, instructors, and admin
   - Content optimization and delivery
   - Organized resource management
 
-- **Performance Polish**
-  - **Skeleton Loaders**: High-end pulsing skeletons for course cards to improve perceived speed
-  - **Glassmorphism UI**: Modern, translucent interface elements with Framer Motion animations
-  - **Advanced Empty States**: Beautifully themed "No Content" illustrations using platform-aligned iconography
+- **Performance & Aesthetics**
+  - **Skeleton Loaders**: High-end pulsing skeletons for course cards to improve perceived speed.
+  - **Glassmorphism UI**: Modern, translucent interface elements with Framer Motion animations.
+  - **Cinematic About Page**: Dedicated mission-driven page featuring high-fidelity visuals, interactive timelines, and "Meet the Founder" storytelling.
+  - **Interactive Founder Badge**: Pulsing "Active Creator" status indicator on the homepage to establish personal brand trust.
+  - **Advanced Empty States**: Beautifully themed "No Content" illustrations using platform-aligned iconography.
 
 ## 🛠️ Technology Stack
 
@@ -147,7 +154,12 @@ The system serves multiple user types including students, instructors, and admin
 - **Personalized Recommendations**: Tailored course suggestions based on user interests.
 - **AI Assignment Grader**: Automated analysis and feedback suggestions for student submissions.
 - **AI Quiz Generator**: One-click quiz creation from lecture notes or transcripts.
-- **Ethics & safety**: Integrated AI liability disclaimers across all generated content sections.
+- **Ethics & Safety**: Integrated AI liability disclaimers across all generated content sections.
+
+### 🌐 Advanced Web Architecture
+- **Vercel Edge Computing**: Utilizes Edge Middleware for high-speed crawler detection and response redirection.
+- **PWA (Progressive Web App)**: Full offline-capable support with service workers and manifest configuration.
+- **Socket Rooms**: Optimized real-time state management using scoped namespaces for live lectures.
 
 ## 📦 Installation
 
@@ -434,10 +446,11 @@ SOFTWARE.
 
 ## 📞 Contact
 
-**Vibhu Suneja**
+**Vibhu Suneja** 
+*(Ambitious CS Student & Lifelong Learner)*
 - GitHub: [@VibhuSuneja](https://github.com/VibhuSuneja)
 - Email: vibhusun01@gmail.com
-- LinkedIn: https://www.linkedin.com/in/vibhusuneja08?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BBrCyG2mWSouA3to4I%2BS9FA%3D%3D)
+- LinkedIn: [Vibhu Suneja Profile](https://www.linkedin.com/in/vibhusuneja08)
 
 ## 🙏 Acknowledgments
 
@@ -466,8 +479,9 @@ SOFTWARE.
 - **Total Commits**: 200+
 - **Languages**: JavaScript (65%), HTML (30%), CSS (5%)
 - **Dependencies**: 55+ packages
-- **Development Time**: 10 weeks
-- **Current Status**: Production Hardened & Market Ready (v1.2)
+- **Development Time**: 11 weeks
+- **Current Status**: Production Hardened & SEO Optimized (v1.3)
+- **Key Metric**: 100% accurate social link previews across all major platforms.
 
 ---
 
