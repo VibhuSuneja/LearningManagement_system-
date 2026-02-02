@@ -139,6 +139,10 @@ const Chatbot = () => {
                                 <BsSendFill className="text-sm" />
                             </button>
                         </form>
+                        {/* Legal Disclaimer */}
+                        <div className="bg-white px-4 pb-2 text-[8px] text-center text-gray-400 font-medium">
+                            AI may provide inaccurate info. Verify important details with instructors.
+                        </div>
                     </div>
                 )}
 

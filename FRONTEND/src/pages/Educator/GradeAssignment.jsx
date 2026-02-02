@@ -244,6 +244,9 @@ function GradeAssignment() {
                       <div className='mb-8 bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100'>
                          <h4 className='text-xs font-black text-indigo-400 uppercase tracking-widest mb-3'>AI Suggestions</h4>
                          <p className='text-sm text-indigo-900 leading-relaxed whitespace-pre-wrap font-medium'>{selectedSubmission.aiGeneratedFeedback}</p>
+                         <p className='text-[8px] text-indigo-300 mt-4 italic'>
+                           The suggestions above are AI-generated for educator review. Final grades must be assigned by the instructor.
+                         </p>
                       </div>
                   )}
 

@@ -231,6 +231,9 @@ function CreateQuiz() {
                     rows={8}
                     placeholder='Paste your lecture content, transcript, or notes here... The AI will generate quiz questions based on this content.'
                   />
+                  <p className='text-[10px] text-gray-400 mt-1 italic'>
+                    * AI may provide inaccurate questions or answers. Please review all generated content before publishing.
+                  </p>
                 </div>
 
                 <div className='grid grid-cols-2 gap-4'>

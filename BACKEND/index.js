@@ -4,6 +4,9 @@ dotenv.config();
 import express from "express";
 import connectDb from "./config/connectDB.js";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
+import rateLimit from "express-rate-limit";
 import userRouter from "./route/userRoute.js";
 import authRouter from "./route/authRoute.js";
 import courseRouter from "./route/courseRoute.js";
@@ -23,12 +26,37 @@ import progressRouter from "./route/progressRoute.js";
 import aiRouter from "./route/aiRoute.js";
 import { app, server } from "./socket/socket.js";
 
+// --- Scaling & Security Configuration ---
+// 1. General Rate Limiting (Prevents DDOS and generic spam)
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window
+  message: "Too many requests from this IP, please try again after 15 minutes",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// 2. Strict Rate Limiting for AI & Auth (Prevents costly API abuse and brute force)
+const strictLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 20, // Limit each IP to 20 requests per hour for AI/Auth
+  message: "Daily limit reached for AI features. Please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 const port = process.env.PORT || 8080;
 
 // --- Middleware ---
 app.set("trust proxy", 1); // Trust Render's proxy for secure cookies
+app.use(helmet()); // Set security-related HTTP headers
+app.use(mongoSanitize()); // Prevent NoSQL injection
 app.use(express.json());
 app.use(cookieParser());
+
+// Apply general limiter to all requests
+app.use(generalLimiter);
+
 const allowedOrigins = [
   "https://learning-management-system-kappa-black.vercel.app",
   "http://localhost:5173",
@@ -56,13 +84,13 @@ app.use(
 );
 
 // --- Routes ---
-app.use("/api/auth", authRouter);
+app.use("/api/auth", strictLimiter, authRouter); // Apply strict limit to Auth
 app.use("/api/user", userRouter);
 app.use("/api/course", courseRouter);
 app.use("/api/order", paymentRouter);
 app.use("/api/review", reviewRouter);
-app.use("/api/ai", searchRouter);
-app.use("/api/chatbot", chatbotRouter);
+app.use("/api/ai", strictLimiter, searchRouter); // Apply strict limit to AI Search
+app.use("/api/chatbot", strictLimiter, chatbotRouter); // Apply strict limit to Chatbot
 app.use("/api/notification", notificationRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/live-session", liveSessionRouter);
@@ -71,7 +99,7 @@ app.use("/api/forum", forumRouter);
 app.use("/api/quiz", quizRouter);
 app.use("/api/assignment", assignmentRouter);
 app.use("/api/progress", progressRouter);
-app.use("/api/ai-features", aiRouter);
+app.use("/api/ai-features", strictLimiter, aiRouter); // Apply strict limit to AI Quiz/Feedback
 
 // ✅ This message will appear in your terminal if the file is loaded correctly.
 console.log("✅ Course router has been successfully loaded.");
