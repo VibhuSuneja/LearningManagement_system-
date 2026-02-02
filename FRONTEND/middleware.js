@@ -34,7 +34,7 @@ export default async function middleware(request) {
   
   if (!courseId || courseId === 'viewcourse') return;
 
-  const backendUrl = 'https://learningmanagementsystem-f6h0.onrender.com';
+  const backendUrl = 'https://learningmanagement-system.onrender.com';
   const frontendUrl = 'https://learning-management-system-kappa-black.vercel.app';
 
   try {
