@@ -90,7 +90,7 @@ function About() {
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
               </div>
               <div>
-                <div className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Active Mentor</div>
+                <div className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Active Creator</div>
               </div>
             </motion.div>
 
@@ -101,8 +101,8 @@ function About() {
               transition={{ delay: 0.7 }}
               className="absolute -bottom-8 -left-6 md:-left-12 bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-[2rem] shadow-2xl border border-white/20 hidden sm:block"
             >
-              <div className="text-4xl font-black text-white leading-none">05+</div>
-              <div className="text-[10px] font-bold text-blue-100 uppercase tracking-widest mt-2 border-t border-white/20 pt-2">Years Excellence</div>
+              <div className="text-4xl font-black text-white leading-none">Pro</div>
+              <div className="text-[10px] font-bold text-blue-100 uppercase tracking-widest mt-2 border-t border-white/20 pt-2">Lifelong Learner</div>
             </motion.div>
           </div>
           
@@ -130,7 +130,7 @@ function About() {
                </div>
                <div>
                   <h4 className="text-white font-bold text-sm">Vibhu Suneja</h4>
-                  <p className="text-gray-500 text-[11px] uppercase tracking-wider font-semibold italic">Transforming education through AI</p>
+                  <p className="text-gray-500 text-[11px] uppercase tracking-wider font-semibold italic">Ambitious CS Student & Developer</p>
                </div>
           </motion.div>
 

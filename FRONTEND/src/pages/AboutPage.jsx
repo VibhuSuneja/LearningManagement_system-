@@ -194,6 +194,15 @@ const AboutPage = () => {
             <div className="relative z-10 rounded-[40px] overflow-hidden border-8 border-white/5 shadow-2xl">
               <img src={founderImg} alt="Vibhu Suneja" className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700" />
             </div>
+            {/* Lifelong Learner Badge */}
+            <motion.div 
+              initial={{ rotate: -10, opacity: 0 }}
+              whileInView={{ rotate: 10, opacity: 1 }}
+              className="absolute -bottom-6 -right-6 bg-gradient-to-br from-blue-500 to-indigo-600 p-8 rounded-3xl shadow-xl border border-white/20 hidden md:block z-20"
+            >
+              <div className="text-4xl font-black text-white">PRO</div>
+              <div className="text-xs font-bold text-blue-100 uppercase tracking-widest mt-1">Lifelong Learner</div>
+            </motion.div>
             {/* Decorative background blur */}
             <div className="absolute -inset-10 bg-blue-600/20 rounded-full blur-[100px] -z-10" />
           </motion.div>
@@ -206,9 +215,9 @@ const AboutPage = () => {
           >
             <span className="text-blue-400 font-bold uppercase tracking-widest text-sm mb-4 block">Meet the Visionary</span>
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">Vibhu Suneja</h2>
-            <h4 className="text-xl text-blue-300 font-semibold mb-8 uppercase tracking-widest">Founder & Lead Educator</h4>
+            <h4 className="text-xl text-blue-300 font-semibold mb-8 uppercase tracking-widest">Ambitious CS Student & Founder</h4>
             <p className="text-gray-400 text-lg leading-relaxed mb-8">
-              "I started this platform because I saw too many bright minds getting stuck in outdated systems. My goal is to build a bridge between your potential and the future of technology. At V-LMS, we don't just teach code; we teach resilience, creativity, and the power of AI."
+              "As an ambitious computer science student and a lifelong learner, I founded this platform with a simple belief: education should be about producing results, not just consuming content. I'm dedicated to building a bridge between classroom theory and real-world digital creation."
             </p>
             <div className="flex gap-6 items-center">
               <span className="text-white font-bold text-sm uppercase tracking-wider">Follow My Journey:</span>
@@ -232,6 +241,7 @@ const AboutPage = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           className="max-w-3xl mx-auto bg-gradient-to-br from-blue-600 to-indigo-700 p-12 rounded-[40px] shadow-2xl relative overflow-hidden"
         >
+
           <FaQuoteLeft className="absolute -top-4 -left-4 text-white/10 text-[160px] pointer-events-none" />
           <p className="text-2xl md:text-3xl font-medium text-white mb-8 italic relative z-10 leading-relaxed">
             "Education is not the learning of facts, but the training of the mind to think. We are building the gym for that training."
