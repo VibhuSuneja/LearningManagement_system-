@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaFileUpload, FaRegPaperPlane, FaClock, FaCheckCircle, FaUndo, FaLink, FaFileAlt } from 'react-icons/fa';
+import { FaFileUpload, FaRegPaperPlane, FaClock, FaCheckCircle, FaUndo, FaLink, FaFileAlt, FaStar } from 'react-icons/fa';
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import axios from 'axios';
 import { serverUrl } from '../App';
