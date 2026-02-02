@@ -86,6 +86,20 @@ export const getCourseAssignments = async (req, res) => {
             .populate("lecture", "lectureTitle")
             .sort({ dueDate: 1 });
 
+        // If educator, include submission counts
+        if (req.user && req.user.role === "educator") {
+            const assignmentsWithStats = await Promise.all(assignments.map(async (assignment) => {
+                const submissionCount = await Submission.countDocuments({ assignment: assignment._id });
+                const gradedCount = await Submission.countDocuments({ assignment: assignment._id, status: "graded" });
+                
+                const assignmentObj = assignment.toObject();
+                assignmentObj.submissionCount = submissionCount;
+                assignmentObj.gradedCount = gradedCount;
+                return assignmentObj;
+            }));
+            return res.status(200).json({ assignments: assignmentsWithStats });
+        }
+
         return res.status(200).json({ assignments });
     } catch (error) {
         console.error("Error fetching assignments:", error);
