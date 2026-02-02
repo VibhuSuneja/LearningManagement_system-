@@ -43,10 +43,20 @@ function AssignmentList({ courseId }) {
 
   if (assignments.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-        <FaFileAlt className="w-12 h-12 mx-auto text-gray-300 mb-4" />
-        <h3 className="text-lg font-bold text-gray-700">No assignments yet</h3>
-        <p className="text-sm text-gray-500">Stay tuned for upcoming tasks</p>
+      <div className="space-y-4">
+        <div className="text-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+          <FaFileAlt className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+          <h3 className="text-lg font-bold text-gray-700">No assignments yet</h3>
+          <p className="text-sm text-gray-500">Stay tuned for upcoming tasks</p>
+        </div>
+        {userData?.role === 'educator' && (
+          <button 
+            onClick={() => navigate(`/create-assignment/${courseId}`)}
+            className='w-full py-4 border-2 border-dashed border-gray-200 rounded-2xl font-black text-gray-400 hover:border-black hover:text-black transition-all flex items-center justify-center gap-3'
+          >
+            <FaGraduationCap /> Create Your First Assignment
+          </button>
+        )}
       </div>
     );
   }
