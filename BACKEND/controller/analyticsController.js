@@ -27,9 +27,11 @@ export const getEducatorAnalytics = async (req, res) => {
         let totalStudentsSet = new Set();
         
         courses.forEach(course => {
-            const studentCount = course.enrolledStudents?.length || 0;
+            // Filter out null students (deleted from DB but still in course array)
+            const validStudents = course.enrolledStudents?.filter(s => s !== null) || [];
+            const studentCount = validStudents.length;
             totalRevenue += (course.price || 0) * studentCount;
-            course.enrolledStudents?.forEach(s => totalStudentsSet.add(s._id.toString()));
+            validStudents.forEach(s => totalStudentsSet.add(s._id.toString()));
         });
 
         // 3. Fetch Progress Data for all students in these courses
@@ -39,15 +41,18 @@ export const getEducatorAnalytics = async (req, res) => {
         const coursePerformance = courses.map(course => {
             const courseProgress = allProgress.filter(p => p.course.toString() === course._id.toString());
             const avgCompletion = courseProgress.length > 0 
-                ? Math.round(courseProgress.reduce((sum, p) => sum + p.completionPercentage, 0) / courseProgress.length)
+                ? Math.round(courseProgress.reduce((sum, p) => sum + (p.completionPercentage || 0), 0) / courseProgress.length)
                 : 0;
             
+            // Filter null students for accurate count
+            const validStudents = course.enrolledStudents?.filter(s => s !== null) || [];
+            
             return {
-                name: course.title,
+                name: course.title || "Untitled Course",
                 id: course._id,
-                students: course.enrolledStudents?.length || 0,
+                students: validStudents.length,
                 completion: avgCompletion,
-                revenue: (course.price || 0) * (course.enrolledStudents?.length || 0)
+                revenue: (course.price || 0) * validStudents.length
             };
         });
 
@@ -67,14 +72,17 @@ export const getEducatorAnalytics = async (req, res) => {
             .limit(5)
             .lean();
 
-        const recentActivity = recentSubmissions.map(sub => ({
-            id: sub._id,
-            type: "assignment",
-            user: sub.student.name,
-            photo: sub.student.photoUrl,
-            content: `Submitted assignment: ${sub.assignment.title}`,
-            time: sub.submittedAt
-        }));
+        // Filter out submissions where student or assignment was deleted
+        const recentActivity = recentSubmissions
+            .filter(sub => sub.student && sub.assignment) // Only include valid records
+            .map(sub => ({
+                id: sub._id,
+                type: "assignment",
+                user: sub.student?.name || "Deleted User",
+                photo: sub.student?.photoUrl || null,
+                content: `Submitted assignment: ${sub.assignment?.title || "Unknown Assignment"}`,
+                time: sub.submittedAt
+            }));
 
         res.status(200).json({
             summary: {
