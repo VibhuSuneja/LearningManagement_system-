@@ -14,22 +14,22 @@ const StatCard = ({ icon: Icon, value, label, delay }) => (
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.5, delay }}
-    className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl flex flex-col items-center justify-center min-w-[160px] hover:bg-white/20 transition-all cursor-default group"
+    className="bg-white/5 backdrop-blur-md border border-white/10 p-5 rounded-2xl flex flex-col items-center justify-center min-w-[140px] hover:bg-white/10 transition-all cursor-default group"
   >
-    <div className="bg-blue-500/20 p-3 rounded-full mb-3 group-hover:scale-110 transition-transform">
-      <Icon className="text-blue-400 text-3xl" />
+    <div className="bg-blue-500/20 p-2.5 rounded-full mb-2 group-hover:scale-110 transition-transform">
+      <Icon className="text-blue-400 text-2xl" />
     </div>
-    <div className="text-2xl font-bold text-white mb-1">{value}</div>
-    <div className="text-gray-400 text-sm">{label}</div>
+    <div className="text-xl font-bold text-white mb-0.5">{value}</div>
+    <div className="text-gray-400 text-xs tracking-wide">{label}</div>
   </motion.div>
 );
 
 const FeatureItem = ({ text }) => (
   <div className="flex items-center gap-3 text-gray-300 group">
-    <div className="bg-green-500/20 p-1.5 rounded-lg group-hover:bg-green-500/40 transition-colors">
+    <div className="bg-green-500/10 p-1.5 rounded-lg group-hover:bg-green-500/20 transition-colors border border-green-500/20">
       <BiSolidBadgeCheck className="text-green-400 text-xl" />
     </div>
-    <span className="font-medium">{text}</span>
+    <span className="font-medium text-sm md:text-base">{text}</span>
   </div>
 );
 
@@ -50,84 +50,95 @@ function About() {
   };
 
   return (
-    <div className="relative w-full overflow-hidden bg-[#0a0a0c] py-20 px-4 md:px-10 lg:px-20">
+    <div className="relative w-full overflow-hidden bg-[#0a0a0c] py-24 px-4 md:px-10 lg:px-20 border-t border-white/5">
       {/* Background Decorative Gradients */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] -z-10" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] -z-10" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[120px] -z-10" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/5 rounded-full blur-[120px] -z-10" />
 
       <motion.div
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16"
+        className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24"
       >
-        {/* Left Side: Visual Experience */}
+        {/* Left Side: Founder Visuals */}
         <motion.div 
-          className="lg:w-1/2 relative"
+          className="lg:w-1/2 relative flex justify-center lg:justify-start"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="relative z-10 rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl shadow-blue-500/10 group">
-            <img 
-              src={aboutHero || "https://images.unsplash.com/photo-1501504905953-f8c97f2d819b?q=80&w=1974&auto=format&fit=crop"} 
-              className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" 
-              alt="About Virtual Courses" 
-            />
-            {/* Overlay Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent opacity-60" />
+          <div className="relative z-10 w-full max-w-[450px]">
+            <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden border-4 border-white/10 shadow-3xl group relative">
+              <img 
+                src={founderImg} 
+                className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" 
+                alt="Vibhu Suneja - Founder" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent opacity-40 group-hover:opacity-20 transition-opacity" />
+            </div>
             
-            {/* Experience Badge */}
-            <motion.div 
-              initial={{ rotate: -10, opacity: 0 }}
-              whileInView={{ rotate: 10, opacity: 1 }}
-              className="absolute -bottom-6 -right-6 bg-gradient-to-br from-blue-500 to-indigo-600 p-8 rounded-3xl shadow-xl border border-white/20 hidden md:block"
-            >
-              <div className="text-4xl font-black text-white">05+</div>
-              <div className="text-xs font-bold text-blue-100 uppercase tracking-widest mt-1">Years of Excellence</div>
-            </motion.div>
-
-            {/* Founder Trust Badge */}
+            {/* Pulsing Status Badge */}
             <motion.div 
               initial={{ x: -20, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
-              className="absolute -top-6 -right-6 bg-white/10 backdrop-blur-xl p-3 rounded-2xl border border-white/20 flex items-center gap-3 shadow-2xl hidden lg:flex"
+              transition={{ delay: 0.5 }}
+              className="absolute -top-6 -right-6 md:-right-10 bg-white/10 backdrop-blur-xl px-5 py-3 rounded-2xl border border-white/20 flex items-center gap-3 shadow-2xl"
             >
               <div className="relative">
-                <img src={founderImg} className="w-12 h-12 rounded-xl object-cover border-2 border-blue-500" alt="Founder" />
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-[#0a0a0c] animate-pulse" />
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
               </div>
-              <div className="pr-4">
-                <div className="text-white text-xs font-black uppercase tracking-tighter">Vibhu Suneja</div>
-                <div className="text-blue-400 text-[10px] font-bold uppercase">Lead Educator</div>
+              <div>
+                <div className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Active Mentor</div>
               </div>
+            </motion.div>
+
+            {/* Float Experience Badge */}
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="absolute -bottom-8 -left-6 md:-left-12 bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-[2rem] shadow-2xl border border-white/20 hidden sm:block"
+            >
+              <div className="text-4xl font-black text-white leading-none">05+</div>
+              <div className="text-[10px] font-bold text-blue-100 uppercase tracking-widest mt-2 border-t border-white/20 pt-2">Years Excellence</div>
             </motion.div>
           </div>
           
-          {/* Floating Element */}
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
+          {/* Background Sphere */}
+          <div className="absolute -top-10 -left-10 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl" />
         </motion.div>
 
-        {/* Right Side: Content & Mission */}
+        {/* Right Side: Mission & Content */}
         <div className="lg:w-1/2">
-          <motion.div variants={itemVariants} className="flex items-center gap-4 mb-6">
-            <span className="text-blue-400 font-bold uppercase tracking-[0.2em] text-sm">About Us</span>
-            <TfiLayoutLineSolid className="text-blue-500 w-10 h-10" />
+          <motion.div variants={itemVariants} className="flex items-center gap-4 mb-8">
+            <span className="text-blue-400 font-bold uppercase tracking-[0.3em] text-xs">Meet the Founder</span>
+            <div className="h-[1px] w-12 bg-blue-500/50" />
           </motion.div>
 
           <motion.h2 
             variants={itemVariants}
-            className="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-8"
+            className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.1] mb-8"
           >
-            Empowering the Next Generation of <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Digital Innovators</span>
+            Developing Skills for the <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">Future of Work</span>
           </motion.h2>
+
+          <motion.div variants={itemVariants} className="mb-10 flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 w-fit">
+               <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                  <BiRocket className="text-blue-400 text-2xl" />
+               </div>
+               <div>
+                  <h4 className="text-white font-bold text-sm">Vibhu Suneja</h4>
+                  <p className="text-gray-500 text-[11px] uppercase tracking-wider font-semibold italic">Transforming education through AI</p>
+               </div>
+          </motion.div>
 
           <motion.p 
             variants={itemVariants}
-            className="text-gray-400 text-lg leading-relaxed mb-10"
+            className="text-gray-400 text-base md:text-lg leading-relaxed mb-10 max-w-xl italic"
           >
-            We don't just provide courses; we build careers. Our AI-driven ecosystem bridges the gap between traditional learning and modern industry demands through immersive experience and real-time mentorship.
+            "I built V-LMS to bridge the gap between traditional learning and modern tech demands. Our goal is to empower learners with project-based skills that translate directly to industry success."
           </motion.p>
 
           <motion.div 
