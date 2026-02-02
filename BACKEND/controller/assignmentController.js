@@ -7,10 +7,15 @@ import { createNotification } from "./notificationController.js";
 // Create a new assignment
 export const createAssignment = async (req, res) => {
     try {
-        const { title, description, courseId, lectureId, dueDate, maxPoints, instructions, allowedFileTypes, maxFileSize } = req.body;
+        let { title, description, courseId, lectureId, dueDate, maxPoints, instructions, allowedFileTypes, maxFileSize } = req.body;
 
         if (!title || !description || !courseId || !dueDate) {
             return res.status(400).json({ message: "Title, description, course, and due date are required" });
+        }
+
+        // Handle empty lectureId string from frontend
+        if (lectureId === "" || lectureId === "undefined") {
+            lectureId = undefined;
         }
 
         const course = await Course.findById(courseId);

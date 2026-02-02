@@ -6,10 +6,15 @@ import { createNotification } from "./notificationController.js";
 // Create a new quiz
 export const createQuiz = async (req, res) => {
     try {
-        const { title, description, courseId, lectureId, questions, duration, passingScore, attempts } = req.body;
+        let { title, description, courseId, lectureId, questions, duration, passingScore, attempts } = req.body;
 
         if (!title || !courseId || !questions || questions.length === 0) {
             return res.status(400).json({ message: "Title, course, and questions are required" });
+        }
+
+        // Handle empty lectureId string from frontend
+        if (lectureId === "" || lectureId === "undefined") {
+            lectureId = undefined;
         }
 
         const course = await Course.findById(courseId);
