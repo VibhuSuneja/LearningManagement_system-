@@ -14,6 +14,8 @@ import getPublishedCourse from '../customHooks/getPublishedCourse';
 import About from '../component/About';
 import Footer from '../component/Footer'
 import ReviewPage from '../component/ReviewPage';
+import AnimatedDemoSection from '../component/AnimatedDemoSection';
+
 function Home() {
   const { userData } = useSelector((state) => state.user);
   const navigate = useNavigate()
@@ -59,6 +61,7 @@ function Home() {
       </div>
       <Logos/>
       <ExploreCourses/>
+      <AnimatedDemoSection />
       <CardPage/>
       <About/>
       <ReviewPage/>
