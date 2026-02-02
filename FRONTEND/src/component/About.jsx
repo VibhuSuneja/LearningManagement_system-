@@ -6,6 +6,7 @@ import { FaGraduationCap, FaChalkboardTeacher, FaAward, FaInfinity } from "react
 
 // Note: Using the stunning generated image for the premium look
 import aboutHero from "../assets/lms_about_hero_1770053422258.png"; 
+import founderImg from "../assets/founder.jpg";
 
 const StatCard = ({ icon: Icon, value, label, delay }) => (
   <motion.div
@@ -85,6 +86,22 @@ function About() {
             >
               <div className="text-4xl font-black text-white">05+</div>
               <div className="text-xs font-bold text-blue-100 uppercase tracking-widest mt-1">Years of Excellence</div>
+            </motion.div>
+
+            {/* Founder Trust Badge */}
+            <motion.div 
+              initial={{ x: -20, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              className="absolute -top-6 -right-6 bg-white/10 backdrop-blur-xl p-3 rounded-2xl border border-white/20 flex items-center gap-3 shadow-2xl hidden lg:flex"
+            >
+              <div className="relative">
+                <img src={founderImg} className="w-12 h-12 rounded-xl object-cover border-2 border-blue-500" alt="Founder" />
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-[#0a0a0c] animate-pulse" />
+              </div>
+              <div className="pr-4">
+                <div className="text-white text-xs font-black uppercase tracking-tighter">Vibhu Suneja</div>
+                <div className="text-blue-400 text-[10px] font-bold uppercase">Lead Educator</div>
+              </div>
             </motion.div>
           </div>
           

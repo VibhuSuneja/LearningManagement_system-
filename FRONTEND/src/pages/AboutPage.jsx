@@ -5,7 +5,8 @@ import Nav from '../component/Nav';
 import Footer from '../component/Footer';
 import About from '../component/About';
 import { BiRocket, BiTargetLock, BiChevronRight, BiTimeFive } from 'react-icons/bi';
-import { FaGraduationCap, FaQuoteLeft, FaGlobeAmericas, FaShieldAlt } from 'react-icons/fa';
+import { FaGraduationCap, FaQuoteLeft, FaGlobeAmericas, FaShieldAlt, FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
+import founderImg from '../assets/founder.jpg';
 
 const ValueCard = ({ icon: Icon, title, description, color }) => (
   <motion.div
@@ -178,6 +179,49 @@ const AboutPage = () => {
               side="right" 
             />
           </div>
+        </div>
+      </section>
+
+      {/* Meet the Founder Section */}
+      <section className="py-24 px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row items-center gap-16">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:w-1/2 relative"
+          >
+            <div className="relative z-10 rounded-[40px] overflow-hidden border-8 border-white/5 shadow-2xl">
+              <img src={founderImg} alt="Vibhu Suneja" className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700" />
+            </div>
+            {/* Decorative background blur */}
+            <div className="absolute -inset-10 bg-blue-600/20 rounded-full blur-[100px] -z-10" />
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:w-1/2"
+          >
+            <span className="text-blue-400 font-bold uppercase tracking-widest text-sm mb-4 block">Meet the Visionary</span>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">Vibhu Suneja</h2>
+            <h4 className="text-xl text-blue-300 font-semibold mb-8 uppercase tracking-widest">Founder & Lead Educator</h4>
+            <p className="text-gray-400 text-lg leading-relaxed mb-8">
+              "I started this platform because I saw too many bright minds getting stuck in outdated systems. My goal is to build a bridge between your potential and the future of technology. At V-LMS, we don't just teach code; we teach resilience, creativity, and the power of AI."
+            </p>
+            <div className="flex gap-6 items-center">
+              <span className="text-white font-bold text-sm uppercase tracking-wider">Follow My Journey:</span>
+              <div className="flex gap-4">
+                <a href="https://www.linkedin.com/in/vibhusuneja08" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white hover:bg-blue-600 transition-all">
+                  <FaLinkedin size={20} />
+                </a>
+                <a href="https://www.instagram.com/o_.vibhu._o" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white hover:bg-pink-600 transition-all">
+                  <FaInstagram size={20} />
+                </a>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
