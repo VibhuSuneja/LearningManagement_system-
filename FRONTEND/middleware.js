@@ -38,8 +38,8 @@ export default async function middleware(request) {
   const frontendUrl = 'https://learning-management-system-kappa-black.vercel.app';
 
   try {
-    // Fetch course details from your API at the Edge
-    const response = await fetch(`${backendUrl}/api/course/getcourse/${courseId}`);
+    // Fetch course details from your NEW PUBLIC API
+    const response = await fetch(`${backendUrl}/api/course/getpubliccourse/${courseId}`);
     
     if (!response.ok) throw new Error('Course not found');
 
@@ -66,8 +66,6 @@ export default async function middleware(request) {
   <meta name="twitter:title" content="${course.title}">
   <meta name="twitter:description" content="${course.description}">
   <meta name="twitter:image" content="${course.thumbnail}">
-
-  <meta http-equiv="refresh" content="0;url=${url.href}?no_cache=true">
 </head>
 <body>
   <h1>${course.title}</h1>

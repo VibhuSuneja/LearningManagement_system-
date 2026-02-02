@@ -249,3 +249,18 @@ export const getCreatorById = async (req, res) => {
     res.status(500).json({ message: "get Creator error" });
   }
 };
+
+export const getPublicCourse = async (req, res) => {
+    try {
+        const { courseId } = req.params;
+        const course = await Course.findById(courseId).select("title description thumbnail price category subTitle");
+        
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
+        
+        return res.status(200).json(course);
+    } catch (error) {
+        return res.status(500).json({ message: `Failed to get public course data ${error}` });
+    }
+};
