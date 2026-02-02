@@ -6,8 +6,7 @@ import { createNotification } from "./notificationController.js";
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 
-const window = new JSDOM('').window;
-const DOMPurify = createDOMPurify(window);
+const DOMPurify = createDOMPurify(new JSDOM('').window);
 
 // Create a new assignment
 export const createAssignment = async (req, res) => {

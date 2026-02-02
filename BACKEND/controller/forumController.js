@@ -5,13 +5,15 @@ import User from "../model/UserModel.js";
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 
-const window = new JSDOM('').window;
-const DOMPurify = createDOMPurify(window);
+const DOMPurify = createDOMPurify(new JSDOM('').window);
 
 // -- Thread Controllers --
 
 export const createThread = async (req, res) => {
     try {
+        const { title, content, courseId, category, tags } = req.body;
+        const author = req.user._id;
+
         const cleanTitle = DOMPurify.sanitize(title);
         const cleanContent = DOMPurify.sanitize(content);
 

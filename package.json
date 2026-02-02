@@ -1,0 +1,10 @@
+{
+    "name": "lms-monorepo-root",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "install-backend": "cd BACKEND && npm install",
+        "start-backend": "cd BACKEND && npm start",
+        "build": "cd BACKEND && npm install"
+    }
+}
