@@ -89,6 +89,10 @@ export const markLectureComplete = async (req, res) => {
             await progress.save();
         }
 
+        // Trigger streak update on activity
+        const { updateStreak } = await import("./gamificationController.js");
+        await updateStreak(req.userId);
+
         return res.status(200).json({ 
             message: "Lecture marked as complete",
             progress,

@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import NotificationTray from "./NotificationTray";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { GiTireIronCross } from "react-icons/gi";
+import { FaFire } from "react-icons/fa";
 
 function Nav() {
   const { userData } = useSelector((state) => state.user);
@@ -46,7 +47,16 @@ function Nav() {
         </div>
 
         {/* DESKTOP NAV */}
-        <div className="w-[30%] lg:flex items-center justify-center gap-4 hidden">
+        <div className="w-[45%] lg:flex items-center justify-end gap-5 hidden">
+          {userData && (
+            <div 
+              title="Daily Learning Streak"
+              className="flex items-center gap-1.5 bg-black/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 group hover:scale-110 transition-all cursor-default"
+            >
+              <FaFire className={`text-xl ${userData.streak > 0 ? "text-orange-500 animate-pulse" : "text-gray-400 opacity-50"}`} />
+              <span className="font-black text-white text-sm">{userData.streak || 0}</span>
+            </div>
+          )}
           {userData && <NotificationTray />}
           {!userData ? (
             <IoPersonCircle
@@ -167,6 +177,11 @@ function Nav() {
                   {userData.name.slice(0, 1).toUpperCase()}
                 </div>
               )}
+
+              <div className="flex items-center gap-2 bg-white/10 px-6 py-3 rounded-2xl border border-white/20 mb-2">
+                <FaFire className={`text-2xl ${userData.streak > 0 ? "text-orange-500 animate-pulse" : "text-gray-400 opacity-50"}`} />
+                <span className="font-black text-white text-xl">{userData.streak || 0} DAY STREAK</span>
+              </div>
 
               <div
                 className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"

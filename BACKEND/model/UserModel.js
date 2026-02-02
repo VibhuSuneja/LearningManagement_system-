@@ -55,10 +55,21 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 1
     },
+    streak: {
+        type: Number,
+        default: 0
+    },
+    maxStreak: {
+        type: Number,
+        default: 0
+    },
+    lastActivityDate: {
+        type: Date
+    },
     badges: [{
         name: String,
         description: String,
-        icon: String, // Icon name/URL
+        icon: String, // Icon name or URL
         unlockedAt: {
             type: Date,
             default: Date.now

@@ -24,6 +24,7 @@ import quizRouter from "./route/quizRoute.js";
 import assignmentRouter from "./route/assignmentRoute.js";
 import progressRouter from "./route/progressRoute.js";
 import aiRouter from "./route/aiRoute.js";
+import analyticsRouter from "./route/analyticsRoute.js";
 import { app, server } from "./socket/socket.js";
 
 // --- Scaling & Security Configuration ---
@@ -100,6 +101,7 @@ app.use("/api/quiz", quizRouter);
 app.use("/api/assignment", assignmentRouter);
 app.use("/api/progress", progressRouter);
 app.use("/api/ai-features", strictLimiter, aiRouter); // Apply strict limit to AI Quiz/Feedback
+app.use("/api/analytics", analyticsRouter);
 
 // ✅ This message will appear in your terminal if the file is loaded correctly.
 console.log("✅ Course router has been successfully loaded.");
@@ -109,6 +111,7 @@ console.log("✅ Quiz router has been successfully loaded.");
 console.log("✅ Assignment router has been successfully loaded.");
 console.log("✅ Progress router has been successfully loaded.");
 console.log("✅ AI Features router has been successfully loaded.");
+console.log("✅ Analytics router has been successfully loaded.");
 
 // --- Health check ---
 app.get("/", (req, res) => {

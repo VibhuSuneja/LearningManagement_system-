@@ -112,10 +112,20 @@ function App() {
         }
     });
 
+    socket.on("streakUpdated", (data) => {
+        toast.info(data.message, {
+            position: "bottom-center",
+            autoClose: 5000,
+            icon: "🔥",
+            theme: "dark"
+        });
+    });
+
     return () => {
         socket.off("levelUp");
         socket.off("badgeUnlocked");
         socket.off("pointsAwarded");
+        socket.off("streakUpdated");
         socket.off("newNotification");
     };
   }, [socket]);

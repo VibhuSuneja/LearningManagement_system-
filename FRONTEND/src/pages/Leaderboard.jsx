@@ -56,7 +56,8 @@ const Leaderboard = () => {
                     <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
                         <div className="grid grid-cols-12 bg-black text-white p-4 font-bold uppercase text-xs tracking-widest">
                             <div className="col-span-2 text-center">Rank</div>
-                            <div className="col-span-6">Student</div>
+                            <div className="col-span-4">Student</div>
+                            <div className="col-span-2 text-center">Streak</div>
                             <div className="col-span-2 text-center">Level</div>
                             <div className="col-span-2 text-center">XP Points</div>
                         </div>
@@ -73,7 +74,7 @@ const Leaderboard = () => {
                                     <div className="col-span-2 flex justify-center">
                                         {getRankIcon(index)}
                                     </div>
-                                    <div className="col-span-6 flex items-center gap-3">
+                                    <div className="col-span-4 flex items-center gap-3">
                                         <div className="relative">
                                             <img 
                                                 src={student.photoUrl || "https://static.vecteezy.com/system/resources/previews/000/439/863/original/vector-users-icon.jpg"} 
@@ -83,12 +84,17 @@ const Leaderboard = () => {
                                             {index === 0 && <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white"></div>}
                                         </div>
                                         <div>
-                                            <div className="font-bold text-gray-900">{student.name}</div>
+                                            <div className="font-bold text-gray-900 truncate max-w-[120px]">{student.name}</div>
                                             <div className="flex gap-1">
                                                 {student.badges?.slice(0, 3).map((badge, i) => (
                                                     <span key={i} title={badge.name} className="text-xs">{badge.icon}</span>
                                                 ))}
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2 text-center">
+                                        <div className="flex items-center justify-center gap-1 font-black text-orange-500">
+                                            {student.streak || 0} <span className="text-[10px]">🔥</span>
                                         </div>
                                     </div>
                                     <div className="col-span-2 text-center">
@@ -111,7 +117,7 @@ const Leaderboard = () => {
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
                             <li className="flex items-center gap-2"><FaStar className="text-yellow-400" /> Enroll in a Course: +100 XP</li>
                             <li className="flex items-center gap-2"><FaStar className="text-yellow-400" /> Join Live Classroom: +50 XP</li>
-                            <li className="flex items-center gap-2"><FaStar className="text-yellow-400" /> Level Up: Every 500 XP</li>
+                            <li className="flex items-center gap-2"><FaStar className="text-yellow-400" /> Daily Streak: Bonus XP Daily!</li>
                             <li className="flex items-center gap-2"><FaStar className="text-yellow-400" /> New Badges: Achievement Unlocks!</li>
                         </ul>
                     </div>

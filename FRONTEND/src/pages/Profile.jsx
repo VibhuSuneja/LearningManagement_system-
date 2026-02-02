@@ -99,6 +99,14 @@ function Profile() {
                 <span className="text-xl font-black">{profileUser.points || 0}</span>
                 <span className="text-[10px] font-black text-gray-400 uppercase">XP Points</span>
             </div>
+            <div className="flex flex-col">
+                <span className="text-xl font-black text-orange-500">{profileUser.streak || 0} 🔥</span>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">Current Streak</span>
+            </div>
+            <div className="flex flex-col">
+                <span className="text-xl font-black text-blue-500">{profileUser.maxStreak || 0} 🏆</span>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">Max Streak</span>
+            </div>
           </div>
 
           {/* XP Progress Bar */}

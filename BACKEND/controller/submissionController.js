@@ -107,6 +107,10 @@ export const submitAssignment = async (req, res) => {
 
         await progress.save();
 
+        // Trigger streak update on activity
+        const { updateStreak } = await import("./gamificationController.js");
+        await updateStreak(req.userId);
+
         // Notify educator
         await createNotification(
             assignment.creator,

@@ -17,21 +17,27 @@ const CertificateDownload = ({ studentName, courseTitle, date, certificateId }) 
         toast.info("Generating your premium certificate...");
 
         try {
+            // Wait for a few frames to ensure all assets are laid out
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             const canvas = await html2canvas(certificateRef.current, {
-                scale: 2, // Higher scale for better quality
+                scale: 3, // Even higher scale for professional printing
                 useCORS: true,
-                backgroundColor: "#fff",
-                logging: false
+                allowTaint: true,
+                backgroundColor: "#ffffff",
+                logging: false,
+                width: 1123,
+                height: 794
             });
 
-            const imgData = canvas.toDataURL('image/png');
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
             const pdf = new jsPDF({
                 orientation: 'landscape',
                 unit: 'px',
-                format: [canvas.width, canvas.height]
+                format: [1123, 794]
             });
 
-            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.addImage(imgData, 'JPEG', 0, 0, 1123, 794);
             pdf.save(`${studentName}-${courseTitle.replace(/\s+/g, '-')}-Certificate.pdf`);
             
             toast.success("Certificate downloaded successfully! Congratulations!");

@@ -45,6 +45,63 @@ export const awardPoints = async (userId, amount, reason) => {
     }
 };
 
+// Update and maintain learning streaks
+export const updateStreak = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+        if (!user) return;
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        // If no last activity, start the streak at 1
+        if (!user.lastActivityDate) {
+            user.streak = 1;
+            user.maxStreak = 1;
+            user.lastActivityDate = today;
+            await user.save();
+            return;
+        }
+
+        const lastActivity = new Date(user.lastActivityDate);
+        const lastActivityDay = new Date(lastActivity.getFullYear(), lastActivity.getMonth(), lastActivity.getDate());
+        
+        const diffTime = today - lastActivityDay;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) {
+            // Already active today, do nothing
+            return;
+        } else if (diffDays === 1) {
+            // Consecutive day!
+            user.streak += 1;
+            if (user.streak > user.maxStreak) {
+                user.maxStreak = user.streak;
+            }
+            // Award bonus points for maintaining streak
+            const streakBonus = Math.min(user.streak * 10, 100); // 10 XP per streak day, max 100
+            await awardPoints(userId, streakBonus, `Streak Maintenance (${user.streak} days)`);
+        } else {
+            // Break in streak
+            user.streak = 1;
+        }
+
+        user.lastActivityDate = today;
+        await user.save();
+
+        getIO().to(userId.toString()).emit("streakUpdated", { 
+            streak: user.streak, 
+            message: `Current Streak: ${user.streak} Days! 🔥` 
+        });
+
+        // Check for streak-related badges
+        await checkBadges(userId, "streak_update");
+        
+    } catch (error) {
+        console.error("Error updating streak:", error);
+    }
+};
+
 // Check and unlock badges
 export const checkBadges = async (userId, actionType) => {
     try {
@@ -68,6 +125,23 @@ export const checkBadges = async (userId, actionType) => {
                 description: "Joined a real-time classroom session.",
                 icon: "🎓"
             });
+        }
+
+        if (actionType === "streak_update") {
+            if (user.streak >= 7 && !existingBadges.includes("Week Warrior")) {
+                badgesToUnlock.push({
+                    name: "Week Warrior",
+                    description: "Maintained a 7-day learning streak!",
+                    icon: "🛡️"
+                });
+            }
+            if (user.streak >= 30 && !existingBadges.includes("Consistency King")) {
+                badgesToUnlock.push({
+                    name: "Consistency King",
+                    description: "Unstoppable! 30-day streak achieved.",
+                    icon: "👑"
+                });
+            }
         }
 
         if (badgesToUnlock.length > 0) {

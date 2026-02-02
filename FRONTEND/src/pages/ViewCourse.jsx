@@ -65,6 +65,40 @@ function ViewCourse() {
     handleCreator();
   }, [selectedCourse]);
 
+  // SEO & Social Sharing Optimization
+  useEffect(() => {
+    if (selectedCourse) {
+      const title = `${selectedCourse.title} | LMS Academy`;
+      const description = selectedCourse.description?.substring(0, 160) || "Advance your career with our professional courses.";
+      const image = selectedCourse.thumbnail?.url || selectedCourse.image || "";
+      const url = window.location.href;
+
+      document.title = title;
+
+      // Update Meta Tags for SEO & Social Sharing
+      const updateMeta = (name, content, attr = 'name') => {
+        let meta = document.querySelector(`meta[${attr}="${name}"]`);
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute(attr, name);
+          document.head.appendChild(meta);
+        }
+        meta.setAttribute('content', content);
+      };
+
+      updateMeta('description', description);
+      updateMeta('og:title', title, 'property');
+      updateMeta('og:description', description, 'property');
+      updateMeta('og:image', image, 'property');
+      updateMeta('og:url', url, 'property');
+      updateMeta('og:type', 'website', 'property');
+      updateMeta('twitter:card', 'summary_large_image');
+      updateMeta('twitter:title', title);
+      updateMeta('twitter:description', description);
+      updateMeta('twitter:image', image);
+    }
+  }, [selectedCourse]);
+
   const checkEnrollment = () => {
     const verify = userData?.enrolledCourses?.some(c =>
       (typeof c === 'string' ? c : c._id).toString() === courseId?.toString()
