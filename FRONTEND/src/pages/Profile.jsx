@@ -73,7 +73,7 @@ function Profile() {
               />
             ) : (
               <div className="w-32 h-32 rounded-full text-white flex items-center justify-center text-[40px] border-[6px] bg-black border-white shadow-2xl font-black">
-                {profileUser?.name.slice(0, 1).toUpperCase()}
+                {profileUser?.name ? profileUser.name.slice(0, 1).toUpperCase() : "U"}
               </div>
             )}
             <div className="absolute -bottom-2 -right-2 bg-yellow-400 text-black text-xs font-black px-4 py-1.5 rounded-full border-4 border-white shadow-lg">
@@ -82,9 +82,9 @@ function Profile() {
           </div>
 
           <h2 className="text-3xl font-black text-black uppercase tracking-tight">
-            {profileUser?.name}
+            {profileUser?.name || "User"}
           </h2>
-          <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-black mt-1 mb-4">{profileUser.role}</p>
+          <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-black mt-1 mb-4">{profileUser?.role}</p>
           
           <div className="flex gap-8 mb-8">
             <div className="flex flex-col">

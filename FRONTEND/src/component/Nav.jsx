@@ -77,7 +77,7 @@ function Nav() {
                   className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center text-[20px] border-2 bg-black border-white cursor-pointer"
                   onClick={() => setShow((prev) => !prev)}
                 >
-                  {userData.name.slice(0, 1).toUpperCase()}
+                  {userData?.name ? userData.name.slice(0, 1).toUpperCase() : "U"}
                 </div>
               )}
             </>
@@ -174,7 +174,7 @@ function Nav() {
                 />
               ) : (
                 <div className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center text-[20px] border-2 bg-black border-white cursor-pointer">
-                  {userData.name.slice(0, 1).toUpperCase()}
+                  {userData?.name ? userData.name.slice(0, 1).toUpperCase() : "U"}
                 </div>
               )}
 

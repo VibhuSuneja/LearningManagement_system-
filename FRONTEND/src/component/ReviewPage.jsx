@@ -20,7 +20,7 @@ function ReviewPage() {
       
      
 {
-  latestReview?.map((item, index) => (
+  latestReview?.filter(r => r !== null).map((item, index) => (
     <ReviewCard
       key={index}
       rating={item.rating}
@@ -28,8 +28,8 @@ function ReviewPage() {
       comment={item.comment}
       courseTitle={item.course?.title}
       description={item.user?.description}
-      name={item.user.name} 
-      role={item.user.role}
+      name={item.user?.name || "Student"} 
+      role={item.user?.role}
     />
   ))
 }

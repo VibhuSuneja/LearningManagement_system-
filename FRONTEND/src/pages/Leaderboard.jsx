@@ -63,7 +63,7 @@ const Leaderboard = () => {
                         </div>
 
                         <div className="divide-y divide-gray-100">
-                            {leaders.map((student, index) => (
+                            {leaders.filter(s => s !== null).map((student, index) => (
                                 <motion.div 
                                     key={student._id}
                                     initial={{ opacity: 0, x: -20 }}
@@ -77,16 +77,16 @@ const Leaderboard = () => {
                                     <div className="col-span-4 flex items-center gap-3">
                                         <div className="relative">
                                             <img 
-                                                src={student.photoUrl || "https://static.vecteezy.com/system/resources/previews/000/439/863/original/vector-users-icon.jpg"} 
-                                                alt={student.name} 
+                                                src={student?.photoUrl || "https://static.vecteezy.com/system/resources/previews/000/439/863/original/vector-users-icon.jpg"} 
+                                                alt={student?.name || "Student"} 
                                                 className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
                                             />
                                             {index === 0 && <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white"></div>}
                                         </div>
                                         <div>
-                                            <div className="font-bold text-gray-900 truncate max-w-[120px]">{student.name}</div>
+                                            <div className="font-bold text-gray-900 truncate max-w-[120px]">{student?.name || "Student"}</div>
                                             <div className="flex gap-1">
-                                                {student.badges?.slice(0, 3).map((badge, i) => (
+                                                {student?.badges?.slice(0, 3).map((badge, i) => (
                                                     <span key={i} title={badge?.name} className="text-xs">{badge?.icon}</span>
                                                 ))}
                                             </div>
