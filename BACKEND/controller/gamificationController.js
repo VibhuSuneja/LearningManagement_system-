@@ -89,10 +89,14 @@ export const updateStreak = async (userId) => {
         user.lastActivityDate = today;
         await user.save();
 
-        getIO().to(userId.toString()).emit("streakUpdated", { 
+        const io = getIO();
+        io.to(userId.toString()).emit("streakUpdated", { 
             streak: user.streak, 
             message: `Current Streak: ${user.streak} Days! 🔥` 
         });
+        
+        // CRITICAL: Emit userUpdated so the frontend refetches user data (Nav Bar, etc.)
+        io.to(userId.toString()).emit("userUpdated", { userId });
 
         // Check for streak-related badges
         await checkBadges(userId, "streak_update");
@@ -169,7 +173,7 @@ export const checkBadges = async (userId, actionType) => {
 export const getLeaderboard = async (req, res) => {
     try {
         const topUsers = await User.find({ role: "student" })
-            .select("name photoUrl points level badges")
+            .select("name photoUrl points level badges streak maxStreak")
             .sort({ points: -1 })
             .limit(10);
             
