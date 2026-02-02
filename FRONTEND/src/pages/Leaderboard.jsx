@@ -87,7 +87,7 @@ const Leaderboard = () => {
                                             <div className="font-bold text-gray-900 truncate max-w-[120px]">{student.name}</div>
                                             <div className="flex gap-1">
                                                 {student.badges?.slice(0, 3).map((badge, i) => (
-                                                    <span key={i} title={badge.name} className="text-xs">{badge.icon}</span>
+                                                    <span key={i} title={badge?.name} className="text-xs">{badge?.icon}</span>
                                                 ))}
                                             </div>
                                         </div>

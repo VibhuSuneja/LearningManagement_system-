@@ -128,18 +128,18 @@ function Dashboard() {
                         recentActivity.map((activity, i) => (
                             <div key={i} className="flex gap-4 items-start group">
                                 <img 
-                                    src={activity.photo || img} 
+                                    src={activity?.photo || img} 
                                     className="w-10 h-10 rounded-full border-2 border-white shadow-md" 
                                     alt="" 
                                 />
                                 <div className="flex-1">
                                     <h4 className="text-sm font-black text-black flex items-center gap-2">
-                                        {activity.user}
+                                        {activity?.user || "Student"}
                                         <span className="text-[8px] bg-gray-100 px-2 py-0.5 rounded-full uppercase text-gray-400">Assignment</span>
                                     </h4>
-                                    <p className="text-xs text-gray-500 font-medium mt-0.5 italic">{activity.content}</p>
+                                    <p className="text-xs text-gray-500 font-medium mt-0.5 italic">{activity?.content}</p>
                                     <span className="text-[8px] text-gray-300 font-bold uppercase mt-1 block">
-                                        {new Date(activity.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {activity?.time ? new Date(activity.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}
                                     </span>
                                 </div>
                             </div>

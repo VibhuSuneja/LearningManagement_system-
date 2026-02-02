@@ -143,9 +143,9 @@ function Profile() {
               <div className="flex flex-wrap gap-2">
                 {profileUser?.badges?.length > 0 ? (
                     profileUser.badges.map((badge, index) => (
-                        <div key={index} title={badge.description} className="flex flex-col items-center bg-black text-white p-3 rounded-2xl shadow-lg hover:scale-110 transition-transform cursor-help">
-                            <span className="text-2xl">{badge.icon}</span>
-                            <span className="text-[7px] font-black uppercase mt-1 tracking-tighter">{badge.name}</span>
+                        <div key={index} title={badge?.description} className="flex flex-col items-center bg-black text-white p-3 rounded-2xl shadow-lg hover:scale-110 transition-transform cursor-help">
+                            <span className="text-2xl">{badge?.icon}</span>
+                            <span className="text-[7px] font-black uppercase mt-1 tracking-tighter">{badge?.name}</span>
                         </div>
                     ))
                 ) : (
