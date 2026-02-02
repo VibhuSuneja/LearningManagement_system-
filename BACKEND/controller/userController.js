@@ -82,3 +82,25 @@ export const getUserById = async (req, res) => {
         res.status(500).json({ message: "Error fetching user", error: error.message });
     }
 };
+
+// Delete profile (GDPR Compliance)
+export const deleteProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        // Logic to clear sessions/cookies should happen on frontend
+        await User.findByIdAndDelete(req.userId);
+        
+        res.clearCookie("token", {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        });
+
+        res.status(200).json({ message: "Account deleted successfully. We're sorry to see you go." });
+    } catch (error) {
+        console.error("Delete Profile Error:", error);
+        res.status(500).json({ message: `Account deletion failed: ${error.message}` });
+    }
+};

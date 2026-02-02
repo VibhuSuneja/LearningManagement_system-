@@ -3,6 +3,11 @@ import Submission from "../model/submissionModel.js";
 import Course from "../model/courseModel.js";
 import uploadOnCloudinary from "../config/cloudinary.js";
 import { createNotification } from "./notificationController.js";
+import createDOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
+
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 // Create a new assignment
 export const createAssignment = async (req, res) => {
@@ -12,6 +17,10 @@ export const createAssignment = async (req, res) => {
         if (!title || !description || !courseId || !dueDate) {
             return res.status(400).json({ message: "Title, description, course, and due date are required" });
         }
+
+        const cleanTitle = DOMPurify.sanitize(title);
+        const cleanDescription = DOMPurify.sanitize(description);
+        const cleanInstructions = instructions ? DOMPurify.sanitize(instructions) : "";
 
         // Handle empty lectureId string from frontend
         if (lectureId === "" || lectureId === "undefined") {
@@ -45,13 +54,13 @@ export const createAssignment = async (req, res) => {
         }
 
         const assignment = await Assignment.create({
-            title,
-            description,
+            title: cleanTitle,
+            description: cleanDescription,
             course: courseId,
             lecture: lectureId,
             dueDate,
             maxPoints,
-            instructions,
+            instructions: cleanInstructions,
             allowedFileTypes: allowedFileTypes ? allowedFileTypes.split(',') : [],
             maxFileSize,
             attachments,

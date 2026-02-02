@@ -2,18 +2,22 @@ import ForumThread from "../model/ForumThread.js";
 import ForumComment from "../model/ForumComment.js";
 import { createNotification } from "./notificationController.js";
 import User from "../model/UserModel.js";
+import createDOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
+
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 // -- Thread Controllers --
 
 export const createThread = async (req, res) => {
     try {
-        const { title, content, courseId, category, tags } = req.body;
-        const author = req.user._id;
-        console.log(`[Forum] Creating thread: ${title} by ${author}`);
+        const cleanTitle = DOMPurify.sanitize(title);
+        const cleanContent = DOMPurify.sanitize(content);
 
         const newThread = new ForumThread({
-            title,
-            content,
+            title: cleanTitle,
+            content: cleanContent,
             author,
             courseId: courseId || null,
             category,
@@ -105,10 +109,12 @@ export const addComment = async (req, res) => {
         if (!thread) return res.status(404).json({ message: "Thread not found" });
         if (thread.isLocked) return res.status(403).json({ message: "Thread is locked" });
 
+        const cleanContent = DOMPurify.sanitize(content);
+
         const newComment = new ForumComment({
             threadId,
             author,
-            content,
+            content: cleanContent,
             parentCommentId: parentCommentId || null
         });
 

@@ -128,6 +128,28 @@ function EditProfile() {
             {loading ? <ClipLoader size={30} color='white'/> : "Save Changes"}
           </button>
         </form>
+
+        <div className="mt-10 pt-6 border-t border-gray-100">
+           <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-4">Danger Zone</p>
+           <button 
+             onClick={async () => {
+               if(window.confirm("CRITICAL: This will permanently delete your account and all enrolled courses. This cannot be undone. Are you sure?")) {
+                 try {
+                   await axios.delete(`${serverUrl}/api/user/profile`, { withCredentials: true });
+                   toast.success("Account deleted. We're sorry to see you go.");
+                   dispatch(setUserData(null));
+                   localStorage.removeItem("token");
+                   navigate("/login");
+                 } catch (err) {
+                   toast.error("Deletion failed. Please try again.");
+                 }
+               }
+             }}
+             className="w-full py-2 border border-red-200 text-red-500 rounded-md text-sm font-bold hover:bg-red-50 transition-all flex items-center justify-center gap-2"
+           >
+             Delete My Account
+           </button>
+        </div>
       </div>
     </div>
   )
