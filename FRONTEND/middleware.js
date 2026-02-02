@@ -1,25 +1,22 @@
 // List of known social media and search engine crawler user agents
 const CRAWLER_USER_AGENTS = [
   'facebookexternalhit',
-  'Facebot',
+  'WhatsApp',
   'LinkedInBot', 
   'Twitterbot',
-  'WhatsApp',
   'Slackbot',
   'TelegramBot',
   'Discordbot',
   'Pinterest',
   'googlebot',
   'bingbot',
-  'yandex',
-  'baiduspider',
 ];
 
 export const config = {
-  matcher: '/viewcourse/:path*',
+  matcher: '/viewcourse/:courseId*',
 };
 
-export default function middleware(request) {
+export default async function middleware(request) {
   const userAgent = request.headers.get('user-agent') || '';
   const url = new URL(request.url);
   
@@ -28,17 +25,63 @@ export default function middleware(request) {
     userAgent.toLowerCase().includes(crawler.toLowerCase())
   );
 
-  if (isCrawler) {
-    // Extract course ID from the URL
-    const courseId = url.pathname.split('/viewcourse/')[1];
-    
-    if (courseId) {
-      // Rewrite to the OG endpoint for crawlers
-      const ogUrl = new URL(`/api/og/${courseId}`, url.origin);
-      return Response.redirect(ogUrl, 302);
-    }
-  }
+  // For regular users, continue to the SPA (Vercel will serve index.html)
+  if (!isCrawler) return;
 
-  // For regular users, continue to the SPA by returning nothing
-  return;
+  // For Crawlers: Extract course ID
+  const pathParts = url.pathname.split('/');
+  const courseId = pathParts[pathParts.length - 1];
+  
+  if (!courseId || courseId === 'viewcourse') return;
+
+  const backendUrl = 'https://learningmanagementsystem-f6h0.onrender.com';
+  const frontendUrl = 'https://learning-management-system-kappa-black.vercel.app';
+
+  try {
+    // Fetch course details from your API at the Edge
+    const response = await fetch(`${backendUrl}/api/course/getcourse/${courseId}`);
+    
+    if (!response.ok) throw new Error('Course not found');
+
+    const course = await response.json();
+    
+    // Generate the HTML with meta tags directly
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>${course.title} | Virtual Courses LMS</title>
+  <meta name="description" content="${course.description || 'Master new skills with our expert-led courses.'}">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="${url.href}">
+  <meta property="og:title" content="${course.title}">
+  <meta property="og:description" content="${course.description || 'Join our AI-powered learning platform today!'}">
+  <meta property="og:image" content="${course.thumbnail}">
+  <meta property="og:site_name" content="Virtual Courses LMS">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${course.title}">
+  <meta name="twitter:description" content="${course.description}">
+  <meta name="twitter:image" content="${course.thumbnail}">
+
+  <meta http-equiv="refresh" content="0;url=${url.href}?no_cache=true">
+</head>
+<body>
+  <h1>${course.title}</h1>
+  <p>${course.description}</p>
+  <img src="${course.thumbnail}" />
+</body>
+</html>`;
+
+    return new Response(html, {
+      headers: { 'Content-Type': 'text/html' },
+    });
+    
+  } catch (error) {
+    // Fallback if API fails
+    return;
+  }
 }
