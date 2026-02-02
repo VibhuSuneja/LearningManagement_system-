@@ -74,6 +74,14 @@ function App() {
   React.useEffect(() => {
     if (!socket) return;
 
+    socket.on("connect", () => {
+        console.log("[Socket] Connected to server:", socket.id);
+    });
+
+    socket.on("userUpdated", (data) => {
+        console.log("[Socket] userUpdated received:", data);
+    });
+
     socket.on("levelUp", ({ level, message }) => {
         toast.success(message, {
             position: "top-center",

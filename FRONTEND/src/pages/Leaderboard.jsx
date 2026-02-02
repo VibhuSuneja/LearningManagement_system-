@@ -93,8 +93,9 @@ const Leaderboard = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-2 text-center">
-                                        <div className="flex items-center justify-center gap-1 font-black text-orange-500">
-                                            {student.streak || 0} <span className="text-[10px]">🔥</span>
+                                        <div className={`flex items-center justify-center gap-1 font-black ${student.streak > 0 ? 'text-orange-500' : 'text-gray-300'}`}>
+                                            {student.streak || 0} 
+                                            <span className={`${student.streak > 0 ? 'animate-pulse' : ''} text-[10px]`}>🔥</span>
                                         </div>
                                     </div>
                                     <div className="col-span-2 text-center">

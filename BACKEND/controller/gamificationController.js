@@ -90,13 +90,16 @@ export const updateStreak = async (userId) => {
         await user.save();
 
         const io = getIO();
-        io.to(userId.toString()).emit("streakUpdated", { 
+        const targetRoom = userId.toString();
+        
+        io.to(targetRoom).emit("streakUpdated", { 
             streak: user.streak, 
             message: `Current Streak: ${user.streak} Days! 🔥` 
         });
         
         // CRITICAL: Emit userUpdated so the frontend refetches user data (Nav Bar, etc.)
-        io.to(userId.toString()).emit("userUpdated", { userId });
+        io.to(targetRoom).emit("userUpdated", { userId: targetRoom });
+        console.log(`[Gamification] Streak event emitted to room: ${targetRoom}`);
 
         // Check for streak-related badges
         await checkBadges(userId, "streak_update");
@@ -175,8 +178,9 @@ export const getLeaderboard = async (req, res) => {
         const topUsers = await User.find({ role: "student" })
             .select("name photoUrl points level badges streak maxStreak")
             .sort({ points: -1 })
-            .limit(10);
+            .limit(20); // Show more users to find those with streaks
             
+        console.log(`[Leaderboard] Returning ${topUsers.length} users. Sample streak: ${topUsers[0]?.streak}`);
         res.status(200).json(topUsers);
     } catch (error) {
         res.status(500).json({ message: "Error fetching leaderboard" });
