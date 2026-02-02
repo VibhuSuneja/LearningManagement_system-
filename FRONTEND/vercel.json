@@ -1,5 +1,14 @@
 {
+    "functions": {
+        "api/**/*.js": {
+            "runtime": "@vercel/edge"
+        }
+    },
     "rewrites": [
+        {
+            "source": "/api/og/:courseId",
+            "destination": "/api/og/[courseId]"
+        },
         {
             "source": "/(.*)",
             "destination": "/index.html"
