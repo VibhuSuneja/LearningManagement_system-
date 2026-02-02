@@ -68,6 +68,18 @@ The system serves multiple user types including students, instructors, and admin
   - Multiple payment method support
   - Automatic enrollment and gamification triggers upon payment
 
+- **Onboarding & Demos (New!)**
+  - **Animated Product Demo**: High-fidelity dashboard simulations on the landing page
+  - **Spotlight Platform Tour**: Cinematic, physics-based interactive walkthrough that "beams" focus onto UI elements
+  - **Role-Specific Onboarding**: Tailored tours for Educators and Students
+  - **Auto-Scrolling Guidance**: Intelligent UI tracking that scrolls the bridge to the focused feature
+
+- **Security & Compliance (Production Ready!)**
+  - **GDPR & DPDP Compliant**: Mandatory T&C agreements and "Right to be Forgotten" (Account Deletion) logic
+  - **Cybersecurity Hardening**: Helmet.js secure headers, Mongo-sanitization, and XSS filtering
+  - **Abuse Prevention**: Role-based Rate Limiting (100 req/15m general, 20 req/1h for high-cost AI features)
+  - **Input Sanitization**: Backend-level `dompurify` integration for all community and assignment content
+
 ### 📱 User Experience
 - **Responsive Design**
   - Mobile-first responsive interface
@@ -86,6 +98,11 @@ The system serves multiple user types including students, instructors, and admin
   - Support for various media formats
   - Content optimization and delivery
   - Organized resource management
+
+- **Performance Polish**
+  - **Skeleton Loaders**: High-end pulsing skeletons for course cards to improve perceived speed
+  - **Glassmorphism UI**: Modern, translucent interface elements with Framer Motion animations
+  - **Advanced Empty States**: Beautifully themed "No Content" illustrations using platform-aligned iconography
 
 ## 🛠️ Technology Stack
 
@@ -128,6 +145,9 @@ The system serves multiple user types including students, instructors, and admin
 - **Topic Extractor**: Automated categorization and tagging of educational materials.
 - **AI Chatbot**: Context-aware assistance for platform navigation and FAQs.
 - **Personalized Recommendations**: Tailored course suggestions based on user interests.
+- **AI Assignment Grader**: Automated analysis and feedback suggestions for student submissions.
+- **AI Quiz Generator**: One-click quiz creation from lecture notes or transcripts.
+- **Ethics & safety**: Integrated AI liability disclaimers across all generated content sections.
 
 ## 📦 Installation
 
@@ -443,11 +463,11 @@ SOFTWARE.
 
 ## 📊 Project Statistics
 
-- **Total Commits**: 150+
+- **Total Commits**: 200+
 - **Languages**: JavaScript (65%), HTML (30%), CSS (5%)
-- **Dependencies**: 45+ packages
-- **Development Time**: 8 weeks
-- **Current Status**: Production Ready
+- **Dependencies**: 55+ packages
+- **Development Time**: 10 weeks
+- **Current Status**: Production Hardened & Market Ready (v1.2)
 
 ---
 
