@@ -156,6 +156,13 @@ export const updateAssignment = async (req, res) => {
             return res.status(403).json({ message: "You are not authorized to update this assignment" });
         }
 
+        // Handle empty lectureId string from frontend
+        if (updateData.lectureId === "" || updateData.lectureId === "undefined") {
+            updateData.lecture = undefined;
+        } else if (updateData.lectureId) {
+            updateData.lecture = updateData.lectureId;
+        }
+
         // Handle new attachments
         if (req.files && req.files.length > 0) {
             const newAttachments = [];

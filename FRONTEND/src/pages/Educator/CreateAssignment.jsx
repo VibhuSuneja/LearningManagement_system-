@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { FaCloudUploadAlt, FaCalendarAlt, FaStar, FaInfoCircle, FaFileAlt } from 'react-icons/fa';
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import axios from 'axios';
@@ -12,6 +12,9 @@ function CreateAssignment() {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.user);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const editId = searchParams.get('edit');
   
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,7 +35,32 @@ function CreateAssignment() {
 
   useEffect(() => {
     fetchCourseDetails();
-  }, [courseId]);
+    if (editId) {
+      fetchAssignmentDetails();
+    }
+  }, [courseId, editId]);
+
+  const fetchAssignmentDetails = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}/api/assignment/${editId}`, {
+        withCredentials: true
+      });
+      const ass = response.data.assignment;
+      setFormData({
+        title: ass.title,
+        description: ass.description,
+        lectureId: ass.lecture?._id || ass.lecture || '',
+        dueDate: new Date(ass.dueDate).toISOString().slice(0, 16),
+        maxPoints: ass.maxPoints,
+        instructions: ass.instructions || '',
+        allowedFileTypes: ass.allowedFileTypes?.join(',') || 'pdf,doc,docx,zip,txt',
+        maxFileSize: ass.maxFileSize
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch assignment for editing");
+    }
+  };
 
   const fetchCourseDetails = async () => {
     try {
@@ -72,16 +100,24 @@ function CreateAssignment() {
         data.append('attachments', file);
       });
 
-      await axios.post(`${serverUrl}/api/assignment/create`, data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        withCredentials: true
-      });
-
-      toast.success("Assignment created successfully! 📝");
-      navigate(`/viewlecture/${courseId}`);
+      if (editId) {
+        await axios.put(`${serverUrl}/api/assignment/${editId}`, data, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+          withCredentials: true
+        });
+        toast.success("Assignment updated successfully! 📝");
+      } else {
+        await axios.post(`${serverUrl}/api/assignment/create`, data, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+          withCredentials: true
+        });
+        toast.success("Assignment created successfully! 📝");
+      }
+      
+      navigate(`/manage-assignments/${courseId}`);
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || "Failed to create assignment");
+      toast.error(error.response?.data?.message || `Failed to ${editId ? 'update' : 'create'} assignment`);
     } finally {
       setSubmitting(false);
     }
@@ -105,7 +141,9 @@ function CreateAssignment() {
             onClick={() => navigate(-1)}
           />
           <div>
-            <h1 className='text-3xl font-black text-gray-800 tracking-tight'>Create Assignment</h1>
+            <h1 className='text-3xl font-black text-gray-800 tracking-tight'>
+              {editId ? 'Edit Assignment' : 'Create Assignment'}
+            </h1>
             <p className='text-gray-500 font-medium'>{course?.title}</p>
           </div>
         </div>
@@ -268,9 +306,9 @@ function CreateAssignment() {
               >
                 {submitting ? (
                   <>
-                    <ClipLoader size={20} color='#fff' /> Creating...
+                    <ClipLoader size={20} color='#fff' /> {editId ? 'Updating...' : 'Creating...'}
                   </>
-                ) : 'Publish Assignment'}
+                ) : editId ? 'Update Assignment' : 'Publish Assignment'}
               </button>
             </div>
           </div>
