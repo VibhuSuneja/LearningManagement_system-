@@ -27,7 +27,7 @@ function GradeAssignment() {
 
   const fetchSubmissions = async () => {
     try {
-      const response = await axios.get(`${serverUrl}/api/assignment/submissions/${assignmentId}`, {
+      const response = await axios.get(`${serverUrl}/api/assignment/${assignmentId}/submissions`, {
         withCredentials: true
       });
       setSubmissions(response.data.submissions);
@@ -52,7 +52,7 @@ function GradeAssignment() {
     
     setSubmittingGrade(true);
     try {
-      await axios.post(`${serverUrl}/api/submission/grade/${selectedSubmission._id}`, {
+      await axios.post(`${serverUrl}/api/assignment/submission/${selectedSubmission._id}/grade`, {
         grade,
         feedback
       }, { withCredentials: true });

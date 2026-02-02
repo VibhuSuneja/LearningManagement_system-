@@ -70,7 +70,7 @@ function SubmitAssignment() {
         data.append('files', file);
       });
 
-      await axios.post(`${serverUrl}/api/submission/submit/${assignmentId}`, data, {
+      await axios.post(`${serverUrl}/api/assignment/${assignmentId}/submit`, data, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true
       });
