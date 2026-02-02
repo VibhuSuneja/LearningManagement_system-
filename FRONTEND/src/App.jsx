@@ -78,9 +78,7 @@ function App() {
         console.log("[Socket] Connected to server:", socket.id);
     });
 
-    socket.on("userUpdated", (data) => {
-        console.log("[Socket] userUpdated received:", data);
-    });
+    // Note: 'userUpdated' is handled by getCurrentUser.js hook for auto-refetch
 
     socket.on("levelUp", ({ level, message }) => {
         toast.success(message, {

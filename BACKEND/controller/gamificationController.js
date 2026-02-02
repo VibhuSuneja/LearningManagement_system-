@@ -60,6 +60,16 @@ export const updateStreak = async (userId) => {
             user.maxStreak = 1;
             user.lastActivityDate = today;
             await user.save();
+            
+            // Emit events for first activity
+            const io = getIO();
+            const targetRoom = userId.toString();
+            io.to(targetRoom).emit("streakUpdated", { 
+                streak: 1, 
+                message: `Current Streak: 1 Day! 🔥 Keep it going!` 
+            });
+            io.to(targetRoom).emit("userUpdated", { userId: targetRoom });
+            console.log(`[Gamification] First activity! Streak started at 1. Room: ${targetRoom}`);
             return;
         }
 
@@ -70,7 +80,15 @@ export const updateStreak = async (userId) => {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         if (diffDays === 0) {
-            // Already active today, do nothing
+            // Already active today - emit event so user gets feedback, but don't increment
+            const io = getIO();
+            const targetRoom = userId.toString();
+            io.to(targetRoom).emit("streakUpdated", { 
+                streak: user.streak, 
+                message: `Current Streak: ${user.streak} Days! 🔥` 
+            });
+            io.to(targetRoom).emit("userUpdated", { userId: targetRoom });
+            console.log(`[Gamification] Same-day activity. Streak maintained at ${user.streak}. Emitted to room: ${targetRoom}`);
             return;
         } else if (diffDays === 1) {
             // Consecutive day!
