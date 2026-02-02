@@ -47,6 +47,15 @@ function Home() {
           <button className='px-[20px] py-[10px] bg-red-600 border-2 border-red-600 text-white rounded-[10px] text-[18px] font-bold flex gap-2 cursor-pointer items-center justify-center hover:bg-red-700 transition-all shadow-lg animate-pulse' onClick={handleLiveRedirect}>Live Classroom</button>
     </div>
     
+       {userData && (
+         <button 
+           onClick={() => window.startAppTour && window.startAppTour()}
+           className="fixed bottom-6 left-6 z-50 bg-white/90 backdrop-blur-md text-black px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 font-black text-sm border border-gray-100 hover:scale-110 active:scale-95 transition-all group lg:animate-bounce shadow-black/5"
+         >
+           <SiViaplay className="text-xl group-hover:rotate-12 transition-transform" />
+           Take a Tour
+         </button>
+       )}
       </div>
       <Logos/>
       <ExploreCourses/>

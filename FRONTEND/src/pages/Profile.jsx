@@ -149,12 +149,20 @@ function Profile() {
 
         <div className="mt-12 flex justify-center gap-4">
           {isOwnProfile ? (
-            <button 
-                className="w-full bg-black text-white font-black py-4 rounded-2xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all text-sm tracking-widest uppercase" 
-                onClick={()=>navigate("/editprofile")}
-            >
-              Configure Profile
-            </button>
+            <div className="flex flex-col w-full gap-3">
+              <button 
+                  className="w-full bg-black text-white font-black py-4 rounded-3xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all text-sm tracking-widest uppercase" 
+                  onClick={()=>navigate("/editprofile")}
+              >
+                Configure Profile
+              </button>
+              <button 
+                  className="w-full bg-indigo-50 text-indigo-700 border-2 border-indigo-100 font-black py-3 rounded-2xl hover:bg-indigo-100 transition-all text-xs tracking-widest uppercase flex items-center justify-center gap-2" 
+                  onClick={() => window.startAppTour && window.startAppTour()}
+              >
+                Retake Platform Tour
+              </button>
+            </div>
           ) : (
             <>
                 <button 

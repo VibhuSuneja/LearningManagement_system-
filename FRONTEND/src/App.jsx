@@ -42,6 +42,7 @@ import CreateAssignment from './pages/Educator/CreateAssignment';
 import SubmitAssignment from './pages/SubmitAssignment';
 import GradeAssignment from './pages/Educator/GradeAssignment';
 import ManageAssignments from './pages/Educator/ManageAssignments';
+import OnboardingTour from "./component/OnboardingTour";
 
 export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
 console.log("Using Server URL:", serverUrl);
@@ -141,7 +142,7 @@ function App() {
       <ToastContainer />
       <ScrollToTop />
       <Chatbot />
-      
+      <OnboardingTour />
       {deferredPrompt && (
         <button 
           onClick={handleInstallClick}
