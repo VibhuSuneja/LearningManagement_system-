@@ -20,9 +20,13 @@ function SignUp() {
   const [password,setPassword] = useState("")
   const [role,setRole] = useState("student")
   const [loading,setLoading] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const dispatch = useDispatch()
 
   const handleSignup = async () => {
+    if (!termsAccepted) {
+      return toast.warning("Please agree to the Terms and Conditions and Privacy Policy")
+    }
     setLoading(true)
     try {
       const result = await axios.post(
@@ -43,6 +47,9 @@ function SignUp() {
   }
 
   const googleSignUp = async () => {
+    if (!termsAccepted) {
+      return toast.warning("Please agree to the Terms and Conditions and Privacy Policy")
+    }
     try {
       const response = await signInWithPopup(auth, provider)
       let user = response.user 
@@ -127,6 +134,20 @@ function SignUp() {
             >
               Educator
             </span>
+          </div>
+
+          {/* Terms and Conditions */}
+          <div className='flex items-center gap-2 w-[80%] px-3'>
+            <input 
+              type="checkbox" 
+              id="terms" 
+              className='w-4 h-4 accent-black cursor-pointer'
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
+            />
+            <label htmlFor="terms" className='text-[10px] sm:text-[12px] text-gray-500 font-medium leading-tight cursor-pointer'>
+              I agree to the <span className='text-black font-bold underline' onClick={(e) => { e.stopPropagation(); navigate('/terms') }}>Terms</span> and <span className='text-black font-bold underline' onClick={(e) => { e.stopPropagation(); navigate('/privacy') }}>Privacy Policy</span>
+            </label>
           </div>
 
           {/* Button */}
