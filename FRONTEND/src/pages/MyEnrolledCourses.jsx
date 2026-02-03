@@ -1,15 +1,13 @@
-import React  from 'react'
-
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoVideocamOutline } from "react-icons/io5";
 import useGetCurrentUser from '../customHooks/getCurrentUser';
 import axios from 'axios';
 import { serverUrl } from '../App';
-import { useEffect, useState } from 'react';
 import { ClipLoader } from 'react-spinners';
+import { motion } from 'framer-motion';
  
 function MyEnrolledCourse() {
   const navigate = useNavigate()
@@ -33,7 +31,7 @@ function MyEnrolledCourse() {
       setStats(response.data.stats);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching project:", error);
+      console.error("Error fetching progress:", error);
       setLoading(false);
     }
   };
@@ -51,14 +49,14 @@ function MyEnrolledCourse() {
     );
   }
 
-     
-   
- 
-
   return (
-    <div className="min-h-screen w-full px-4 py-9 bg-gray-50">
-      
-
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen w-full px-4 py-9 bg-gray-50"
+    >
       <FaArrowLeftLong  className='absolute top-[3%] md:top-[6%] left-[5%] w-[22px] h-[22px] cursor-pointer' onClick={()=>navigate("/")}/>
       <h1 className="text-3xl text-center font-bold text-gray-800 mb-2">
         My Enrolled Courses
@@ -89,7 +87,7 @@ function MyEnrolledCourse() {
           {userData.enrolledCourses.map((course) => (
             <div
               key={course._id}
-              className="bg-white rounded-2xl shadow-md overflow-hidden border "
+              className="bg-white rounded-2xl shadow-md overflow-hidden border transition-all hover:shadow-lg"
             >
               <img
                 src={course.thumbnail}
@@ -118,7 +116,9 @@ function MyEnrolledCourse() {
                     Watch Now
                   </button>
                   <button className='w-full py-[10px] bg-red-600 text-white rounded-[10px] font-bold text-[15px] hover:bg-red-700 transition-all flex items-center justify-center gap-2' onClick={()=>navigate(`/live/${course._id}`)}>
-                    <IoVideocamOutline size={18} /> Live Sessions
+                    <div className="flex items-center gap-2">
+                      <IoVideocamOutline size={18} /> <span>Live Sessions</span>
+                    </div>
                   </button>
                 </div>
               </div>
@@ -126,7 +126,7 @@ function MyEnrolledCourse() {
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }
 

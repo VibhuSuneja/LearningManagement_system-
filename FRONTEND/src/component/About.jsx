@@ -10,10 +10,10 @@ import founderImg from "../assets/founder.jpg";
 
 const StatCard = ({ icon: Icon, value, label, delay }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ duration: 0.5, delay }}
+    transition={{ duration: 0.8, delay, ease: "easeOut" }}
     className="bg-white/5 backdrop-blur-md border border-white/10 p-5 rounded-2xl flex flex-col items-center justify-center min-w-[140px] hover:bg-white/10 transition-all cursor-default group"
   >
     <div className="bg-blue-500/20 p-2.5 rounded-full mb-2 group-hover:scale-110 transition-transform">
@@ -25,12 +25,18 @@ const StatCard = ({ icon: Icon, value, label, delay }) => (
 );
 
 const FeatureItem = ({ text }) => (
-  <div className="flex items-center gap-3 text-gray-300 group">
+  <motion.div 
+    initial={{ opacity: 0, x: -10 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.8, ease: "easeOut" }}
+    className="flex items-center gap-3 text-gray-300 group"
+  >
     <div className="bg-green-500/10 p-1.5 rounded-lg group-hover:bg-green-500/20 transition-colors border border-green-500/20">
       <BiSolidBadgeCheck className="text-green-400 text-xl" />
     </div>
     <span className="font-medium text-sm md:text-base">{text}</span>
-  </div>
+  </motion.div>
 );
 
 function About() {
@@ -45,8 +51,8 @@ function About() {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, x: -30 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: "easeOut" } },
   };
 
   return (
@@ -67,7 +73,7 @@ function About() {
           className="lg:w-1/2 relative flex justify-center lg:justify-start"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <div className="relative z-10 w-full max-w-[450px]">
             <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden border-4 border-white/10 shadow-3xl group relative">
@@ -83,7 +89,7 @@ function About() {
             <motion.div 
               initial={{ x: -20, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
               className="absolute -top-6 -right-6 md:-right-10 bg-white/10 backdrop-blur-xl px-5 py-3 rounded-2xl border border-white/20 flex items-center gap-3 shadow-2xl"
             >
               <div className="relative">
@@ -98,7 +104,7 @@ function About() {
             <motion.div 
               initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.7 }}
+              transition={{ delay: 0.7, duration: 0.8, ease: "easeOut" }}
               className="absolute -bottom-8 -left-6 md:-left-12 bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-[2rem] shadow-2xl border border-white/20 hidden sm:block"
             >
               <div className="text-4xl font-black text-white leading-none">Pro</div>

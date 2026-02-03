@@ -5,15 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import Nav from '../component/Nav';
 import ai from '../assets/SearchAi.png'
 import { useSelector } from 'react-redux';
+import { motion } from 'framer-motion';
+
 function AllCourses() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const navigate = useNavigate()
- const [category,setCategory] = useState([])
- const [filterCourses,setFilterCourses] = useState([])
+  const [category,setCategory] = useState([])
+  const [filterCourses,setFilterCourses] = useState([])
   const {courseData} = useSelector(state=>state.course)
 
- 
-  
   const toggleCategory = (e) =>{
      if(category.includes(e.target.value)){
        setCategory(prev=> prev.filter(item => item !== e.target.value))
@@ -30,11 +30,10 @@ function AllCourses() {
     }
    
     setFilterCourses(courseCopy)
-
   }
 
-   useEffect(()=>{
-setFilterCourses(courseData)
+  useEffect(()=>{
+    setFilterCourses(courseData)
   },[courseData])
 
   useEffect(()=>{
@@ -42,7 +41,13 @@ setFilterCourses(courseData)
   },[category])
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex min-h-screen bg-gray-50"
+    >
       <Nav/>
       {/* Toggle Button */}
       <button
@@ -57,7 +62,7 @@ setFilterCourses(courseData)
         ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'} 
         md:block md:translate-x-0`}>
           
-        <h2 className="text-xl font-bold flex items-center justify-center gap-2 text-gray-50 mb-6"><FaArrowLeftLong className='text-white' onClick={()=>navigate("/")}/>Filter by Category</h2>
+        <h2 className="text-xl font-bold flex items-center justify-center gap-2 text-gray-50 mb-6 cursor-pointer" onClick={()=>navigate("/")}><FaArrowLeftLong className='text-white' />Filter by Category</h2>
 
         <form className="space-y-4 text-sm  bg-gray-600 border-white text-[white] border  p-[20px] rounded-2xl" onSubmit={(e)=>e.preventDefault()}>
           <button className='px-[10px] py-[10px]  bg-black text-white  rounded-[10px] text-[15px] font-light flex items-center justify-center gap-2 cursor-pointer' onClick={()=>navigate("/search")}>Search with AI <img src={ai} className='w-[30px] h-[30px] rounded-full' alt="" /></button>
@@ -106,11 +111,10 @@ setFilterCourses(courseData)
         {
         filterCourses?.map((item,index)=>(
           <Card key={index} thumbnail={item.thumbnail} title={item.title} price={item.price} category={item.category} id={item._id} reviews={item.reviews} />
-
         ))
       }
       </main>
-    </div>
+    </motion.div>
   );
 }
 
