@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom"
 import { store } from './redux/store.js'
 import { Provider } from "react-redux"
 import { SocketContextProvider } from './context/SocketContext.jsx'
+import { ThemeProvider } from './context/ThemeContext.jsx'
 import { registerSW } from 'virtual:pwa-register'
 
 const updateSW = registerSW({
@@ -58,7 +59,9 @@ createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <Provider store={store} >
           <SocketContextProvider>
-            <App />
+            <ThemeProvider>
+              <App />
+            </ThemeProvider>
           </SocketContextProvider>
         </Provider>
       </BrowserRouter>
