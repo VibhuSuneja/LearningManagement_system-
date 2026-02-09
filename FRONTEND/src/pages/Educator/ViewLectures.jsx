@@ -23,6 +23,7 @@ function ViewLecture() {
   const [selectedLecture, setSelectedLecture] = useState(
     selectedCourse?.lectures?.[0] || null
   );
+  const [lectureDurations, setLectureDurations] = useState({});
   const [activeTab, setActiveTab] = useState('lectures'); // 'lectures', 'quizzes', 'assignments', 'chat'
   const [progress, setProgress] = useState(null);
   const [loadingProgress, setLoadingProgress] = useState(true);
@@ -222,6 +223,20 @@ function ViewLecture() {
                   controls
                   className="w-full h-full object-contain"
                   crossOrigin="anonymous"
+                  onLoadedMetadata={(e) => {
+                    const seconds = Math.floor(e.target.duration);
+                    const h = Math.floor(seconds / 3600);
+                    const m = Math.floor((seconds % 3600) / 60);
+                    const s = seconds % 60;
+                    const durationStr = h > 0 
+                      ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` 
+                      : `${m}:${String(s).padStart(2, '0')}`;
+                    
+                    setLectureDurations(prev => ({
+                      ...prev,
+                      [selectedLecture._id]: durationStr
+                    }));
+                  }}
                 />
               ) : (
                 <div className={`flex flex-col items-center justify-center h-full gap-4 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
@@ -337,7 +352,9 @@ function ViewLecture() {
                           }`}>
                             {lecture.lectureTitle}
                           </h4>
-                          <p className={`text-[10px] uppercase tracking-tighter mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>{lecture.duration || "Video Module"}</p>
+                          <p className={`text-[10px] uppercase tracking-tighter mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                            {lecture.duration || lectureDurations[lecture._id] || "Video Module"}
+                          </p>
                         </div>
                       </div>
                       <FaChevronRight size={12} className={`${selectedLecture?._id === lecture._id ? 'text-indigo-500' : 'text-gray-400'}`}/>
@@ -458,7 +475,9 @@ function ViewLecture() {
                       {lecture.lectureTitle}
                     </h4>
                     <div className="flex items-center gap-2 mt-1">
-                       <span className={`text-[10px] uppercase ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>{lecture.duration || "Lecture"}</span>
+                       <span className={`text-[10px] uppercase ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+                         {lecture.duration || lectureDurations[lecture._id] || "Lecture"}
+                       </span>
                        {selectedLecture?._id === lecture._id && <span className="w-1 h-1 bg-indigo-500 rounded-full animate-pulse"></span>}
                     </div>
                   </div>
