@@ -173,6 +173,45 @@ function ViewLecture() {
             </div>
           </div>
 
+          {/* Achievement & Certification (Main Column) */}
+          {Math.round(progress?.completionPercentage || 0) >= 100 && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-8 rounded-[32px] bg-gradient-to-br from-[#6366F1] to-[#4F46E5] text-white shadow-2xl shadow-indigo-500/20 relative overflow-hidden group"
+            >
+              {/* Decorative Elements */}
+              <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-indigo-900/30 rounded-full blur-2xl" />
+              
+              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div className="flex-1 text-center md:text-left">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[10px] font-black uppercase tracking-widest mb-4">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Course Accomplished
+                  </div>
+                  <h3 className="text-3xl font-black tracking-tight mb-2">You're Officially Certified!</h3>
+                  <p className="text-indigo-100 text-sm max-w-md">
+                    Outstanding work. You've mastered all modules and assessments in this course. Download your premium certificate to showcase your expertise.
+                  </p>
+                </div>
+                
+                <div className="flex-shrink-0">
+                  <CertificateDownload 
+                    studentName={userData?.name}
+                    courseTitle={selectedCourse?.title}
+                    date={new Date(progress?.completedAt || Date.now()).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                    certificateId={`LMS-${(courseId || "").slice(-4)}-${(userData?._id || "").slice(-4)}`.toUpperCase()}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* Cinematic Video Player Section */}
           <div className="relative group">
             <div className={`aspect-video rounded-3xl overflow-hidden border shadow-2xl backdrop-blur-sm relative transition-all ${
@@ -432,26 +471,7 @@ function ViewLecture() {
               ))}
             </div>
 
-            {/* Achievement Widget */}
-            {Math.round(progress?.completionPercentage || 0) >= 100 && (
-              <div className="mt-8 p-6 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-3xl text-center shadow-2xl relative overflow-hidden">
-                <div className="absolute -top-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-                <div className="relative z-10">
-                  <span className="text-xs font-black uppercase tracking-widest text-white/70">Course Completed</span>
-                  <h4 className="text-xl font-black text-white mt-1 mb-4">You're Certified!</h4>
-                  <CertificateDownload 
-                      studentName={userData?.name}
-                      courseTitle={selectedCourse?.title}
-                      date={new Date(progress?.completedAt || Date.now()).toLocaleDateString('en-GB', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                      })}
-                      certificateId={`LMS-${courseId.slice(-4)}-${userData?._id?.slice(-4)}`.toUpperCase()}
-                  />
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
