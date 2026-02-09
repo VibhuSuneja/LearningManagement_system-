@@ -75,10 +75,11 @@ function ViewLecture() {
   useEffect(() => {
     const handleCreator = async () => {
       if (selectedCourse?.creator) {
+        const userId = selectedCourse.creator._id || selectedCourse.creator;
         try {
           const result = await axios.post(
             serverUrl + "/api/course/creator",
-            { userId: selectedCourse.creator._id || selectedCourse.creator },
+            { userId },
             { withCredentials: true }
           );
           setCreatorData(result.data);
@@ -136,7 +137,6 @@ function ViewLecture() {
 
             {/* Actions: Theme Toggle & Progress */}
             <div className="flex items-center gap-4">
-              {/* Theme Toggle Button */}
               <button 
                 onClick={toggleTheme}
                 className={`p-3 rounded-2xl transition-all shadow-lg flex items-center justify-center border ${
@@ -180,7 +180,6 @@ function ViewLecture() {
               animate={{ opacity: 1, y: 0 }}
               className="p-8 rounded-[32px] bg-gradient-to-br from-[#6366F1] to-[#4F46E5] text-white shadow-2xl shadow-indigo-500/20 relative overflow-hidden group"
             >
-              {/* Decorative Elements */}
               <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-indigo-900/30 rounded-full blur-2xl" />
               
@@ -233,7 +232,6 @@ function ViewLecture() {
                 </div>
               )}
             </div>
-            
             <div className={`absolute -inset-4 rounded-[40px] blur-2xl -z-10 transition-all duration-500 ${
               isDarkMode 
               ? 'bg-indigo-500/10 group-hover:bg-indigo-500/20' 
@@ -339,7 +337,7 @@ function ViewLecture() {
                           }`}>
                             {lecture.lectureTitle}
                           </h4>
-                          <p className={`text-[10px] uppercase tracking-tighter mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>Video Module • 12:45</p>
+                          <p className={`text-[10px] uppercase tracking-tighter mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>{lecture.duration || "Video Module"}</p>
                         </div>
                       </div>
                       <FaChevronRight size={12} className={`${selectedLecture?._id === lecture._id ? 'text-indigo-500' : 'text-gray-400'}`}/>
@@ -372,7 +370,7 @@ function ViewLecture() {
                     <p className={`text-sm max-w-xs mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>Connect with other students and the educator in real-time.</p>
                   </div>
                   <button 
-                    onClick={() => window.open('https://learning-management-system-vibhu-projects.vercel.app/chat', '_blank')}
+                    onClick={() => navigate('/chat')}
                     className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-500/20"
                   >
                     Enable Chat
@@ -385,8 +383,6 @@ function ViewLecture() {
 
         {/* Dynamic Sidebar */}
         <div className="w-full lg:w-[380px] flex flex-col gap-6">
-          
-          {/* Educator Card */}
           {creatorData && (
             <div className={`backdrop-blur-xl border rounded-3xl p-6 shadow-xl relative overflow-hidden group transition-all ${
               isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'
@@ -423,13 +419,12 @@ function ViewLecture() {
             </div>
           )}
 
-          {/* Compact Playlist Sidebar */}
           <div className={`backdrop-blur-xl border rounded-3xl p-6 shadow-xl flex-1 flex flex-col transition-all ${
             isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'
           }`}>
             <h3 className={`text-xs font-black uppercase tracking-widest mb-6 flex justify-between items-center ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
               <span>Course Syllabus</span>
-              <span className={`px-2 py-0.5 rounded text-[10px] ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`}>{selectedCourse?.lectures?.length} Modules</span>
+              <span className={`px-2 py-0.5 rounded text-[10px] ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`}>{selectedCourse?.lectures?.length} {selectedCourse?.lectures?.length === 1 ? 'Module' : 'Modules'}</span>
             </h3>
             
             <div className="flex flex-col gap-2 overflow-y-auto max-h-[600px] pr-2 custom-scrollbar">
@@ -463,14 +458,12 @@ function ViewLecture() {
                       {lecture.lectureTitle}
                     </h4>
                     <div className="flex items-center gap-2 mt-1">
-                       <span className={`text-[10px] uppercase ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>12m 45s</span>
+                       <span className={`text-[10px] uppercase ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>{lecture.duration || "Lecture"}</span>
                        {selectedLecture?._id === lecture._id && <span className="w-1 h-1 bg-indigo-500 rounded-full animate-pulse"></span>}
                     </div>
                   </div>
                 </div>
               ))}
-            </div>
-
             </div>
           </div>
         </div>
