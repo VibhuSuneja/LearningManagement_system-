@@ -162,7 +162,7 @@ function ViewLecture() {
                         className="text-indigo-500 transition-all duration-1000" 
                       />
                     </svg>
-                    <span className={`absolute text-[10px] font-bold ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>{progress.completionPercentage}%</span>
+                    <span className={`absolute text-[10px] font-bold ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>{Math.round(progress.completionPercentage)}%</span>
                   </div>
                   <div>
                     <p className={`text-xs font-bold ${isDarkMode ? 'text-gray-100' : 'text-gray-800'}`}>Progress</p>
@@ -332,7 +332,10 @@ function ViewLecture() {
                     <h3 className={`text-lg font-bold ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>Live Discussion</h3>
                     <p className={`text-sm max-w-xs mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>Connect with other students and the educator in real-time.</p>
                   </div>
-                  <button className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-500/20">
+                  <button 
+                    onClick={() => window.open('https://learning-management-system-vibhu-projects.vercel.app/chat', '_blank')}
+                    className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-500/20"
+                  >
                     Enable Chat
                   </button>
                 </div>
@@ -371,7 +374,9 @@ function ViewLecture() {
                 "{creatorData?.description || 'Learn from the best to become the best in your field.'}"
               </p>
               
-              <button className={`w-full mt-6 py-3 border rounded-2xl text-xs font-bold uppercase tracking-widest transition-all ${
+              <button 
+                onClick={() => navigate(`/profile/${creatorData._id || (selectedCourse.creator._id || selectedCourse.creator)}`)}
+                className={`w-full mt-6 py-3 border rounded-2xl text-xs font-bold uppercase tracking-widest transition-all ${
                 isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-gray-50 border-gray-100 hover:bg-gray-100'
               }`}>
                 View Profile
@@ -428,7 +433,7 @@ function ViewLecture() {
             </div>
 
             {/* Achievement Widget */}
-            {progress?.completionPercentage === 100 && (
+            {Math.round(progress?.completionPercentage || 0) >= 100 && (
               <div className="mt-8 p-6 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-3xl text-center shadow-2xl relative overflow-hidden">
                 <div className="absolute -top-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                 <div className="relative z-10">
@@ -442,7 +447,7 @@ function ViewLecture() {
                         month: 'long',
                         year: 'numeric'
                       })}
-                      certificateId={`LMS-${courseId.substr(-4)}-${userData?._id?.substr(-4)}`.toUpperCase()}
+                      certificateId={`LMS-${courseId.slice(-4)}-${userData?._id?.slice(-4)}`.toUpperCase()}
                   />
                 </div>
               </div>
@@ -479,35 +484,36 @@ function ViewLecture() {
               </div>
 
               <div className="flex flex-col gap-4 overflow-y-auto">
-                <div className={`p-4 border rounded-2xl flex items-center justify-between group cursor-pointer transition-all ${
-                  isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-gray-50 border-gray-100 hover:bg-gray-100'
-                }`}>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center">
-                      <FaBook size={20} />
+                {selectedCourse?.syllabusUrl ? (
+                  <div 
+                    onClick={() => window.open(selectedCourse.syllabusUrl, '_blank')}
+                    className={`p-4 border rounded-2xl flex items-center justify-between group cursor-pointer transition-all ${
+                      isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-gray-50 border-gray-100 hover:bg-gray-100'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-indigo-500/10 text-indigo-500 rounded-xl flex items-center justify-center">
+                        <FaBook size={20} />
+                      </div>
+                      <div>
+                        <h4 className={`text-sm font-bold ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>Course_Syllabus.pdf</h4>
+                        <p className="text-xs text-gray-500">Document • PDF</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className={`text-sm font-bold ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>Lecture_Slides.pdf</h4>
-                      <p className="text-xs text-gray-500">Document • 4.2 MB</p>
-                    </div>
+                    <FaDownload className="text-gray-500 group-hover:text-indigo-500 transition-colors" />
                   </div>
-                  <FaDownload className="text-gray-500 group-hover:text-indigo-500 transition-colors" />
-                </div>
-                
-                <div className={`p-4 border rounded-2xl flex items-center justify-between group cursor-pointer transition-all ${
-                  isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-gray-50 border-gray-100 hover:bg-gray-100'
-                }`}>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-indigo-500/10 text-indigo-500 rounded-xl flex items-center justify-center">
-                      <FaBook size={20} />
+                ) : (
+                  <div className={`p-10 border-2 border-dashed rounded-3xl text-center flex flex-col items-center gap-4 ${
+                    isDarkMode ? 'border-white/5 bg-white/2' : 'border-gray-100 bg-gray-50'
+                  }`}>
+                    <div className="p-4 bg-gray-500/10 rounded-full text-gray-500 opacity-50">
+                      <FaBook size={30} />
                     </div>
-                    <div>
-                      <h4 className={`text-sm font-bold ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>Starter_Code.zip</h4>
-                      <p className="text-xs text-gray-500">Archive • 15.8 MB</p>
-                    </div>
+                    <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                      No downloadable resources attached to this lecture yet.
+                    </p>
                   </div>
-                  <FaDownload className="text-gray-500 group-hover:text-indigo-500 transition-colors" />
-                </div>
+                )}
               </div>
 
               <div className="mt-auto pt-10 border-t border-white/10">
