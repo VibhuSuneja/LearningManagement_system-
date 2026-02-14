@@ -22,12 +22,10 @@ export const awardPoints = async (userId, amount, reason) => {
         if (newLevel > user.level) {
             user.level = newLevel;
             // Emit socket event for level up to the specific user
-            console.log(`[Gamification] Level up for user ${userId} to Level ${newLevel}`);
             getIO().to(userId.toString()).emit("levelUp", { userId, level: newLevel, message: `Congratulations! You've reached Level ${newLevel}` });
         }
 
         await user.save();
-        console.log(`[Gamification] Awarded ${amount} XP to user ${userId}. Total: ${user.points}`);
         
         // Emit events to refresh UI and show feedback to the specific user
         const io = getIO();
@@ -41,7 +39,6 @@ export const awardPoints = async (userId, amount, reason) => {
         
         return user;
     } catch (error) {
-        console.error("Error awarding points:", error);
     }
 };
 
@@ -69,7 +66,6 @@ export const updateStreak = async (userId) => {
                 message: `Current Streak: 1 Day! 🔥 Keep it going!` 
             });
             io.to(targetRoom).emit("userUpdated", { userId: targetRoom });
-            console.log(`[Gamification] First activity! Streak started at 1. Room: ${targetRoom}`);
             return;
         }
 
@@ -88,7 +84,6 @@ export const updateStreak = async (userId) => {
                 message: `Current Streak: ${user.streak} Days! 🔥` 
             });
             io.to(targetRoom).emit("userUpdated", { userId: targetRoom });
-            console.log(`[Gamification] Same-day activity. Streak maintained at ${user.streak}. Emitted to room: ${targetRoom}`);
             return;
         } else if (diffDays === 1) {
             // Consecutive day!
@@ -117,13 +112,11 @@ export const updateStreak = async (userId) => {
         
         // CRITICAL: Emit userUpdated so the frontend refetches user data (Nav Bar, etc.)
         io.to(targetRoom).emit("userUpdated", { userId: targetRoom });
-        console.log(`[Gamification] Streak event emitted to room: ${targetRoom}`);
 
         // Check for streak-related badges
         await checkBadges(userId, "streak_update");
         
     } catch (error) {
-        console.error("Error updating streak:", error);
     }
 };
 
@@ -173,8 +166,6 @@ export const checkBadges = async (userId, actionType) => {
             user.badges.push(...badgesToUnlock);
             await user.save();
             
-            console.log(`[Gamification] Unlocked ${badgesToUnlock.length} badges for user ${userId}`);
-            
             badgesToUnlock.forEach(badge => {
                 getIO().to(userId.toString()).emit("badgeUnlocked", { 
                     userId, 
@@ -186,7 +177,6 @@ export const checkBadges = async (userId, actionType) => {
             getIO().to(userId.toString()).emit("userUpdated", { userId });
         }
     } catch (error) {
-        console.error("Error checking badges:", error);
     }
 };
 
@@ -198,7 +188,6 @@ export const getLeaderboard = async (req, res) => {
             .sort({ points: -1 })
             .limit(20); // Show more users to find those with streaks
             
-        console.log(`[Leaderboard] Returning ${topUsers.length} users. Sample streak: ${topUsers[0]?.streak}`);
         res.status(200).json(topUsers);
     } catch (error) {
         res.status(500).json({ message: "Error fetching leaderboard" });

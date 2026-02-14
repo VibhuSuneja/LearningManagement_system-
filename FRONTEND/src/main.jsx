@@ -11,14 +11,14 @@ import { registerSW } from 'virtual:pwa-register'
 
 const updateSW = registerSW({
   onNeedRefresh() {
-    console.log('New content available, auto-updating...');
+
     updateSW(true);
   },
   onOfflineReady() {
-    console.log('App is ready to work offline')
+
   },
   onRegisterError(error) {
-    console.error('SW registration error', error);
+
   },
 })
 
@@ -29,11 +29,11 @@ class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true, error };
+    return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error("ErrorBoundary caught an error", error, errorInfo);
+    // Log to error reporting service if available
   }
 
   render() {
@@ -41,7 +41,7 @@ class ErrorBoundary extends React.Component {
       return (
         <div style={{ padding: '20px', textAlign: 'center', marginTop: '50px' }}>
           <h1>Something went wrong.</h1>
-          <p style={{ color: 'red' }}>{this.state.error?.toString()}</p>
+          <p>Please try reloading the page.</p>
           <button onClick={() => window.location.reload()} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
             Reload Page
           </button>

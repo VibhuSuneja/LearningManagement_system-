@@ -7,7 +7,7 @@ const connectDb =async ()=>{
         await mongoose.connect(process.env.MONGODB_URL) //database connection from env where url is there
         console.log("DB Connected");
     } catch(error){
-        console.log(error) // if any error appears we will print it
+        console.error("DB Connection Failed");
     }
 }
 export default connectDb // function,we have made has to be exported,as we want to listen it in server...

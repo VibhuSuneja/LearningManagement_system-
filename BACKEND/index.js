@@ -74,7 +74,6 @@ app.use(
       if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
         callback(null, true);
       } else {
-        console.log("CORS blocked origin:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -103,15 +102,6 @@ app.use("/api/progress", progressRouter);
 app.use("/api/ai-features", strictLimiter, aiRouter); // Apply strict limit to AI Quiz/Feedback
 app.use("/api/analytics", analyticsRouter);
 
-// ✅ This message will appear in your terminal if the file is loaded correctly.
-console.log("✅ Course router has been successfully loaded.");
-console.log("✅ Gamification router has been successfully loaded.");
-console.log("✅ Forum router has been successfully loaded.");
-console.log("✅ Quiz router has been successfully loaded.");
-console.log("✅ Assignment router has been successfully loaded.");
-console.log("✅ Progress router has been successfully loaded.");
-console.log("✅ AI Features router has been successfully loaded.");
-console.log("✅ Analytics router has been successfully loaded.");
 
 // --- Health check ---
 app.get("/", (req, res) => {

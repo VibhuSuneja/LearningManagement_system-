@@ -11,7 +11,6 @@ export const getCurrentUser = async (req,res) => {
         }
         return res.status(200).json(user)
     } catch (error) {
-        console.log(error);
         return res.status(400).json({message:"get current user error"})
     }
 };
@@ -52,7 +51,6 @@ export const updateProfile = async (req, res) => {
 
     res.status(200).json(updatedUser);
   } catch (error) {
-    console.error("Update Profile Error:", error);
     res.status(500).json({ message: `Update profile failed: ${error.message}` });
   }
 };
@@ -66,7 +64,6 @@ export const getUsersForSidebar = async (req, res) => {
 
 		res.status(200).json(filteredUsers);
 	} catch (error) {
-		console.error("Error in getUsersForSidebar: ", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
@@ -100,7 +97,6 @@ export const deleteProfile = async (req, res) => {
 
         res.status(200).json({ message: "Account deleted successfully. We're sorry to see you go." });
     } catch (error) {
-        console.error("Delete Profile Error:", error);
         res.status(500).json({ message: `Account deletion failed: ${error.message}` });
     }
 };

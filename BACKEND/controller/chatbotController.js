@@ -32,7 +32,7 @@ export const chatbotResponse = async (req, res) => {
 
     const contents = [systemInstruction, ack, ...messages];
 
-    console.log("Chatbot Prompt constructed. Sending to gemini-2.5-flash...");
+
     
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -41,14 +41,12 @@ export const chatbotResponse = async (req, res) => {
 
     // In this SDK, property 'text' contains the response string
     if (response && response.text) {
-        console.log("Chatbot API Response received successfully.");
         res.status(200).json({ text: response.text });
     } else {
         throw new Error("Invalid response structure from AI");
     }
 
   } catch (error) {
-    console.error("Chatbot Controller Error Details:", error);
     res.status(500).json({ 
       message: "Failed to get chatbot response", 
       error: error.message 

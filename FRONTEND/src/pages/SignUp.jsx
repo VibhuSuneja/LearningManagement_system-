@@ -40,7 +40,7 @@ function SignUp() {
       navigate("/")
       toast.success("SignUp Successfully")
     } catch (error) {
-      console.log(error)
+
       setLoading(false)
       toast.error(error.response?.data?.message || "Network Error: Please check your connection")
     }
@@ -63,7 +63,7 @@ function SignUp() {
       navigate("/")
       toast.success("SignUp Successfully")
     } catch (error) {
-      console.log(error)
+
       toast.error(error.response?.data?.message || "Signup failed")
     }
   }

@@ -23,12 +23,12 @@ function ForgetPassword() {
         { email },
         { withCredentials: true }
       );
-      console.log(result.data);
+
       setLoading(false);
       setStep(2);
       toast.success(result.data.message);
     } catch (error) {
-      console.log(error);
+
       toast.error(error.response?.data?.message || "Error sending OTP");
       setLoading(false);
     }
@@ -43,12 +43,12 @@ function ForgetPassword() {
         { email, otp },
         { withCredentials: true }
       );
-      console.log(result.data);
+
       setLoading(false);
       setStep(3);
       toast.success(result.data.message);
     } catch (error) {
-      console.log(error);
+
       toast.error(error.response?.data?.message || "Error verifying OTP");
       setLoading(false);
     }
@@ -66,12 +66,12 @@ function ForgetPassword() {
         { email, password: newpassword },
         { withCredentials: true }
       );
-      console.log(result.data);
+
       setLoading(false);
       navigate("/login");
       toast.success(result.data.message);
     } catch (error) {
-      console.log(error);
+
       toast.error(error.response?.data?.message || "Error resetting password");
       setLoading(false);
     }

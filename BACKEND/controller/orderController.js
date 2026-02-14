@@ -25,7 +25,6 @@ export const RazorpayOrder = async (req, res) => {
     const order = await razorpayInstance.orders.create(options);
     return res.status(200).json(order);
   } catch (error) {
-    console.log(error)
     return res.status(500).json({ message: `Failed to create Razorpay Order ${error}` });
 
   }
@@ -43,7 +42,6 @@ export const verifyPayment = async (req, res) => {
     const userId = req.user._id; // Get from auth middleware
     const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
     if (orderInfo.status === 'paid') {
-      console.log(`[Payment] Success for user ${userId} on course ${courseId}`);
       // Update user and course enrollment
       const user = await User.findById(userId);
       if (!user.enrolledCourses.includes(courseId)) {
@@ -89,7 +87,6 @@ export const verifyPayment = async (req, res) => {
       return res.status(400).json({ message: "Payment verification failed (invalid signature)" });
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: `Internal server error during payment verification ${error}`  });
   }
 };

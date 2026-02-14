@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-137dedbd'], (function (workbox) { 'use strict';
+define(['./workbox-5a292cf3'], (function (workbox) { 'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
@@ -79,29 +79,27 @@ define(['./workbox-137dedbd'], (function (workbox) { 'use strict';
    */
   workbox.precacheAndRoute([{
     "url": "index.html",
-    "revision": "0.701i9e3ve9o"
+    "revision": "0.620egeq2t8o"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
-    allowlist: [/^\/$/]
+    allowlist: [/^\/$/],
+    denylist: [/^\/api/]
   }));
-  workbox.registerRoute(({
-    url
-  }) => url.pathname.startsWith("/api/"), new workbox.NetworkFirst({
-    "cacheName": "api-cache",
-    plugins: [new workbox.ExpirationPlugin({
-      maxEntries: 100,
-      maxAgeSeconds: 86400
-    }), new workbox.CacheableResponsePlugin({
-      statuses: [0, 200]
+  workbox.registerRoute(/^https?:\/\/.*\.onrender\.com\/api\/.*/, new workbox.NetworkOnly({
+    plugins: [new workbox.BackgroundSyncPlugin("apiQueue", {
+      maxRetentionTime: 1440
     })]
   }), 'GET');
+  workbox.registerRoute(({
+    url
+  }) => url.origin !== self.location.origin, new workbox.NetworkOnly(), 'GET');
   workbox.registerRoute(({
     request
   }) => request.destination === "image", new workbox.CacheFirst({
     "cacheName": "images-cache",
     plugins: [new workbox.ExpirationPlugin({
-      maxEntries: 50,
+      maxEntries: 100,
       maxAgeSeconds: 2592000
     })]
   }), 'GET');

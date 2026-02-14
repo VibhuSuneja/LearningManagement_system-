@@ -10,7 +10,6 @@ export const getNotifications = async (req, res) => {
 
 		res.status(200).json(notifications);
 	} catch (error) {
-		console.log("Error in getNotifications:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
@@ -21,7 +20,6 @@ export const markAsRead = async (req, res) => {
 		await Notification.findByIdAndUpdate(id, { isRead: true });
 		res.status(200).json({ message: "Notification marked as read" });
 	} catch (error) {
-		console.log("Error in markAsRead:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
@@ -32,7 +30,6 @@ export const markAllAsRead = async (req, res) => {
 		await Notification.updateMany({ recipient: userId, isRead: false }, { isRead: true });
 		res.status(200).json({ message: "All notifications marked as read" });
 	} catch (error) {
-		console.log("Error in markAllAsRead:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
@@ -54,9 +51,7 @@ export const createNotification = async (recipient, sender, type, content, relat
 		getIO().to(recipient.toString()).emit("newNotification", notification);
 		
 		if (receiverSocketId) {
-			console.log(`Real-time notification sent to user ${recipient}`);
 		}
 	} catch (error) {
-		console.log("Error creating notification:", error.message);
 	}
 };

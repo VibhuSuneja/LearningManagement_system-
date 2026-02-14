@@ -35,7 +35,7 @@ const uploadToCloudinary = async (fileInput, resourceType = "auto") => {
     if (typeof fileInput === 'string' && fs.existsSync(fileInput)) {
       fs.unlinkSync(fileInput);
     }
-    console.log("Error during Cloudinary upload:", error);
+
     return null;
   }
 };

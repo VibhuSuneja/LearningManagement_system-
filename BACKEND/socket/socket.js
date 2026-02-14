@@ -14,7 +14,7 @@ const io = new Server(server, {
 
 export const getIO = () => {
     if (!io) {
-        console.warn("Socket.io not initialized yet!");
+
     }
     return io;
 };
@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
 	if (userId !== "undefined") {
 		userSocketMap[userId] = socket.id;
 		socket.join(userId); // Join a room specifically for this user
-		console.log(`User connected: UserID=${userId}, SocketID=${socket.id}`);
+
 	}
 
 	// Send current online users to all clients
@@ -39,12 +39,12 @@ io.on("connection", (socket) => {
     // Room Management for targeted updates
     socket.on("joinCourse", (courseId) => {
         socket.join(`course_${courseId}`);
-        console.log(`[Socket] User ${userId} joined room: course_${courseId}`);
+
     });
 
     socket.on("leaveCourse", (courseId) => {
         socket.leave(`course_${courseId}`);
-        console.log(`[Socket] User ${userId} left room: course_${courseId}`);
+
     });
 
     socket.on("integrityAlert", ({ courseId, userName, eventType }) => {
@@ -55,12 +55,12 @@ io.on("connection", (socket) => {
             eventType, 
             time: new Date().toLocaleTimeString() 
         });
-        console.log(`[Proctor] Alert from ${userName} in ${courseId}: ${eventType}`);
+
     });
 
 	socket.on("disconnect", () => {
 		if (userId !== "undefined") {
-			console.log(`User disconnected: UserID=${userId}, SocketID=${socket.id}`);
+
 			delete userSocketMap[userId];
 		}
 		io.emit("getOnlineUsers", Object.keys(userSocketMap));

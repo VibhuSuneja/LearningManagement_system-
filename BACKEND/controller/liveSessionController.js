@@ -20,7 +20,6 @@ export const participateInSession = async (req, res) => {
 
 		res.status(200).json({ message: "Participation recorded" });
 	} catch (error) {
-		console.log("Error in participateInSession:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
@@ -76,7 +75,6 @@ export const createLiveSession = async (req, res) => {
 
 		res.status(201).json(newSession);
 	} catch (error) {
-		console.log("Error in createLiveSession:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
@@ -100,7 +98,6 @@ export const getLiveSessionsByCourse = async (req, res) => {
 		const sessions = await LiveSession.find({ courseId }).sort({ startTime: -1 });
 		res.status(200).json(sessions);
 	} catch (error) {
-		console.log("Error in getLiveSessionsByCourse:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
@@ -130,7 +127,6 @@ export const updateSessionStatus = async (req, res) => {
 
 		res.status(200).json(session);
 	} catch (error) {
-		console.log("Error in updateSessionStatus:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
@@ -148,7 +144,6 @@ export const deleteLiveSession = async (req, res) => {
 		await LiveSession.findByIdAndDelete(id);
 		res.status(200).json({ message: "Session deleted successfully" });
 	} catch (error) {
-		console.log("Error in deleteLiveSession:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
@@ -172,7 +167,6 @@ export const updateSessionDetails = async (req, res) => {
 
 		res.status(200).json(session);
 	} catch (error) {
-		console.log("Error in updateSessionDetails:", error.message);
 		res.status(500).json({ error: "Internal server error" });
 	}
 };

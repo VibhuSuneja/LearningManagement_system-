@@ -18,9 +18,9 @@ const sendMail = async (email, subject, text) => {
       subject: subject,
       html: `<p>Your OTP for password reset is <b>${text}</b>. It expires in 5 minutes.</p>`,
     });
-    console.log("OTP sent successfully to:", email);
+
   } catch (error) {
-    console.error("Error sending mail:", error);
+
     throw error;
   }
 };

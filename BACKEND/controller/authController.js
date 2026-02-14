@@ -159,7 +159,6 @@ export const googleSignup = async (req,res) => {
 
 
     } catch (error) {
-        console.log(error)
          return res.status(500).json({message:`googleSignup  ${error}`})
     }
     

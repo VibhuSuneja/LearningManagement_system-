@@ -37,17 +37,7 @@ export const generateQuiz = async (req, res) => {
             return res.status(404).json({ message: "Course not found" });
         }
 
-        // Debug logging
-        console.log("=== AI Quiz Generation Authorization Debug ===");
-        console.log("course.creator type:", typeof course.creator);
-        console.log("course.creator:", course.creator);
-        console.log("course.creator._id:", course.creator._id);
-        console.log("req.userId:", req.userId);
-        
-        const creatorId = course.creator._id ? course.creator._id.toString() : course.creator.toString();
-        console.log("creatorId after conversion:", creatorId);
-        console.log("Match result:", creatorId === req.userId);
-        console.log("===========================================");
+
         
         if (creatorId !== req.userId) {
             return res.status(403).json({ 
@@ -97,7 +87,7 @@ OUTPUT FORMAT (MUST BE VALID JSON):
 
 Generate the quiz now. Respond ONLY with valid JSON, no additional text.`;
 
-        console.log("Generating quiz with AI...");
+
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -114,7 +104,6 @@ Generate the quiz now. Respond ONLY with valid JSON, no additional text.`;
             
             quizData = JSON.parse(responseText);
         } catch (parseError) {
-            console.error("Failed to parse AI response:", response.text);
             return res.status(500).json({ 
                 message: "Failed to parse AI-generated quiz. Please try again.",
                 debug: response.text 
@@ -154,7 +143,6 @@ Generate the quiz now. Respond ONLY with valid JSON, no additional text.`;
         });
 
     } catch (error) {
-        console.error("AI Quiz Generation Error:", error);
         return res.status(500).json({ 
             message: `Failed to generate quiz: ${error.message}` 
         });
@@ -221,7 +209,7 @@ OUTPUT FORMAT (MUST BE VALID JSON):
 
 Respond ONLY with valid JSON, no additional text.`;
 
-        console.log("AI grading submission...");
+
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -234,7 +222,6 @@ Respond ONLY with valid JSON, no additional text.`;
             responseText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
             gradingData = JSON.parse(responseText);
         } catch (parseError) {
-            console.error("Failed to parse AI grading response:", response.text);
             return res.status(500).json({ 
                 message: "Failed to parse AI grading. Please try again." 
             });
@@ -257,7 +244,6 @@ Respond ONLY with valid JSON, no additional text.`;
         });
 
     } catch (error) {
-        console.error("AI Grading Error:", error);
         return res.status(500).json({ 
             message: `Failed to generate AI feedback: ${error.message}` 
         });
@@ -347,7 +333,7 @@ Student Question: ${question}`;
             }))
         ];
 
-        console.log("AI Study Assistant processing question...");
+
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -370,7 +356,6 @@ Student Question: ${question}`;
         });
 
     } catch (error) {
-        console.error("AI Study Assistant Error:", error);
         return res.status(500).json({ 
             message: `Failed to get study assistant response: ${error.message}` 
         });
@@ -459,7 +444,6 @@ Respond ONLY with valid JSON.`;
         });
 
     } catch (error) {
-        console.error("AI Insights Error:", error);
         return res.status(500).json({ 
             message: `Failed to generate insights: ${error.message}` 
         });

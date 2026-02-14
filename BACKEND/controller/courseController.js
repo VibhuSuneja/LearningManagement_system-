@@ -43,7 +43,6 @@ try {
       success: true,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       message: "Internal Server Error",
       success: false,
@@ -55,21 +54,16 @@ try {
 export const getCreatorCourses = async (req, res) => {
   try {
     const userId = req.userId;
-    console.log(`Fetching courses for creator ID: ${userId}`); // DEBUGGING LOG
-
     const courses = await Course.find({ creator: userId })
       .populate("lectures")
       .populate("creator"); // THE ESSENTIAL FIX
 
     if (!courses) {
-      console.log(`No courses found for creator ID: ${userId}`); // DEBUGGING LOG
       return res.status(404).json({ message: "Course not found" });
     }
 
-    console.log(`Found ${courses.length} courses. First course creator field:`, courses[0]?.creator); // DEBUGGING LOG
     return res.status(200).json(courses);
   } catch (error) {
-    console.error(`Error in getCreatorCourses: ${error}`); // DEBUGGING LOG
     return res.status(500).json({ message: `Failed to get creator courses ${error}` });
   }
 };
@@ -121,7 +115,6 @@ export const removeCourse = async (req, res) => {
     await course.deleteOne();
     return res.status(200).json({ message: "Course Removed Successfully" });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({message:`Failed to remove course ${error}`})
   }
 };
@@ -245,7 +238,6 @@ export const getCreatorById = async (req, res) => {
 
     res.status(200).json( user );
   } catch (error) {
-    console.error("Error fetching user by ID:", error);
     res.status(500).json({ message: "get Creator error" });
   }
 };

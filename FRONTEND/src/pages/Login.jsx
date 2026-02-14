@@ -32,7 +32,7 @@ import { FaArrowLeftLong } from 'react-icons/fa6';
           toast.success("Login Successfully")
            navigate("/");
         } catch (error) {
-          console.log(error)
+
           setLoading(false)
           toast.error(error.response?.data?.message || "Network Error: Please check your connection")
           
@@ -53,7 +53,7 @@ import { FaArrowLeftLong } from 'react-icons/fa6';
           navigate("/")
           toast.success("Google Login Successfully")
         } catch (error) {
-          console.log(error)
+
           toast.error(error.response?.data?.message || "Google Login failed")
         }
       }
