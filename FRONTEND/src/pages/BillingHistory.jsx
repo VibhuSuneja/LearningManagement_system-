@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 
 const BillingHistory = () => {
     const [invoices, setInvoices] = useState([]);
@@ -65,7 +65,7 @@ const BillingHistory = () => {
             ]
         ];
 
-        doc.autoTable({
+        autoTable(doc, {
             startY: 95,
             head: [['Description', 'Qty', 'Unit Price', 'Total']],
             body: tableData,
