@@ -170,6 +170,12 @@ function Profile() {
               >
                 Retake Platform Tour
               </button>
+              <button 
+                  className="w-full bg-gray-50 text-gray-400 border border-gray-100 font-black py-3 rounded-2xl hover:bg-gray-100 hover:text-black transition-all text-[10px] tracking-[0.2em] uppercase flex items-center justify-center gap-2" 
+                  onClick={() => navigate("/privacy-center")}
+              >
+                Privacy Center & Data Control
+              </button>
             </div>
           ) : (
             <>

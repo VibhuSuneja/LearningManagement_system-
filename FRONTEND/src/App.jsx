@@ -44,6 +44,7 @@ import SubmitAssignment from './pages/SubmitAssignment';
 import GradeAssignment from './pages/Educator/GradeAssignment';
 import ManageAssignments from './pages/Educator/ManageAssignments';
 import OnboardingTour from "./component/OnboardingTour";
+import PrivacyCenter from "./pages/PrivacyCenter";
 
 export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
 console.log("Using Server URL:", serverUrl);
@@ -205,7 +206,9 @@ function App() {
           <Route path="/manage-assignments/:courseId" element={userData?.role === "educator" ? <ManageAssignments /> : <Navigate to="/signup" />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/privacy" element={<Privacy />} />      </Routes>
+          <Route path="/privacy" element={<Privacy />} /> 
+          <Route path="/privacy-center" element={userData ? <PrivacyCenter /> : <Navigate to="/signup" />} />
+      </Routes>
     </>
   );
 }
