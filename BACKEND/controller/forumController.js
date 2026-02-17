@@ -2,6 +2,7 @@ import ForumThread from "../model/ForumThread.js";
 import ForumComment from "../model/ForumComment.js";
 import { createNotification } from "./notificationController.js";
 import User from "../model/UserModel.js";
+import { awardPoints } from "./gamificationController.js";
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 
@@ -27,6 +28,10 @@ export const createThread = async (req, res) => {
         });
 
         await newThread.save();
+
+        // Award XP for starting a discussion
+        await awardPoints(author, 30, "Started a new discussion thread");
+
         res.status(201).json(newThread);
     } catch (error) {
         res.status(500).json({ message: "Error creating thread", error: error.message });
@@ -120,6 +125,9 @@ export const addComment = async (req, res) => {
         });
 
         await newComment.save();
+
+        // Award XP for engaging in discussion
+        await awardPoints(author, 10, "Contributed a comment to a discussion");
 
         // Notify thread author
         if (thread.author.toString() !== author.toString()) {

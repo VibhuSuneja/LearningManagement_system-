@@ -222,6 +222,12 @@ export const submitQuizAttempt = async (req, res) => {
 
         await progress.save();
 
+        // --- GAMIFICATION: Award points for passing ---
+        if (passed) {
+            const { awardPoints } = await import("./gamificationController.js");
+            await awardPoints(req.userId, 50, `Passed Quiz: ${quiz.title}`);
+        }
+
         // Trigger streak update on activity
         const { updateStreak } = await import("./gamificationController.js");
         await updateStreak(req.userId);

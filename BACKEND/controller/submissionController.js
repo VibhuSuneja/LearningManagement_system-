@@ -107,6 +107,10 @@ export const submitAssignment = async (req, res) => {
 
         await progress.save();
 
+        // Award XP for assignment submission
+        const { awardPoints } = await import("./gamificationController.js");
+        await awardPoints(req.userId, 50, `Submitted Assignment: ${assignment.title}`);
+
         // Trigger streak update on activity
         const { updateStreak } = await import("./gamificationController.js");
         await updateStreak(req.userId);
