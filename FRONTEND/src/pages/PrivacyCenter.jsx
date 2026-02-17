@@ -5,7 +5,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { setUserData } from "../redux/slices/userSlice"; // Assuming this is your logout/reset logic
+import { setUserData } from "../redux/userSlice"; // Assuming this is your logout/reset logic
 
 const PrivacyCenter = () => {
     const navigate = useNavigate();
