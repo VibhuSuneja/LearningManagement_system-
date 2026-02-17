@@ -45,6 +45,8 @@ import GradeAssignment from './pages/Educator/GradeAssignment';
 import ManageAssignments from './pages/Educator/ManageAssignments';
 import OnboardingTour from "./component/OnboardingTour";
 import PrivacyCenter from "./pages/PrivacyCenter";
+import LevelUpCelebration from "./component/LevelUpCelebration";
+import { AnimatePresence } from "framer-motion";
 
 export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
 console.log("Using Server URL:", serverUrl);
@@ -72,6 +74,8 @@ function App() {
   const { socket } = useSocketContext();
   const { userData } = useSelector((state) => state.user);
   const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+  const [showLevelUp, setShowLevelUp] = React.useState(false);
+  const [newLevel, setNewLevel] = React.useState(1);
 
   React.useEffect(() => {
     if (!socket) return;
@@ -83,9 +87,14 @@ function App() {
     // Note: 'userUpdated' is handled by getCurrentUser.js hook for auto-refetch
 
     socket.on("levelUp", ({ level, message }) => {
+        setNewLevel(level);
+        setShowLevelUp(true);
+        
+        // Still keep the toast for a brief summary if needed, or remove it.
+        // Let's keep it but slightly modified.
         toast.success(message, {
             position: "top-center",
-            autoClose: 5000,
+            autoClose: 3000,
             theme: "dark",
             icon: "⭐"
         });
@@ -161,6 +170,16 @@ function App() {
       <ScrollToTop />
       <Chatbot />
       <OnboardingTour />
+      
+      <AnimatePresence>
+        {showLevelUp && (
+          <LevelUpCelebration 
+            level={newLevel} 
+            onClose={() => setShowLevelUp(false)} 
+          />
+        )}
+      </AnimatePresence>
+
       {deferredPrompt && (
         <button 
           onClick={handleInstallClick}
