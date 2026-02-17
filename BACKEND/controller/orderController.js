@@ -1,6 +1,7 @@
 import Course from "../model/courseModel.js";
 import razorpay from 'razorpay'
 import User from "../model/UserModel.js";
+import Invoice from "../model/InvoiceModel.js";
 import dotenv from "dotenv"
 dotenv.config()
 const razorpayInstance = new razorpay({
@@ -78,6 +79,28 @@ export const verifyPayment = async (req, res) => {
         courseId
       );
 
+
+      // --- INVOICE GENERATION ---
+      const gstRate = 0.18; // 18% GST
+      const subtotal = course.price;
+      const gstAmount = subtotal * gstRate;
+      const totalAmount = subtotal + gstAmount;
+      const invoiceNumber = `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+      await Invoice.create({
+        invoiceNumber,
+        user: userId,
+        course: courseId,
+        razorpayOrderId: razorpay_order_id,
+        amount: subtotal,
+        gstAmount,
+        totalAmount,
+        billingDetails: {
+          name: user.name,
+          email: user.email,
+          address: "LMS Digital Hub" // Standard portal address
+        }
+      });
 
       // Emit socket event to refresh user data globally
       io.emit("userUpdated", { userId });

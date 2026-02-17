@@ -26,6 +26,7 @@ import progressRouter from "./route/progressRoute.js";
 import aiRouter from "./route/aiRoute.js";
 import analyticsRouter from "./route/analyticsRoute.js";
 import privacyRouter from "./route/privacyRoute.js";
+import invoiceRouter from "./route/invoiceRoute.js";
 import { app, server } from "./socket/socket.js";
 
 // --- Scaling & Security Configuration ---
@@ -103,6 +104,7 @@ app.use("/api/progress", progressRouter);
 app.use("/api/ai-features", strictLimiter, aiRouter); // Apply strict limit to AI Quiz/Feedback
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/privacy", privacyRouter);
+app.use("/api/invoices", invoiceRouter);
 
 
 // --- Health check ---

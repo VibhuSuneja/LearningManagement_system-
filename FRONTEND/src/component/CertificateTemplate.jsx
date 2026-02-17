@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
 import { FaGraduationCap, FaCheckCircle, FaGlobe, FaCertificate } from "react-icons/fa";
+import { QRCodeSVG } from "qrcode.react";
 
 const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certificateId }, ref) => {
     // Standard Hex Colors for html2canvas compatibility (Avoids oklch issues)
@@ -99,16 +100,29 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                     </div>
                 </div>
 
-                {/* Footer Info */}
-                <div className="mt-20 flex items-center gap-12 text-[10px] font-bold uppercase tracking-widest opacity-50" style={{ color: colors.gray }}>
-                    <div className="flex items-center gap-2">
-                        <FaGlobe style={{ color: colors.green }} />
-                        verify-lms.ac.in
+                {/* Footer Info & Verification QR */}
+                <div className="mt-16 flex items-center justify-between w-full px-12">
+                    <div className="flex flex-col items-start gap-2 text-[10px] font-bold uppercase tracking-widest opacity-50" style={{ color: colors.gray }}>
+                        <div className="flex items-center gap-2">
+                            <FaGlobe style={{ color: colors.green }} />
+                            verify-lms.ac.in
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <FaCertificate style={{ color: colors.green }} />
+                            ID: {certificateId || "CERT-"+(Math.random().toString(36).substr(2, 9).toUpperCase())}
+                        </div>
                     </div>
-                    <div>•</div>
-                    <div className="flex items-center gap-2">
-                        <FaCertificate style={{ color: colors.green }} />
-                        ID: {certificateId || "CERT-"+Math.random().toString(36).substr(2, 9).toUpperCase()}
+
+                    <div className="flex flex-col items-center gap-1">
+                        <div className="p-2 bg-white border border-gray-100 shadow-sm rounded-lg">
+                            <QRCodeSVG 
+                                value={`https://verify-lms.ac.in/verify/${certificateId}`} 
+                                size={60}
+                                level="H"
+                                includeMargin={false}
+                            />
+                        </div>
+                        <span className="text-[8px] font-black uppercase tracking-tighter opacity-40">Scan to Verify</span>
                     </div>
                 </div>
             </div>
