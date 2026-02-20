@@ -3,8 +3,10 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { serverUrl } from "../App";
-import { IoVideocamOutline, IoTimeOutline, IoCalendarOutline, IoChevronBackOutline, IoLockClosedOutline, IoTrashOutline, IoPlayCircleOutline, IoLinkOutline, IoDocumentTextOutline } from "react-icons/io5"; // Added icon
+import { IoVideocamOutline, IoTimeOutline, IoCalendarOutline, IoChevronBackOutline, IoLockClosedOutline, IoTrashOutline, IoPlayCircleOutline, IoLinkOutline, IoDocumentTextOutline, IoDownloadOutline, IoSearchOutline } from "react-icons/io5"; // Added icon
 import { toast } from "react-toastify";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 import { useSocketContext } from "../context/SocketContext";
 import useIntegrityMonitor from "../customHooks/useIntegrityMonitor";
@@ -35,6 +37,8 @@ const LiveSessions = () => {
 	const [enrolledStudents, setEnrolledStudents] = useState([]);
 	const [attendanceRecords, setAttendanceRecords] = useState({});
     const [isInstant, setIsInstant] = useState(false);
+	const [attendanceSession, setAttendanceSession] = useState(null);
+	const [attendanceSearch, setAttendanceSearch] = useState("");
 
 	const jitsiContainerRef = useRef(null);
 	const jitsiApiRef = useRef(null);
@@ -225,6 +229,7 @@ const LiveSessions = () => {
 
 	const openAttendanceModal = async (session) => {
 		try {
+			setAttendanceSession(session);
 			// Fetch enrolled students for the course
 			const { data: courseData } = await axios.get(`${serverUrl}/api/course/getcourse/${courseId}`, { withCredentials: true });
 			setEnrolledStudents(courseData.enrolledStudents || []);
@@ -252,6 +257,74 @@ const LiveSessions = () => {
 			console.error("Error loading attendance data:", error);
 			toast.error("Failed to load student list");
 		}
+	};
+
+	const downloadAttendancePDF = () => {
+		if (!attendanceSession) return;
+		
+		const doc = new jsPDF();
+		
+		// PDF Header Styling
+		doc.setFontSize(22);
+		doc.setTextColor(0, 0, 0);
+		doc.text("Attendance Report", 14, 20);
+		
+		doc.setFontSize(11);
+		doc.setTextColor(100);
+		doc.text(`Course: ${courseId}`, 14, 30);
+		doc.text(`Session: ${attendanceSession.title}`, 14, 37);
+		doc.text(`Date: ${new Date(attendanceSession.startTime).toLocaleDateString()}`, 14, 44);
+		doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 51);
+		
+		const tableColumn = ["#", "Student Name", "Email", "Status"];
+		const tableRows = [];
+
+		enrolledStudents.forEach((student, index) => {
+			const status = attendanceRecords[student._id] || "Absent";
+			const studentData = [
+				index + 1,
+				student.name,
+				student.email,
+				status.charAt(0) + status.slice(1) // Capitalize
+			];
+			tableRows.push(studentData);
+		});
+
+		autoTable(doc, {
+			head: [tableColumn],
+			body: tableRows,
+			startY: 60,
+			theme: 'grid',
+			headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255], fontStyle: 'bold' },
+			alternateRowStyles: { fillColor: [245, 245, 245] },
+			styles: { fontSize: 10, cellPadding: 3 },
+			columnStyles: {
+				3: { fontStyle: 'bold' } 
+			},
+			didParseCell: (data) => {
+				if (data.section === 'body' && data.column.index === 3) {
+					if (data.cell.raw === 'Present') {
+						data.cell.styles.textColor = [0, 128, 0];
+					} else if (data.cell.raw === 'Absent') {
+						data.cell.styles.textColor = [200, 0, 0];
+					} else if (data.cell.raw === 'Late') {
+						data.cell.styles.textColor = [200, 150, 0];
+					}
+				}
+			}
+		});
+
+		// Footer
+		const pageCount = doc.internal.getNumberOfPages();
+		for(let i = 1; i <= pageCount; i++) {
+			doc.setPage(i);
+			doc.setFontSize(10);
+			doc.setTextColor(150);
+			doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.width - 30, doc.internal.pageSize.height - 10);
+		}
+
+		doc.save(`Attendance_${attendanceSession.title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+		toast.success("Attendance PDF downloaded successfully!");
 	};
 
 	const submitAttendance = async () => {
@@ -685,12 +758,42 @@ const LiveSessions = () => {
 				<div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
 					<div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
 						<div className="p-6 bg-black text-white flex justify-between items-center">
-							<h3 className="text-xl font-bold">Attendance Taker</h3>
-							<button onClick={() => setShowAttendanceModal(false)} className="text-gray-400 hover:text-white transition-colors">
-								<IoChevronBackOutline size={24} className="rotate-180" />
-							</button>
+							<div>
+								<h3 className="text-xl font-bold">Attendance Taker</h3>
+								<p className="text-xs text-gray-400 mt-1">{attendanceSession?.title}</p>
+							</div>
+							<div className="flex items-center gap-3">
+								<button 
+									onClick={downloadAttendancePDF}
+									className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all border border-white/10 flex items-center gap-2 text-sm font-bold"
+									title="Download Attendance PDF"
+								>
+									<IoDownloadOutline size={18} /> PDF
+								</button>
+								<button onClick={() => setShowAttendanceModal(false)} className="text-gray-400 hover:text-white transition-colors">
+									<IoChevronBackOutline size={24} className="rotate-180" />
+								</button>
+							</div>
 						</div>
-						<div className="p-6 max-h-[60vh] overflow-y-auto">
+						<div className="px-6 py-4 bg-gray-50 border-b flex items-center gap-3">
+							<div className="relative flex-1">
+								<IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+								<input 
+									type="text"
+									placeholder="Search students by name or email..."
+									className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
+									value={attendanceSearch}
+									onChange={(e) => setAttendanceSearch(e.target.value)}
+								/>
+							</div>
+							<div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+								Showing {enrolledStudents.filter(student => 
+									student.name.toLowerCase().includes(attendanceSearch.toLowerCase()) ||
+									student.email.toLowerCase().includes(attendanceSearch.toLowerCase())
+								).length} Students
+							</div>
+						</div>
+						<div className="p-6 max-h-[50vh] overflow-y-auto">
 							<table className="w-full">
 								<thead>
 									<tr className="text-left text-gray-500 border-b">
@@ -699,7 +802,12 @@ const LiveSessions = () => {
 									</tr>
 								</thead>
 								<tbody className="divide-y">
-									{enrolledStudents.map((student) => (
+									{enrolledStudents
+										.filter(student => 
+											student.name.toLowerCase().includes(attendanceSearch.toLowerCase()) ||
+											student.email.toLowerCase().includes(attendanceSearch.toLowerCase())
+										)
+										.map((student) => (
 										<tr key={student._id}>
 											<td className="py-4">
 												<div className="flex items-center gap-3">
@@ -734,19 +842,27 @@ const LiveSessions = () => {
 								</tbody>
 							</table>
 						</div>
-						<div className="p-6 bg-gray-50 flex justify-end gap-3">
+						<div className="p-6 bg-gray-50 flex justify-between items-center gap-3">
 							<button 
-								onClick={() => setShowAttendanceModal(false)}
-								className="px-6 py-2.5 rounded-xl font-bold bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 transition-all"
+								onClick={downloadAttendancePDF}
+								className="px-6 py-2.5 rounded-xl font-bold bg-white border border-gray-200 text-blue-600 hover:bg-blue-50 transition-all flex items-center gap-2 shadow-sm"
 							>
-								Cancel
+								<IoDownloadOutline size={20} /> Download Report
 							</button>
-							<button 
-								onClick={submitAttendance}
-								className="px-8 py-2.5 rounded-xl font-bold bg-black text-white hover:shadow-lg transition-all"
-							>
-								Save Attendance
-							</button>
+							<div className="flex gap-3">
+								<button 
+									onClick={() => setShowAttendanceModal(false)}
+									className="px-6 py-2.5 rounded-xl font-bold bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 transition-all"
+								>
+									Cancel
+								</button>
+								<button 
+									onClick={submitAttendance}
+									className="px-8 py-2.5 rounded-xl font-bold bg-black text-white hover:shadow-lg transition-all"
+								>
+									Save Attendance
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
