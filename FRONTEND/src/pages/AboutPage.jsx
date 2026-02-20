@@ -258,7 +258,9 @@ const AboutPage = () => {
             className="lg:w-1/2"
           >
             <span className="text-blue-400 font-bold uppercase tracking-widest text-sm mb-4 block">Meet the Visionary</span>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">Vibhu Suneja</h2>
+            <a href="https://drive.google.com/file/d/1cdKgyUGjjaICbFUz0DFC6RCQobnRZIBG/view?usp=sharing" target="_blank" rel="noreferrer" className="hover:text-blue-400 transition-colors">
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">Vibhu Suneja</h2>
+            </a>
             <h4 className="text-xl text-blue-300 font-semibold mb-8 uppercase tracking-widest">Ambitious CS Student & Founder</h4>
             <p className="text-gray-400 text-lg leading-relaxed mb-8">
               "As an ambitious computer science student and a lifelong learner, I founded this platform with a simple belief: education should be about producing results, not just consuming content. I'm dedicated to building a bridge between classroom theory and real-world digital creation."
