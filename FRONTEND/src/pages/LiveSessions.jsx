@@ -226,7 +226,7 @@ const LiveSessions = () => {
 	const openAttendanceModal = async (session) => {
 		try {
 			// Fetch enrolled students for the course
-			const { data: courseData } = await axios.get(`${serverUrl}/api/course/${courseId}`, { withCredentials: true });
+			const { data: courseData } = await axios.get(`${serverUrl}/api/course/getcourse/${courseId}`, { withCredentials: true });
 			setEnrolledStudents(courseData.enrolledStudents || []);
 			
 			// Initialize attendance records (default present)
@@ -543,16 +543,6 @@ const LiveSessions = () => {
 						sessions.map((session) => (
 							<div key={session._id} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row justify-between items-center group relative">
 								
-								{/* Delete Button for Educators */}
-								{userData._id === session.creatorId && session.status !== 'live' && (
-									<button 
-										onClick={() => handleDeleteSession(session._id)}
-										className="absolute -top-2 -right-2 p-2 bg-white text-red-500 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 border border-red-100"
-									>
-										<IoTrashOutline size={20} />
-									</button>
-								)}
-
 								<div className="flex gap-6 items-center flex-1">
 									<div className={`p-5 rounded-2xl ${session.status === 'live' ? 'bg-red-50 text-red-600 animate-pulse' : 'bg-gray-50 text-gray-400'}`}>
 										<IoVideocamOutline size={32} />
@@ -586,18 +576,28 @@ const LiveSessions = () => {
 								
 								<div className="flex flex-col gap-2">
 									{session.status !== 'ended' ? (
-										<button 
-											onClick={() => session.platform === 'jitsi' ? startMeeting(session) : joinExternalMeeting(session)}
-											className={`mt-6 md:mt-0 px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg ${
-												session.status === 'live' 
-													? 'bg-red-600 text-white hover:bg-red-700 hover:shadow-red-200' 
-													: 'bg-black text-white hover:shadow-black/20'
-											}`}
-										>
-											{userData._id === session.creatorId 
-												? (session.status === 'live' ? 'Continue Session' : (session.platform === 'jitsi' ? 'Start Session' : 'Get Link')) 
-												: 'Join Class'}
-										</button>
+										<div className="flex flex-col gap-2">
+											<button 
+												onClick={() => session.platform === 'jitsi' ? startMeeting(session) : joinExternalMeeting(session)}
+												className={`mt-6 md:mt-0 px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg ${
+													session.status === 'live' 
+														? 'bg-red-600 text-white hover:bg-red-700 hover:shadow-red-200' 
+														: 'bg-black text-white hover:shadow-black/20'
+												}`}
+											>
+												{userData._id === session.creatorId 
+													? (session.status === 'live' ? 'Continue Session' : (session.platform === 'jitsi' ? 'Start Session' : 'Get Link')) 
+													: 'Join Class'}
+											</button>
+											{userData._id === session.creatorId && session.status !== 'live' && (
+												<button 
+													onClick={() => handleDeleteSession(session._id)}
+													className="bg-red-50 text-red-600 px-6 py-2 rounded-xl text-xs font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-2 border border-red-200"
+												>
+													<IoTrashOutline size={14} /> Delete Session
+												</button>
+											)}
+										</div>
 									) : (
 										// Finished Session Actions
 										<div className="flex gap-2 flex-wrap justify-end">
@@ -643,6 +643,14 @@ const LiveSessions = () => {
 													className="bg-gray-50 text-gray-600 px-4 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-gray-100 transition-all border border-gray-200 border-dashed"
 												>
 													<IoLinkOutline size={20} /> Edit Res.
+												</button>
+											)}
+											{userData._id === session.creatorId && (
+												<button 
+													onClick={() => handleDeleteSession(session._id)}
+													className="bg-red-50 text-red-600 px-4 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-red-100 transition-all border border-red-200 shadow-sm"
+												>
+													<IoTrashOutline size={20} /> Delete
 												</button>
 											)}
 										</div>
