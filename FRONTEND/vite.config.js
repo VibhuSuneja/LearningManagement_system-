@@ -12,7 +12,7 @@ export default defineConfig({
       devOptions: {
         enabled: true
       },
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg', 'resume.pdf'],
       manifest: {
         name: 'LMS Platform',
         short_name: 'LMS',
@@ -45,7 +45,7 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         maximumFileSizeToCacheInBytes: 4000000,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,json}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,json,pdf}'],
         navigateFallbackDenylist: [/^\/api/], // Ensure API routes are never handled as navigations
         runtimeCaching: [
           {

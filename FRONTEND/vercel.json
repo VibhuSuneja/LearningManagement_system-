@@ -5,7 +5,7 @@
             "destination": "/api/og/[courseId]"
         },
         {
-            "source": "/(.*)",
+            "source": "/((?!api|.*\\..*).*)",
             "destination": "/index.html"
         }
     ]
