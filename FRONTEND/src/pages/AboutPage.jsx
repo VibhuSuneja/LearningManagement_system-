@@ -7,6 +7,7 @@ import About from '../component/About';
 import { BiRocket, BiTargetLock, BiChevronRight, BiTimeFive } from 'react-icons/bi';
 import { FaGraduationCap, FaQuoteLeft, FaGlobeAmericas, FaShieldAlt, FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
 import founderImg from '../assets/founder.jpg';
+import resume from '../assets/resume.pdf';
 
 const ValueCard = ({ icon: Icon, title, description, color }) => (
   <motion.div
@@ -229,9 +230,11 @@ const AboutPage = () => {
             transition={{ duration: 0.8 }}
             className="lg:w-1/2 relative"
           >
-            <div className="relative z-10 rounded-[40px] overflow-hidden border-8 border-white/5 shadow-2xl group">
-              <img src={founderImg} alt="Vibhu Suneja" className="w-full h-auto grayscale group-hover:grayscale-0 transition-all duration-700" />
-            </div>
+            <a href={resume} target="_blank" rel="noreferrer" title="Click to view Resume" className="block cursor-pointer">
+              <div className="relative z-10 rounded-[40px] overflow-hidden border-8 border-white/5 shadow-2xl group">
+                <img src={founderImg} alt="Vibhu Suneja" className="w-full h-auto grayscale group-hover:grayscale-0 transition-all duration-700" />
+              </div>
+            </a>
             {/* Lifelong Learner Badge */}
             <motion.div 
               initial={{ rotate: -10, opacity: 0 }}
