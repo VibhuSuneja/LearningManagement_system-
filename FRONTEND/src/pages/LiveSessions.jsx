@@ -589,7 +589,25 @@ const LiveSessions = () => {
 													? (session.status === 'live' ? 'Continue Session' : (session.platform === 'jitsi' ? 'Start Session' : 'Get Link')) 
 													: 'Join Class'}
 											</button>
-											{userData._id === session.creatorId && session.status !== 'live' && (
+											{/* End Class button for Google Meet / Zoom live sessions */}
+											{userData._id === session.creatorId && session.platform !== 'jitsi' && session.status === 'live' && (
+												<button 
+													onClick={async () => {
+														try {
+															await axios.put(`${serverUrl}/api/live-session/status/${session._id}`, { status: 'ended' }, { withCredentials: true });
+															toast.success("Session marked as ended.");
+															fetchSessions();
+														} catch (err) {
+															toast.error("Failed to end session.");
+														}
+													}}
+													className="bg-orange-50 text-orange-600 px-6 py-2 rounded-xl text-xs font-bold hover:bg-orange-100 transition-all flex items-center justify-center gap-2 border border-orange-300"
+												>
+													⏹ End Class
+												</button>
+											)}
+											{/* Delete always visible for creator unless it's a live Jitsi session */}
+											{userData._id === session.creatorId && (session.platform !== 'jitsi' || session.status !== 'live') && (
 												<button 
 													onClick={() => handleDeleteSession(session._id)}
 													className="bg-red-50 text-red-600 px-6 py-2 rounded-xl text-xs font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-2 border border-red-200"
