@@ -19,8 +19,17 @@ const liveSessionSchema = new mongoose.Schema(
 		},
 		meetingId: {
 			type: String,
-			required: true,
+			required: function() { return this.platform === 'jitsi'; },
 			unique: true,
+			sparse: true, // Allow multiple nulls/undefined for other platforms
+		},
+		platform: {
+			type: String,
+			enum: ["jitsi", "google_meet", "zoom"],
+			default: "jitsi",
+		},
+		externalLink: {
+			type: String, // For Google Meet or Zoom
 		},
 		roomName: {
 			type: String,

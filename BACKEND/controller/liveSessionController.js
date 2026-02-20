@@ -26,7 +26,7 @@ export const participateInSession = async (req, res) => {
 
 export const createLiveSession = async (req, res) => {
 	try {
-		const { title, description, startTime, duration, courseId } = req.body;
+		const { title, description, startTime, duration, courseId, platform, externalLink } = req.body;
 		const creatorId = req.user._id;
 
 		// Verify course exists and user is the creator
@@ -38,8 +38,11 @@ export const createLiveSession = async (req, res) => {
 			return res.status(403).json({ message: "Only the course creator can start a live session" });
 		}
 
-		// Use a pure random hex string to bypass Jitsi's 'Reserved Room' logic
-		const meetingId = 'Room' + [...Array(20)].map(() => (Math.random() * 36 | 0).toString(36)).join('');
+		let meetingId = null;
+		if (platform === "jitsi" || !platform) {
+			// Use a pure random hex string to bypass Jitsi's 'Reserved Room' logic
+			meetingId = 'Room' + [...Array(20)].map(() => (Math.random() * 36 | 0).toString(36)).join('');
+		}
 
 		const newSession = new LiveSession({
 			title,
@@ -47,10 +50,16 @@ export const createLiveSession = async (req, res) => {
 			startTime,
 			duration,
 			meetingId,
+			platform: platform || "jitsi",
+			externalLink: platform === "jitsi" ? "" : externalLink,
 			courseId,
 			creatorId,
-			status: "scheduled",
+			status: startTime ? "scheduled" : "live", // If no startTime, it's an instant meet
 		});
+
+		if (!startTime) {
+			newSession.startTime = new Date();
+		}
 
 		await newSession.save();
 

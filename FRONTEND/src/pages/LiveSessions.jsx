@@ -29,6 +29,12 @@ const LiveSessions = () => {
 	const [recordingLink, setRecordingLink] = useState("");
 	const [notesLink, setNotesLink] = useState(""); 
 	const [selectedSessionForUpdate, setSelectedSessionForUpdate] = useState(null);
+	const [platform, setPlatform] = useState("jitsi");
+	const [externalLink, setExternalLink] = useState("");
+	const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+	const [enrolledStudents, setEnrolledStudents] = useState([]);
+	const [attendanceRecords, setAttendanceRecords] = useState({});
+    const [isInstant, setIsInstant] = useState(false);
 
 	const jitsiContainerRef = useRef(null);
 	const jitsiApiRef = useRef(null);
@@ -159,15 +165,20 @@ const LiveSessions = () => {
 			await axios.post(`${serverUrl}/api/live-session/create`, {
 				title,
 				description,
-				startTime,
+				startTime: isInstant ? null : startTime,
 				duration,
-				courseId
+				courseId,
+				platform,
+				externalLink: platform === "jitsi" ? "" : externalLink
 			}, { withCredentials: true });
 			
 			setTitle("");
 			setDescription("");
 			setStartTime("");
 			setDuration(60);
+			setPlatform("jitsi");
+			setExternalLink("");
+			setIsInstant(false);
 			setShowForm(false);
 			fetchSessions();
 		} catch (error) {
@@ -201,6 +212,67 @@ const LiveSessions = () => {
 			document.body.appendChild(script);
 		} else {
 			setIsScriptLoaded(true);
+		}
+	};
+
+	const joinExternalMeeting = (session) => {
+		if (userData.role === "student") {
+			axios.post(`${serverUrl}/api/live-session/participate/${session._id}`, {}, { withCredentials: true })
+				.catch(err => console.error("Participation tracking failed:", err));
+		}
+		window.open(session.externalLink, "_blank");
+	};
+
+	const openAttendanceModal = async (session) => {
+		try {
+			// Fetch enrolled students for the course
+			const { data: courseData } = await axios.get(`${serverUrl}/api/course/${courseId}`, { withCredentials: true });
+			setEnrolledStudents(courseData.enrolledStudents || []);
+			
+			// Initialize attendance records (default present)
+			const initialRecords = {};
+			(courseData.enrolledStudents || []).forEach(student => {
+				initialRecords[student._id] = "present";
+			});
+
+			// Try to fetch existing attendance
+			try {
+				const { data: existingAttendance } = await axios.get(`${serverUrl}/api/attendance/session/${session._id}`, { withCredentials: true });
+				existingAttendance.records.forEach(record => {
+					initialRecords[record.studentId._id] = record.status;
+				});
+			} catch (err) {
+				// No existing attendance, use defaults
+			}
+
+			setAttendanceRecords(initialRecords);
+			setSelectedSessionForUpdate(session._id);
+			setShowAttendanceModal(true);
+		} catch (error) {
+			console.error("Error loading attendance data:", error);
+			toast.error("Failed to load student list");
+		}
+	};
+
+	const submitAttendance = async () => {
+		try {
+			const formattedRecords = Object.keys(attendanceRecords).map(studentId => ({
+				studentId,
+				status: attendanceRecords[studentId]
+			}));
+
+			await axios.post(`${serverUrl}/api/attendance/mark`, {
+				sessionId: selectedSessionForUpdate,
+				courseId,
+				records: formattedRecords
+			}, { withCredentials: true });
+
+			toast.success("Attendance marked successfully!");
+			setShowAttendanceModal(false);
+			setSelectedSessionForUpdate(null);
+		} catch (error) {
+			console.error("Error saving attendance:", error);
+			toast.error("Failed to save attendance");
 		}
 	};
 
@@ -313,12 +385,26 @@ const LiveSessions = () => {
 						<p className="text-gray-500 mt-2">Join live lectures and interact with your instructors in real-time.</p>
 					</div>
 					{userData.role === "educator" && (
-						<button 
-							onClick={() => setShowForm(!showForm)}
-							className="bg-black text-white px-8 py-3 rounded-full font-bold shadow-xl hover:scale-105 transition-all"
-						>
-							{showForm ? "Cancel" : "Schedule New Session"}
-						</button>
+						<div className="flex gap-4">
+							<button 
+								onClick={() => {
+									setShowForm(!showForm);
+									setIsInstant(true);
+								}}
+								className="bg-red-600 text-white px-8 py-3 rounded-full font-bold shadow-xl hover:scale-105 transition-all flex items-center gap-2"
+							>
+								<IoPlayCircleOutline size={20} /> Instant Meet
+							</button>
+							<button 
+								onClick={() => {
+									setShowForm(!showForm);
+									setIsInstant(false);
+								}}
+								className="bg-black text-white px-8 py-3 rounded-full font-bold shadow-xl hover:scale-105 transition-all"
+							>
+								{showForm && !isInstant ? "Cancel" : "Schedule Session"}
+							</button>
+						</div>
 					)}
 				</div>
 
@@ -335,9 +421,10 @@ const LiveSessions = () => {
 				{showForm && (
 					<div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 mb-10 animate-in fade-in slide-in-from-top-4">
                         {/* ... Create Form ... */}
-						<h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-4">Session Details</h3>
+						<h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-4">
+							{isInstant ? "Start Instant Class" : "Schedule Session Details"}
+						</h3>
 						<form onSubmit={handleCreateSession} className="space-y-6">
-                            {/* ... Inputs ... */}
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div className="space-y-2">
 									<label className="text-sm font-semibold text-gray-600 ml-1">Session Title</label>
@@ -350,16 +437,43 @@ const LiveSessions = () => {
 										required
 									/>
 								</div>
+								{!isInstant && (
+									<div className="space-y-2">
+										<label className="text-sm font-semibold text-gray-600 ml-1">Start Time</label>
+										<input 
+											type="datetime-local" 
+											className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black transition-all"
+											value={startTime}
+											onChange={(e) => setStartTime(e.target.value)}
+											required
+										/>
+									</div>
+								)}
 								<div className="space-y-2">
-									<label className="text-sm font-semibold text-gray-600 ml-1">Start Time</label>
-									<input 
-										type="datetime-local" 
-										className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black transition-all"
-										value={startTime}
-										onChange={(e) => setStartTime(e.target.value)}
-										required
-									/>
+									<label className="text-sm font-semibold text-gray-600 ml-1">Meeting Platform</label>
+									<select 
+										className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black transition-all appearance-none cursor-pointer"
+										value={platform}
+										onChange={(e) => setPlatform(e.target.value)}
+									>
+										<option value="jitsi">Jitsi Meet (Built-in)</option>
+										<option value="google_meet">Google Meet (External)</option>
+										<option value="zoom">Zoom (External)</option>
+									</select>
 								</div>
+								{(platform === "google_meet" || platform === "zoom") && (
+									<div className="space-y-2">
+										<label className="text-sm font-semibold text-gray-600 ml-1">Meeting Link</label>
+										<input 
+											type="url" 
+											placeholder={`Paste your ${platform === 'google_meet' ? 'Google Meet' : 'Zoom'} link here`}
+											className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-black transition-all"
+											value={externalLink}
+											onChange={(e) => setExternalLink(e.target.value)}
+											required
+										/>
+									</div>
+								)}
 								<div className="space-y-2">
 									<label className="text-sm font-semibold text-gray-600 ml-1">Duration (minutes)</label>
 									<input 
@@ -383,7 +497,7 @@ const LiveSessions = () => {
 								/>
 							</div>
 							<button type="submit" className="w-full bg-black text-white py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all">
-								Create Session & Notify Students
+								{isInstant ? "Launch Class Now" : "Schedule Session & Notify Students"}
 							</button>
 						</form>
 					</div>
@@ -473,14 +587,16 @@ const LiveSessions = () => {
 								<div className="flex flex-col gap-2">
 									{session.status !== 'ended' ? (
 										<button 
-											onClick={() => startMeeting(session)}
+											onClick={() => session.platform === 'jitsi' ? startMeeting(session) : joinExternalMeeting(session)}
 											className={`mt-6 md:mt-0 px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg ${
 												session.status === 'live' 
 													? 'bg-red-600 text-white hover:bg-red-700 hover:shadow-red-200' 
 													: 'bg-black text-white hover:shadow-black/20'
 											}`}
 										>
-											{userData._id === session.creatorId ? (session.status === 'live' ? 'Continue Session' : 'Start Session') : 'Join Class'}
+											{userData._id === session.creatorId 
+												? (session.status === 'live' ? 'Continue Session' : (session.platform === 'jitsi' ? 'Start Session' : 'Get Link')) 
+												: 'Join Class'}
 										</button>
 									) : (
 										// Finished Session Actions
@@ -510,6 +626,15 @@ const LiveSessions = () => {
 											
 											{userData._id === session.creatorId && (
 												<button 
+													onClick={() => openAttendanceModal(session)}
+													className="bg-green-50 text-green-600 px-4 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-green-100 transition-all border border-green-200 shadow-sm"
+												>
+													<IoDocumentTextOutline size={20} /> Attendance
+												</button>
+											)}
+											
+											{userData._id === session.creatorId && (
+												<button 
 													onClick={() => {
                                                         setSelectedSessionForUpdate(session._id);
                                                         setRecordingLink(session.recordingUrl || "");
@@ -528,6 +653,78 @@ const LiveSessions = () => {
 					)}
 				</div>
 			</div>
+
+			{/* Attendance Modal */}
+			{showAttendanceModal && (
+				<div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+					<div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+						<div className="p-6 bg-black text-white flex justify-between items-center">
+							<h3 className="text-xl font-bold">Attendance Taker</h3>
+							<button onClick={() => setShowAttendanceModal(false)} className="text-gray-400 hover:text-white transition-colors">
+								<IoChevronBackOutline size={24} className="rotate-180" />
+							</button>
+						</div>
+						<div className="p-6 max-h-[60vh] overflow-y-auto">
+							<table className="w-full">
+								<thead>
+									<tr className="text-left text-gray-500 border-b">
+										<th className="pb-4 font-bold uppercase text-xs tracking-wider">Student Name</th>
+										<th className="pb-4 font-bold uppercase text-xs tracking-wider text-center">Status</th>
+									</tr>
+								</thead>
+								<tbody className="divide-y">
+									{enrolledStudents.map((student) => (
+										<tr key={student._id}>
+											<td className="py-4">
+												<div className="flex items-center gap-3">
+													<div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold">
+														{student.name.charAt(0)}
+													</div>
+													<div>
+														<p className="font-bold text-gray-900">{student.name}</p>
+														<p className="text-xs text-gray-500">{student.email}</p>
+													</div>
+												</div>
+											</td>
+											<td className="py-4 text-center">
+												<div className="inline-flex bg-gray-100 p-1 rounded-xl">
+													{["present", "absent", "late"].map((status) => (
+														<button
+															key={status}
+															onClick={() => setAttendanceRecords(prev => ({...prev, [student._id]: status}))}
+															className={`px-4 py-1.5 rounded-lg text-xs font-bold capitalize transition-all ${
+																attendanceRecords[student._id] === status 
+																	? (status === 'present' ? 'bg-green-600 text-white shadow-md' : status === 'absent' ? 'bg-red-600 text-white shadow-md' : 'bg-yellow-500 text-white shadow-md')
+																	: 'text-gray-500 hover:bg-gray-200'
+															}`}
+														>
+															{status}
+														</button>
+													))}
+												</div>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+						<div className="p-6 bg-gray-50 flex justify-end gap-3">
+							<button 
+								onClick={() => setShowAttendanceModal(false)}
+								className="px-6 py-2.5 rounded-xl font-bold bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 transition-all"
+							>
+								Cancel
+							</button>
+							<button 
+								onClick={submitAttendance}
+								className="px-8 py-2.5 rounded-xl font-bold bg-black text-white hover:shadow-lg transition-all"
+							>
+								Save Attendance
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

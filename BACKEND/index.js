@@ -27,6 +27,7 @@ import aiRouter from "./route/aiRoute.js";
 import analyticsRouter from "./route/analyticsRoute.js";
 import privacyRouter from "./route/privacyRoute.js";
 import invoiceRouter from "./route/invoiceRoute.js";
+import attendanceRouter from "./route/attendanceRoute.js";
 import { app, server } from "./socket/socket.js";
 
 // --- Scaling & Security Configuration ---
@@ -105,6 +106,7 @@ app.use("/api/ai-features", strictLimiter, aiRouter); // Apply strict limit to A
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/privacy", privacyRouter);
 app.use("/api/invoices", invoiceRouter);
+app.use("/api/attendance", attendanceRouter);
 
 
 // --- Health check ---
