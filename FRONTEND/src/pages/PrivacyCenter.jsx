@@ -138,7 +138,10 @@ const PrivacyCenter = () => {
                             <p className="text-gray-400 text-xs mt-1">We don't sell your data. We use it only to enhance your AI learning experience.</p>
                         </div>
                     </div>
-                    <button className="bg-white text-black font-black text-[10px] uppercase px-6 py-3 rounded-xl tracking-tighter">
+                    <button 
+                        onClick={() => navigate("/privacy")}
+                        className="bg-white text-black font-black text-[10px] uppercase px-6 py-3 rounded-xl tracking-tighter hover:bg-gray-100 transition-colors"
+                    >
                         View Full Privacy Policy
                     </button>
                 </div>
