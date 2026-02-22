@@ -2,6 +2,16 @@ import React, { forwardRef } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 
 const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certificateId }, ref) => {
+    // Format course title: capitalise each word
+    const formatTitle = (title = "") =>
+        title.replace(/\b\w/g, (c) => c.toUpperCase());
+
+    // Strip time from date string – keep Day Month Year only
+    const formatDate = (raw = "") => {
+        // raw arrives as e.g. "22 February 2026 at 04:41 pm"
+        // We only keep the portion before " at "
+        return raw.split(" at ")[0].trim();
+    };
     // Colors matching the image reference: ivory, crimson, gold
     const c = {
         crimson:    "#8b1a1a",
@@ -128,17 +138,17 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
             ═══════════════════════════════ */}
             <div style={{ position:"relative", zIndex:10, width:"82%", textAlign:"center", marginTop:"10px" }}>
 
-                {/* CERTIFICATE title */}
+                {/* CERTIFICATE OF ACHIEVEMENT title */}
                 <h1 style={{
-                    fontSize: "74px",
+                    fontSize: "62px",
                     fontFamily: "'Georgia', 'Times New Roman', serif",
                     color: c.crimson,
                     fontWeight: "bold",
-                    letterSpacing: "6px",
-                    margin: "50px 0 0",
+                    letterSpacing: "5px",
+                    margin: "46px 0 0",
                     textShadow: `1px 1px 0 rgba(139,26,26,0.2)`,
                 }}>
-                    CERTIFICATE
+                    CERTIFICATE OF ACHIEVEMENT
                 </h1>
 
                 {/* Sub-ornament under title */}
@@ -154,7 +164,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
 
                 {/* Presenter text */}
                 <p style={{
-                    fontSize: "17px",
+                    fontSize: "13px",
                     fontFamily: "Georgia, serif",
                     color: c.crimson,
                     textTransform: "uppercase",
@@ -162,7 +172,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                     margin: "0 0 6px",
                     fontWeight: "bold"
                 }}>
-                    This Certificate is Proudly Presented For Honorable Achievement To
+                    This Certificate is Proudly Conferred Upon
                 </p>
 
                 {/* Student Name — large cursive italic */}
@@ -189,7 +199,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                     color: c.crimson,
                     margin: "6px 0 10px"
                 }}>
-                    {courseTitle}
+                    {formatTitle(courseTitle)}
                 </p>
 
                 {/* Body paragraph */}
@@ -202,8 +212,8 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                     margin: "0 auto 22px",
                     lineHeight: "1.75"
                 }}>
-                    For successfully completing all requisite modules, demonstrating exceptional dedication,
-                    intellectual rigor, and mastery of the subject matter with distinction.
+                    For successfully fulfilling all requirements of the curriculum, exhibiting distinguished
+                    commitment, and achieving commendable proficiency in the subject matter.
                 </p>
 
                 {/* ── 3-COLUMN FOOTER ── */}
@@ -213,11 +223,11 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                     <div style={{ textAlign:"center" }}>
                         <div style={{ borderBottom:`1.5px solid ${c.text}`, paddingBottom:"6px", marginBottom:"6px" }}>
                             <p style={{ fontFamily:"'Palatino Linotype', Palatino, serif", fontStyle:"italic", fontSize:"20px", color:c.text, margin:0 }}>
-                                {date}
+                                {formatDate(date)}
                             </p>
                         </div>
                         <p style={{ fontFamily:"'Palatino Linotype', Palatino, serif", fontStyle:"italic", fontSize:"16px", color:c.text, margin:"0 0 4px" }}>
-                            Date &amp; Time
+                            Date of Issuance
                         </p>
                         {/* QR Code below date */}
                         <div style={{ display:"flex", flexDirection:"column", alignItems:"center", marginTop:"10px" }}>
@@ -247,8 +257,19 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                         }}>
                             {/* inner embossed ring */}
                             <div style={{ position:"absolute", inset:"10px", borderRadius:"50%", border:"1.5px solid rgba(255,255,255,0.2)" }} />
-                            {/* "S" monogram — replace with first letter of brand */}
-                            <span style={{ fontSize:"52px", color:"rgba(255,255,255,0.9)", fontFamily:"Georgia, serif", fontStyle:"italic", fontWeight:"bold", textShadow:"0 2px 4px rgba(0,0,0,0.5)" }}>VC</span>
+                            {/* Circular embossed text around monogram */}
+                            <svg viewBox="0 0 140 140" width="140" height="140" style={{ position:"absolute", top:0, left:0 }}>
+                                <defs>
+                                    <path id="sealCircle" d="M 70,70 m -48,0 a 48,48 0 1,1 96,0 a 48,48 0 1,1 -96,0" />
+                                </defs>
+                                <text fill="rgba(255,255,255,0.55)" fontSize="8.5" fontFamily="Georgia, serif" letterSpacing="2.8" textAnchor="middle">
+                                    <textPath href="#sealCircle" startOffset="50%">
+                                        VERIFIED CREDENTIAL • VIRTUAL COURSES LMS
+                                    </textPath>
+                                </text>
+                            </svg>
+                            {/* VC monogram */}
+                            <span style={{ fontSize:"46px", color:"rgba(255,255,255,0.92)", fontFamily:"'Palatino Linotype', Georgia, serif", fontStyle:"italic", fontWeight:"bold", textShadow:"0 2px 4px rgba(0,0,0,0.5)", position:"relative", zIndex:1 }}>VC</span>
                         </div>
                     </div>
 
@@ -266,10 +287,10 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                                 Vibhu Suneja
                             </p>
                         </div>
-                        <p style={{ fontFamily:"'Palatino Linotype', Palatino, serif", fontStyle:"italic", fontSize:"16px", color:c.text, margin:0 }}>
-                            Signature
+                        <p style={{ fontFamily:"'Palatino Linotype', Palatino, serif", fontStyle:"italic", fontSize:"14px", color:c.text, margin:"0 0 2px" }}>
+                            Authorized Signatory
                         </p>
-                        <p style={{ fontFamily:"Georgia, serif", fontSize:"10px", color:c.muted, margin:"6px 0 0", textTransform:"uppercase", letterSpacing:"1.5px" }}>
+                        <p style={{ fontFamily:"Georgia, serif", fontSize:"10px", color:c.muted, margin:"4px 0 0", textTransform:"uppercase", letterSpacing:"1.5px" }}>
                             Founder &amp; Director, Virtual Courses LMS
                         </p>
                     </div>
