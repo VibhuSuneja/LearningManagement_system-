@@ -4,26 +4,24 @@ import { QRCodeCanvas } from "qrcode.react";
 const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certificateId }, ref) => {
     // Format course title: capitalise each word
     const formatTitle = (title = "") =>
-        title.replace(/\b\w/g, (c) => c.toUpperCase());
+        title.replace(/\b\w/g, (ch) => ch.toUpperCase());
 
     // Strip time from date string – keep Day Month Year only
     const formatDate = (raw = "") => {
-        // raw arrives as e.g. "22 February 2026 at 04:41 pm"
-        // We only keep the portion before " at "
         return raw.split(" at ")[0].trim();
     };
-    // Colors matching the image reference: ivory, crimson, gold
+
+    // Colors – ivory / crimson / gold palette
     const c = {
-        crimson:    "#8b1a1a",
-        crimsonDark:"#6b1212",
-        gold:       "#c8a84b",
-        goldLight:  "#d4b96a",
-        goldPale:   "#e8d5a0",
-        ivory:      "#f8f5ee",
-        white:      "#ffffff",
-        text:       "#2c1810",
-        muted:      "#5a3e35",
-        bg:         "#faf8f2",
+        crimson:     "#8b1a1a",
+        crimsonDark: "#6b1212",
+        gold:        "#c8a84b",
+        goldLight:   "#d4b96a",
+        goldPale:    "#e8d5a0",
+        ivory:       "#f8f5ee",
+        white:       "#ffffff",
+        text:        "#2c1810",
+        muted:       "#5a3e35",
     };
 
     return (
@@ -40,54 +38,78 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                 justifyContent: "center",
                 userSelect: "none",
                 boxSizing: "border-box",
-                // Subtle herringbone / linen texture via diagonal repeating pattern
                 backgroundColor: c.ivory,
+                // Stronger parchment / linen texture
                 backgroundImage:
-                    "repeating-linear-gradient(45deg, rgba(180,160,100,0.07) 0px, rgba(180,160,100,0.07) 1px, transparent 1px, transparent 12px), " +
-                    "repeating-linear-gradient(-45deg, rgba(180,160,100,0.07) 0px, rgba(180,160,100,0.07) 1px, transparent 1px, transparent 12px)",
+                    "repeating-linear-gradient(45deg, rgba(180,160,100,0.10) 0px, rgba(180,160,100,0.10) 1px, transparent 1px, transparent 10px), " +
+                    "repeating-linear-gradient(-45deg, rgba(180,160,100,0.10) 0px, rgba(180,160,100,0.10) 1px, transparent 1px, transparent 10px), " +
+                    "radial-gradient(ellipse at 50% 50%, rgba(200,168,75,0.06) 0%, transparent 70%)",
+                // Inner shadow for depth — "printed on paper" feel
+                boxShadow: "inset 0 0 80px rgba(90,62,53,0.08), inset 0 0 30px rgba(200,168,75,0.06)",
             }}
         >
             {/* ═══════════════════════════════════════════
-                BORDER SYSTEM  —  3 nested layers
+                LARGE FAINT CENTER WATERMARK
             ═══════════════════════════════════════════ */}
-            {/* Layer 1 – thin outer gold line */}
-            <div style={{ position:"absolute", inset:"14px", border:`1.5px solid ${c.gold}` }} />
-            {/* Layer 2 – thicker inner gold frame */}
-            <div style={{ position:"absolute", inset:"22px", border:`4px solid ${c.gold}` }} />
-            {/* Layer 3 – hairline crimson inner rule */}
-            <div style={{ position:"absolute", inset:"32px", border:`1px solid ${c.crimson}`, opacity:0.25 }} />
+            <div style={{
+                position: "absolute", top: "50%", left: "50%",
+                transform: "translate(-50%, -50%)",
+                fontSize: "220px",
+                fontFamily: "'Cinzel Decorative', 'Georgia', serif",
+                fontWeight: 900,
+                color: c.gold,
+                opacity: 0.04,
+                letterSpacing: "20px",
+                userSelect: "none",
+                pointerEvents: "none",
+                lineHeight: 1,
+            }}>
+                VC
+            </div>
+
+            {/* ═══════════════════════════════════════════
+                BORDER SYSTEM – 3 nested layers
+            ═══════════════════════════════════════════ */}
+            <div style={{ position:"absolute", inset:"12px", border:`1.5px solid ${c.gold}` }} />
+            <div style={{ position:"absolute", inset:"20px", border:`4px solid ${c.gold}` }} />
+            <div style={{ position:"absolute", inset:"30px", border:`1px solid ${c.crimson}`, opacity:0.25 }} />
 
             {/* ═══════════════════════════════
-                CORNER ORNAMENTS  (4 corners SVG)
+                CORNER ORNAMENTS – larger, more intricate
             ═══════════════════════════════ */}
             {[
-                { top:"14px",   left:"14px",   sx:1,  sy:1  },
-                { top:"14px",   right:"14px",  sx:-1, sy:1  },
-                { bottom:"14px",left:"14px",   sx:1,  sy:-1 },
-                { bottom:"14px",right:"14px",  sx:-1, sy:-1 },
+                { top:"12px",   left:"12px",   sx:1,  sy:1  },
+                { top:"12px",   right:"12px",  sx:-1, sy:1  },
+                { bottom:"12px",left:"12px",   sx:1,  sy:-1 },
+                { bottom:"12px",right:"12px",  sx:-1, sy:-1 },
             ].map((p,i)=>(
-                <div key={i} style={{ position:"absolute", ...p, width:"110px", height:"110px" }}>
-                    <svg viewBox="0 0 110 110" width="110" height="110">
-                        <g transform={`scale(${p.sx},${p.sy}) translate(${p.sx<0?-110:0},${p.sy<0?-110:0})`}>
+                <div key={i} style={{ position:"absolute", ...p, width:"130px", height:"130px" }}>
+                    <svg viewBox="0 0 130 130" width="130" height="130">
+                        <g transform={`scale(${p.sx},${p.sy}) translate(${p.sx<0?-130:0},${p.sy<0?-130:0})`}>
                             {/* outer L */}
-                            <path d="M8,8 L50,8" stroke={c.gold} strokeWidth="2.5" fill="none"/>
-                            <path d="M8,8 L8,50" stroke={c.gold} strokeWidth="2.5" fill="none"/>
+                            <path d="M8,8 L60,8" stroke={c.gold} strokeWidth="2.5" fill="none"/>
+                            <path d="M8,8 L8,60" stroke={c.gold} strokeWidth="2.5" fill="none"/>
                             {/* inner L */}
-                            <path d="M18,18 L42,18" stroke={c.gold} strokeWidth="1.2" fill="none"/>
-                            <path d="M18,18 L18,42" stroke={c.gold} strokeWidth="1.2" fill="none"/>
-                            {/* dots */}
-                            <circle cx="8"  cy="8"  r="3.5" fill={c.gold}/>
-                            <circle cx="50" cy="8"  r="2"   fill={c.gold}/>
-                            <circle cx="8"  cy="50" r="2"   fill={c.gold}/>
-                            <circle cx="18" cy="18" r="2"   fill={c.goldLight}/>
+                            <path d="M18,18 L50,18" stroke={c.gold} strokeWidth="1.2" fill="none"/>
+                            <path d="M18,18 L18,50" stroke={c.gold} strokeWidth="1.2" fill="none"/>
+                            {/* accent dots */}
+                            <circle cx="8"  cy="8"  r="4" fill={c.gold}/>
+                            <circle cx="60" cy="8"  r="2.5" fill={c.gold}/>
+                            <circle cx="8"  cy="60" r="2.5" fill={c.gold}/>
+                            <circle cx="18" cy="18" r="2.5" fill={c.goldLight}/>
                             {/* floral petal cluster */}
-                            <ellipse cx="30" cy="12" rx="6"  ry="3"  fill={c.goldPale} opacity=".9" transform="rotate(-20,30,12)"/>
-                            <ellipse cx="12" cy="30" rx="6"  ry="3"  fill={c.goldPale} opacity=".9" transform="rotate(70,12,30)"/>
-                            <ellipse cx="22" cy="22" rx="8"  ry="3.5" fill={c.gold}    opacity=".5" transform="rotate(45,22,22)"/>
-                            <circle  cx="22" cy="22" r="2.5" fill={c.gold}/>
-                            {/* vine tendrils */}
-                            <path d="M30,12 Q35,18 28,24" stroke={c.gold} strokeWidth="1" fill="none" opacity=".6"/>
-                            <path d="M12,30 Q18,35 24,28" stroke={c.gold} strokeWidth="1" fill="none" opacity=".6"/>
+                            <ellipse cx="34" cy="12" rx="8"  ry="3.5" fill={c.goldPale} opacity=".85" transform="rotate(-20,34,12)"/>
+                            <ellipse cx="12" cy="34" rx="8"  ry="3.5" fill={c.goldPale} opacity=".85" transform="rotate(70,12,34)"/>
+                            <ellipse cx="26" cy="26" rx="10" ry="4"   fill={c.gold}    opacity=".45" transform="rotate(45,26,26)"/>
+                            <circle  cx="26" cy="26" r="3"   fill={c.gold}/>
+                            {/* vine tendrils — extended */}
+                            <path d="M34,12 Q42,20 32,28" stroke={c.gold} strokeWidth="1" fill="none" opacity=".6"/>
+                            <path d="M12,34 Q20,42 28,32" stroke={c.gold} strokeWidth="1" fill="none" opacity=".6"/>
+                            <path d="M42,20 Q48,28 40,36" stroke={c.goldLight} strokeWidth="0.8" fill="none" opacity=".4"/>
+                            <path d="M20,42 Q28,48 36,40" stroke={c.goldLight} strokeWidth="0.8" fill="none" opacity=".4"/>
+                            {/* extra leaf */}
+                            <ellipse cx="44" cy="14" rx="5" ry="2.5" fill={c.goldPale} opacity=".6" transform="rotate(-35,44,14)"/>
+                            <ellipse cx="14" cy="44" rx="5" ry="2.5" fill={c.goldPale} opacity=".6" transform="rotate(55,14,44)"/>
                         </g>
                     </svg>
                 </div>
@@ -96,7 +118,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
             {/* ═══════════════════════════════
                 SIDE ORNAMENTS  (left & right midpoints)
             ═══════════════════════════════ */}
-            {[{left:"16px", top:"50%", rotate:"0deg"}, {right:"16px", top:"50%", rotate:"180deg"}].map((p,i)=>(
+            {[{left:"14px", top:"50%", rotate:"0deg"}, {right:"14px", top:"50%", rotate:"180deg"}].map((p,i)=>(
                 <div key={i} style={{ position:"absolute", ...p, transform:`translateY(-50%) rotate(${p.rotate})`, width:"55px" }}>
                     <svg viewBox="0 0 55 160" width="55" height="160">
                         <g>
@@ -112,18 +134,15 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
             ))}
 
             {/* ═══════════════════════════════
-                TOP FLORAL MEDALLION (ornament above CERTIFICATE)
+                TOP FLORAL MEDALLION
             ═══════════════════════════════ */}
-            <div style={{ position:"absolute", top:"35px", left:"50%", transform:"translateX(-50%)" }}>
+            <div style={{ position:"absolute", top:"32px", left:"50%", transform:"translateX(-50%)" }}>
                 <svg viewBox="0 0 320 60" width="320" height="60">
-                    {/* center diamond */}
                     <polygon points="160,5 175,30 160,55 145,30" fill={c.gold} opacity=".9"/>
                     <polygon points="160,12 170,30 160,48 150,30" fill={c.ivory}/>
                     <circle cx="160" cy="30" r="5" fill={c.crimson}/>
-                    {/* horizontal flourishes */}
                     <path d="M 145,30 Q 120,15 90,30 Q 60,45 30,30 Q 15,22 5,30" stroke={c.gold} strokeWidth="1.5" fill="none"/>
                     <path d="M 175,30 Q 200,15 230,30 Q 260,45 290,30 Q 305,22 315,30" stroke={c.gold} strokeWidth="1.5" fill="none"/>
-                    {/* petals along flourish */}
                     {[60,90,120,200,230,260].map((x,i)=>(
                         <g key={i}>
                             <ellipse cx={x} cy="30" rx="7" ry="3" fill={c.goldPale} opacity=".8" transform={`rotate(${i%2===0?35:-35},${x},30)`}/>
@@ -134,163 +153,246 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
             </div>
 
             {/* ═══════════════════════════════
+                CERTIFICATE NUMBER – top right
+            ═══════════════════════════════ */}
+            <div style={{
+                position: "absolute", top: "38px", right: "55px",
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: "10px",
+                color: c.muted,
+                letterSpacing: "1.5px",
+                textTransform: "uppercase",
+                opacity: 0.7,
+                textAlign: "right",
+            }}>
+                <span style={{ display:"block", fontSize:"8px", letterSpacing:"2px", marginBottom:"2px", color:c.gold }}>Certificate No.</span>
+                <span style={{ fontWeight:600, color:c.text }}>{certificateId}</span>
+            </div>
+
+            {/* ═══════════════════════════════
                 MAIN CONTENT
             ═══════════════════════════════ */}
-            <div style={{ position:"relative", zIndex:10, width:"82%", textAlign:"center", marginTop:"10px" }}>
+            <div style={{ position:"relative", zIndex:10, width:"82%", textAlign:"center", marginTop:"6px" }}>
 
-                {/* CERTIFICATE OF ACHIEVEMENT title */}
+                {/* ── CERTIFICATE ── (line 1 — large display) */}
                 <h1 style={{
-                    fontSize: "62px",
-                    fontFamily: "'Georgia', 'Times New Roman', serif",
+                    fontSize: "64px",
+                    fontFamily: "'Cinzel Decorative', 'Georgia', serif",
                     color: c.crimson,
-                    fontWeight: "bold",
-                    letterSpacing: "5px",
-                    margin: "46px 0 0",
-                    textShadow: `1px 1px 0 rgba(139,26,26,0.2)`,
+                    fontWeight: 900,
+                    letterSpacing: "8px",
+                    margin: "42px 0 0",
+                    textShadow: `1px 1px 0 rgba(139,26,26,0.15)`,
+                    lineHeight: 1.1,
                 }}>
-                    CERTIFICATE OF ACHIEVEMENT
+                    CERTIFICATE
                 </h1>
 
-                {/* Sub-ornament under title */}
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", margin:"2px 0 14px" }}>
-                    <div style={{ height:"1px", width:"80px", backgroundColor:c.gold, opacity:.8 }} />
+                {/* ── OF ACHIEVEMENT ── (line 2 — smaller, elegant) */}
+                <p style={{
+                    fontSize: "22px",
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    color: c.crimson,
+                    letterSpacing: "10px",
+                    margin: "2px 0 0",
+                    textTransform: "uppercase",
+                    fontWeight: 600,
+                }}>
+                    Of Achievement
+                </p>
+
+                {/* Sub-ornament — gold divider with diamond */}
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", margin:"6px 0 10px" }}>
+                    <div style={{ height:"1px", width:"100px", background:`linear-gradient(to right, transparent, ${c.gold}, transparent)` }} />
                     <svg viewBox="0 0 30 12" width="30" height="12">
                         <polygon points="15,1 20,6 15,11 10,6" fill={c.gold}/>
                         <circle cx="4"  cy="6" r="2" fill={c.gold} opacity=".7"/>
                         <circle cx="26" cy="6" r="2" fill={c.gold} opacity=".7"/>
                     </svg>
-                    <div style={{ height:"1px", width:"80px", backgroundColor:c.gold, opacity:.8 }} />
+                    <div style={{ height:"1px", width:"100px", background:`linear-gradient(to left, transparent, ${c.gold}, transparent)` }} />
                 </div>
 
                 {/* Presenter text */}
                 <p style={{
-                    fontSize: "13px",
-                    fontFamily: "Georgia, serif",
+                    fontSize: "12px",
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
                     color: c.crimson,
                     textTransform: "uppercase",
-                    letterSpacing: "3px",
-                    margin: "0 0 6px",
-                    fontWeight: "bold"
+                    letterSpacing: "4px",
+                    margin: "0 0 4px",
+                    fontWeight: 600,
                 }}>
                     This Certificate is Proudly Conferred Upon
                 </p>
 
-                {/* Student Name — large cursive italic */}
-                <div style={{ position:"relative", display:"inline-block", margin:"4px 0 8px" }}>
+                {/* Student Name — premium cursive (Great Vibes) */}
+                <div style={{ position:"relative", display:"inline-block", margin:"2px 0 4px" }}>
+                    {/* Left scroll ornament */}
+                    <svg viewBox="0 0 40 20" width="40" height="20" style={{ position:"absolute", left:"-10px", bottom:"8px" }}>
+                        <path d="M35,10 Q25,2 15,10 Q8,16 2,10" stroke={c.gold} strokeWidth="1.2" fill="none" opacity=".7"/>
+                        <circle cx="2" cy="10" r="2" fill={c.gold} opacity=".6"/>
+                    </svg>
                     <h2 style={{
-                        fontSize: "58px",
-                        fontFamily: "'Palatino Linotype', 'Book Antiqua', Palatino, serif",
-                        fontStyle: "italic",
+                        fontSize: "56px",
+                        fontFamily: "'Great Vibes', 'Brush Script MT', cursive",
                         fontWeight: "normal",
                         color: c.text,
                         margin: "0",
-                        padding: "0 40px"
+                        padding: "0 50px",
+                        lineHeight: 1.2,
                     }}>
                         {studentName}
                     </h2>
-                    <div style={{ height:"2px", backgroundColor: c.text, marginTop:"4px", opacity:.6 }} />
+                    {/* Right scroll ornament */}
+                    <svg viewBox="0 0 40 20" width="40" height="20" style={{ position:"absolute", right:"-10px", bottom:"8px", transform:"scaleX(-1)" }}>
+                        <path d="M35,10 Q25,2 15,10 Q8,16 2,10" stroke={c.gold} strokeWidth="1.2" fill="none" opacity=".7"/>
+                        <circle cx="2" cy="10" r="2" fill={c.gold} opacity=".6"/>
+                    </svg>
+                    <div style={{ height:"2px", backgroundColor: c.text, marginTop:"2px", opacity:.5 }} />
                 </div>
 
-                {/* Course Title — red italic */}
+                {/* "in the course of" connector */}
                 <p style={{
-                    fontSize: "26px",
-                    fontFamily: "'Palatino Linotype', Palatino, serif",
+                    fontSize: "13px",
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
                     fontStyle: "italic",
-                    color: c.crimson,
-                    margin: "6px 0 10px"
+                    color: c.muted,
+                    margin: "4px 0 2px",
+                    letterSpacing: "2px",
                 }}>
-                    {formatTitle(courseTitle)}
+                    in the course of
                 </p>
+
+                {/* Course Title — crimson with gold underline accent */}
+                <div style={{ display:"inline-block", marginBottom:"6px" }}>
+                    <p style={{
+                        fontSize: "26px",
+                        fontFamily: "'Cormorant Garamond', 'Palatino Linotype', serif",
+                        fontStyle: "italic",
+                        fontWeight: 700,
+                        color: c.crimson,
+                        margin: "0",
+                    }}>
+                        {formatTitle(courseTitle)}
+                    </p>
+                    <div style={{ height:"1.5px", margin:"4px auto 0", width:"60%", background:`linear-gradient(to right, transparent, ${c.gold}, transparent)` }} />
+                </div>
 
                 {/* Body paragraph */}
                 <p style={{
-                    fontSize: "14px",
-                    fontFamily: "'Palatino Linotype', Palatino, serif",
+                    fontSize: "13px",
+                    fontFamily: "'Cormorant Garamond', 'Palatino Linotype', serif",
                     fontStyle: "italic",
                     color: c.muted,
-                    maxWidth: "720px",
-                    margin: "0 auto 22px",
-                    lineHeight: "1.75"
+                    maxWidth: "680px",
+                    margin: "0 auto 12px",
+                    lineHeight: "1.8",
                 }}>
                     For successfully fulfilling all requirements of the curriculum, exhibiting distinguished
                     commitment, and achieving commendable proficiency in the subject matter.
                 </p>
 
-                {/* ── 3-COLUMN FOOTER ── */}
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 200px 1fr", gap:"20px", alignItems:"flex-end" }}>
+                {/* ── GOLD ORNAMENTAL DIVIDER above footer ── */}
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", margin:"0 0 14px" }}>
+                    <div style={{ height:"1px", width:"120px", background:`linear-gradient(to right, transparent, ${c.gold})` }} />
+                    <svg viewBox="0 0 60 14" width="60" height="14">
+                        <path d="M5,7 Q15,2 30,7 Q45,12 55,7" stroke={c.gold} strokeWidth="1" fill="none"/>
+                        <circle cx="30" cy="7" r="2.5" fill={c.gold}/>
+                        <circle cx="5" cy="7" r="1.5" fill={c.goldLight}/>
+                        <circle cx="55" cy="7" r="1.5" fill={c.goldLight}/>
+                    </svg>
+                    <div style={{ height:"1px", width:"120px", background:`linear-gradient(to left, transparent, ${c.gold})` }} />
+                </div>
 
-                    {/* Left – Date & Time */}
+                {/* ── 3-COLUMN FOOTER ── */}
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 180px 1fr", gap:"16px", alignItems:"end" }}>
+
+                    {/* Left – Date & QR */}
                     <div style={{ textAlign:"center" }}>
-                        <div style={{ borderBottom:`1.5px solid ${c.text}`, paddingBottom:"6px", marginBottom:"6px" }}>
-                            <p style={{ fontFamily:"'Palatino Linotype', Palatino, serif", fontStyle:"italic", fontSize:"20px", color:c.text, margin:0 }}>
+                        <div style={{ borderBottom:`1.5px solid ${c.text}`, paddingBottom:"5px", marginBottom:"5px" }}>
+                            <p style={{ fontFamily:"'Cormorant Garamond', Palatino, serif", fontStyle:"italic", fontSize:"19px", color:c.text, margin:0, fontWeight:600 }}>
                                 {formatDate(date)}
                             </p>
                         </div>
-                        <p style={{ fontFamily:"'Palatino Linotype', Palatino, serif", fontStyle:"italic", fontSize:"16px", color:c.text, margin:"0 0 4px" }}>
+                        <p style={{ fontFamily:"'Cormorant Garamond', Palatino, serif", fontStyle:"italic", fontSize:"14px", color:c.muted, margin:"0 0 4px" }}>
                             Date of Issuance
                         </p>
-                        {/* QR Code below date */}
-                        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", marginTop:"10px" }}>
-                            <div style={{ padding:"5px", background:c.white, border:`1px solid ${c.gold}`, borderRadius:"6px", boxShadow:"0 2px 8px rgba(0,0,0,0.1)" }}>
+                        {/* QR Code */}
+                        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", marginTop:"8px" }}>
+                            <div style={{
+                                padding:"5px", background:c.white,
+                                border:`1.5px solid ${c.gold}`,
+                                borderRadius:"50%",
+                                boxShadow:"0 2px 8px rgba(0,0,0,0.08)",
+                                width:"68px", height:"68px",
+                                display:"flex", alignItems:"center", justifyContent:"center",
+                            }}>
                                 <QRCodeCanvas
                                     value={`https://verify-lms.ac.in/verify/${certificateId}`}
-                                    size={55} level="H" includeMargin={false}
+                                    size={52} level="H" includeMargin={false}
                                     fgColor={c.crimsonDark}
                                 />
                             </div>
-                            <p style={{ fontSize:"9px", color:c.muted, margin:"4px 0 0", letterSpacing:"1px", textTransform:"uppercase", fontFamily:"Georgia, serif" }}>Scan to Verify</p>
-                            <p style={{ fontSize:"8px", color:c.muted, margin:"2px 0 0", fontFamily:"Georgia, serif" }}>ID: {certificateId}</p>
+                            <p style={{ fontSize:"8px", color:c.muted, margin:"4px 0 0", letterSpacing:"1.5px", textTransform:"uppercase", fontFamily:"'Cormorant Garamond', serif", fontWeight:600 }}>Scan to Verify</p>
+                            <p style={{ fontSize:"7px", color:c.muted, margin:"1px 0 0", fontFamily:"'Cormorant Garamond', serif" }}>ID: {certificateId}</p>
                         </div>
                     </div>
 
-                    {/* Center – Red Wax Seal */}
-                    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-end", gap:"0" }}>
-                        {/* Seal ring */}
+                    {/* Center – Red Wax Seal (enlarged) */}
+                    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-end" }}>
                         <div style={{
-                            width:"140px", height:"140px",
+                            width:"160px", height:"160px",
                             borderRadius:"50%",
-                            background:`radial-gradient(circle at 35% 35%, #c0392b, ${c.crimsonDark} 60%, #3d0808)`,
+                            background:`radial-gradient(circle at 35% 35%, #c0392b, ${c.crimsonDark} 55%, #3d0808 100%)`,
                             display:"flex", alignItems:"center", justifyContent:"center",
-                            boxShadow:"0 6px 20px rgba(100,0,0,0.35), inset 0 2px 6px rgba(255,255,255,0.2)",
-                            border:`3px solid ${c.crimson}`,
-                            position:"relative"
+                            boxShadow:"0 8px 24px rgba(100,0,0,0.35), inset 0 2px 8px rgba(255,255,255,0.18)",
+                            border:`3.5px solid ${c.crimson}`,
+                            position:"relative",
                         }}>
-                            {/* inner embossed ring */}
-                            <div style={{ position:"absolute", inset:"10px", borderRadius:"50%", border:"1.5px solid rgba(255,255,255,0.2)" }} />
-                            {/* Circular embossed text around monogram */}
-                            <svg viewBox="0 0 140 140" width="140" height="140" style={{ position:"absolute", top:0, left:0 }}>
+                            {/* Outer embossed ring */}
+                            <div style={{ position:"absolute", inset:"8px", borderRadius:"50%", border:"1.5px solid rgba(255,255,255,0.18)" }} />
+                            {/* Inner embossed ring */}
+                            <div style={{ position:"absolute", inset:"16px", borderRadius:"50%", border:"1px solid rgba(255,255,255,0.10)" }} />
+                            {/* Circular text around seal */}
+                            <svg viewBox="0 0 160 160" width="160" height="160" style={{ position:"absolute", top:0, left:0 }}>
                                 <defs>
-                                    <path id="sealCircle" d="M 70,70 m -48,0 a 48,48 0 1,1 96,0 a 48,48 0 1,1 -96,0" />
+                                    <path id="sealCircleTop" d="M 80,80 m -55,0 a 55,55 0 1,1 110,0 a 55,55 0 1,1 -110,0" />
                                 </defs>
-                                <text fill="rgba(255,255,255,0.55)" fontSize="8.5" fontFamily="Georgia, serif" letterSpacing="2.8" textAnchor="middle">
-                                    <textPath href="#sealCircle" startOffset="50%">
+                                <text fill="rgba(255,255,255,0.50)" fontSize="8" fontFamily="'Cormorant Garamond', Georgia, serif" letterSpacing="3" fontWeight="600" textAnchor="middle">
+                                    <textPath href="#sealCircleTop" startOffset="50%">
                                         VERIFIED CREDENTIAL • VIRTUAL COURSES LMS
                                     </textPath>
                                 </text>
                             </svg>
                             {/* VC monogram */}
-                            <span style={{ fontSize:"46px", color:"rgba(255,255,255,0.92)", fontFamily:"'Palatino Linotype', Georgia, serif", fontStyle:"italic", fontWeight:"bold", textShadow:"0 2px 4px rgba(0,0,0,0.5)", position:"relative", zIndex:1 }}>VC</span>
+                            <span style={{
+                                fontSize:"48px",
+                                color:"rgba(255,255,255,0.92)",
+                                fontFamily:"'Cinzel Decorative', 'Palatino Linotype', serif",
+                                fontWeight:"bold",
+                                textShadow:"0 2px 4px rgba(0,0,0,0.5)",
+                                position:"relative", zIndex:1,
+                            }}>VC</span>
                         </div>
                     </div>
 
                     {/* Right – Vibhu Suneja Signature */}
                     <div style={{ textAlign:"center" }}>
-                        <div style={{ borderBottom:`1.5px solid ${c.text}`, paddingBottom:"6px", marginBottom:"6px" }}>
-                            {/* Stylised cursive signature */}
+                        <div style={{ borderBottom:`1.5px solid ${c.text}`, paddingBottom:"5px", marginBottom:"5px" }}>
                             <p style={{
                                 fontSize: "32px",
-                                fontFamily: "'Brush Script MT', 'Palatino Linotype', cursive",
+                                fontFamily: "'Great Vibes', 'Brush Script MT', cursive",
                                 color: c.text,
                                 margin: 0,
-                                letterSpacing: "1px"
+                                letterSpacing: "1px",
                             }}>
                                 Vibhu Suneja
                             </p>
                         </div>
-                        <p style={{ fontFamily:"'Palatino Linotype', Palatino, serif", fontStyle:"italic", fontSize:"14px", color:c.text, margin:"0 0 2px" }}>
+                        <p style={{ fontFamily:"'Cormorant Garamond', Palatino, serif", fontStyle:"italic", fontSize:"13px", color:c.text, margin:"0 0 2px", fontWeight:600 }}>
                             Authorized Signatory
                         </p>
-                        <p style={{ fontFamily:"Georgia, serif", fontSize:"10px", color:c.muted, margin:"4px 0 0", textTransform:"uppercase", letterSpacing:"1.5px" }}>
+                        <p style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:"9px", color:c.muted, margin:"3px 0 0", textTransform:"uppercase", letterSpacing:"1.5px", fontWeight:600 }}>
                             Founder &amp; Director, Virtual Courses LMS
                         </p>
                     </div>
