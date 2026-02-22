@@ -200,10 +200,13 @@ function ViewLecture() {
                   <CertificateDownload 
                     studentName={userData?.name}
                     courseTitle={selectedCourse?.title}
-                    date={new Date(progress?.completedAt || Date.now()).toLocaleDateString('en-GB', {
+                    date={new Date(progress?.completedAt || Date.now()).toLocaleString('en-GB', {
                       day: 'numeric',
                       month: 'long',
-                      year: 'numeric'
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true
                     })}
                     certificateId={`LMS-${(courseId || "").slice(-4)}-${(userData?._id || "").slice(-4)}`.toUpperCase()}
                   />

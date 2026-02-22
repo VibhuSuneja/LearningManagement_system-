@@ -2,15 +2,18 @@ import React, { forwardRef } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 
 const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certificateId }, ref) => {
+    // Colors matching the image reference: ivory, crimson, gold
     const c = {
-        navy:       "#0a192f",
-        gold:       "#c5a059",
-        goldLight:  "#d4b578",
-        goldPale:   "#f0e2c0",
-        cream:      "#faf8f3",
+        crimson:    "#8b1a1a",
+        crimsonDark:"#6b1212",
+        gold:       "#c8a84b",
+        goldLight:  "#d4b96a",
+        goldPale:   "#e8d5a0",
+        ivory:      "#f8f5ee",
         white:      "#ffffff",
-        text:       "#1e293b",
-        muted:      "#5c6a7a",
+        text:       "#2c1810",
+        muted:      "#5a3e35",
+        bg:         "#faf8f2",
     };
 
     return (
@@ -20,185 +23,255 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                 width: "1123px",
                 height: "794px",
                 position: "relative",
-                backgroundColor: c.cream,
                 overflow: "hidden",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                boxSizing: "border-box",
                 userSelect: "none",
+                boxSizing: "border-box",
+                // Subtle herringbone / linen texture via diagonal repeating pattern
+                backgroundColor: c.ivory,
+                backgroundImage:
+                    "repeating-linear-gradient(45deg, rgba(180,160,100,0.07) 0px, rgba(180,160,100,0.07) 1px, transparent 1px, transparent 12px), " +
+                    "repeating-linear-gradient(-45deg, rgba(180,160,100,0.07) 0px, rgba(180,160,100,0.07) 1px, transparent 1px, transparent 12px)",
             }}
         >
-            {/* ─── BACKGROUND RADIAL GLOW ─── */}
-            <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 50% 40%, ${c.white} 0%, ${c.cream} 100%)` }} />
+            {/* ═══════════════════════════════════════════
+                BORDER SYSTEM  —  3 nested layers
+            ═══════════════════════════════════════════ */}
+            {/* Layer 1 – thin outer gold line */}
+            <div style={{ position:"absolute", inset:"14px", border:`1.5px solid ${c.gold}` }} />
+            {/* Layer 2 – thicker inner gold frame */}
+            <div style={{ position:"absolute", inset:"22px", border:`4px solid ${c.gold}` }} />
+            {/* Layer 3 – hairline crimson inner rule */}
+            <div style={{ position:"absolute", inset:"32px", border:`1px solid ${c.crimson}`, opacity:0.25 }} />
 
-            {/* ─── BORDER SYSTEM ─────────────────── */}
-            {/* Layer 1 – thick navy outer frame */}
-            <div style={{ position: "absolute", inset: 0, border: `38px solid ${c.navy}`, zIndex: 1 }} />
-            {/* Layer 2 – thin gold inner line */}
-            <div style={{ position: "absolute", inset: "44px", border: `2px solid ${c.gold}`, zIndex: 1 }} />
-            {/* Layer 3 – thin gold inner border */}
-            <div style={{ position: "absolute", inset: "52px", border: `1px solid ${c.goldPale}`, zIndex: 1 }} />
-
-            {/* ─── CORNER ORNAMENTS ─── */}
-            {[{ t: "44px", l: "44px" }, { t: "44px", r: "44px" }, { b: "44px", l: "44px" }, { b: "44px", r: "44px" }].map((pos, i) => {
-                const isRight = "r" in pos;
-                const isBottom = "b" in pos;
-                return (
-                    <div key={i} style={{
-                        position: "absolute", zIndex: 2,
-                        top: pos.t, bottom: pos.b, left: pos.l, right: pos.r,
-                        width: "70px", height: "70px"
-                    }}>
-                        <svg viewBox="0 0 70 70" width="70" height="70">
-                            <g transform={isRight ? (isBottom ? "scale(-1,-1) translate(-70,-70)" : "scale(-1,1) translate(-70,0)") : isBottom ? "scale(1,-1) translate(0,-70)" : ""}>
-                                <path d="M 5 5 L 35 5" stroke={c.gold} strokeWidth="2" fill="none" />
-                                <path d="M 5 5 L 5 35" stroke={c.gold} strokeWidth="2" fill="none" />
-                                <circle cx="5" cy="5" r="3" fill={c.gold} />
-                                <circle cx="35" cy="5" r="1.5" fill={c.gold} />
-                                <circle cx="5" cy="35" r="1.5" fill={c.gold} />
-                                <path d="M 15 15 L 30 15 L 30 16 L 15 16 Z" fill={c.goldPale} />
-                                <path d="M 15 15 L 16 15 L 16 30 L 15 30 Z" fill={c.goldPale} />
-                                <path d="M 15 15 L 22 8" stroke={c.goldLight} strokeWidth="1" fill="none" />
-                            </g>
-                        </svg>
-                    </div>
-                );
-            })}
-
-            {/* ─── CONTENT WRAPPER ─── */}
-            <div style={{ position: "relative", zIndex: 10, width: "78%", textAlign: "center" }}>
-
-                {/* 1. Diamond Logo */}
-                <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
-                    <div style={{
-                        width: "52px", height: "52px",
-                        backgroundColor: c.navy,
-                        transform: "rotate(45deg)",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        boxShadow: `0 0 0 3px ${c.gold}, 0 8px 20px rgba(0,0,0,0.25)`
-                    }}>
-                        <span style={{ transform: "rotate(-45deg)", fontSize: "22px" }}>🎓</span>
-                    </div>
+            {/* ═══════════════════════════════
+                CORNER ORNAMENTS  (4 corners SVG)
+            ═══════════════════════════════ */}
+            {[
+                { top:"14px",   left:"14px",   sx:1,  sy:1  },
+                { top:"14px",   right:"14px",  sx:-1, sy:1  },
+                { bottom:"14px",left:"14px",   sx:1,  sy:-1 },
+                { bottom:"14px",right:"14px",  sx:-1, sy:-1 },
+            ].map((p,i)=>(
+                <div key={i} style={{ position:"absolute", ...p, width:"110px", height:"110px" }}>
+                    <svg viewBox="0 0 110 110" width="110" height="110">
+                        <g transform={`scale(${p.sx},${p.sy}) translate(${p.sx<0?-110:0},${p.sy<0?-110:0})`}>
+                            {/* outer L */}
+                            <path d="M8,8 L50,8" stroke={c.gold} strokeWidth="2.5" fill="none"/>
+                            <path d="M8,8 L8,50" stroke={c.gold} strokeWidth="2.5" fill="none"/>
+                            {/* inner L */}
+                            <path d="M18,18 L42,18" stroke={c.gold} strokeWidth="1.2" fill="none"/>
+                            <path d="M18,18 L18,42" stroke={c.gold} strokeWidth="1.2" fill="none"/>
+                            {/* dots */}
+                            <circle cx="8"  cy="8"  r="3.5" fill={c.gold}/>
+                            <circle cx="50" cy="8"  r="2"   fill={c.gold}/>
+                            <circle cx="8"  cy="50" r="2"   fill={c.gold}/>
+                            <circle cx="18" cy="18" r="2"   fill={c.goldLight}/>
+                            {/* floral petal cluster */}
+                            <ellipse cx="30" cy="12" rx="6"  ry="3"  fill={c.goldPale} opacity=".9" transform="rotate(-20,30,12)"/>
+                            <ellipse cx="12" cy="30" rx="6"  ry="3"  fill={c.goldPale} opacity=".9" transform="rotate(70,12,30)"/>
+                            <ellipse cx="22" cy="22" rx="8"  ry="3.5" fill={c.gold}    opacity=".5" transform="rotate(45,22,22)"/>
+                            <circle  cx="22" cy="22" r="2.5" fill={c.gold}/>
+                            {/* vine tendrils */}
+                            <path d="M30,12 Q35,18 28,24" stroke={c.gold} strokeWidth="1" fill="none" opacity=".6"/>
+                            <path d="M12,30 Q18,35 24,28" stroke={c.gold} strokeWidth="1" fill="none" opacity=".6"/>
+                        </g>
+                    </svg>
                 </div>
+            ))}
 
-                {/* Brand Name */}
-                <p style={{ fontSize: "11px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "6px", color: c.gold, margin: "0 0 8px" }}>
-                    Virtual Courses LMS
-                </p>
+            {/* ═══════════════════════════════
+                SIDE ORNAMENTS  (left & right midpoints)
+            ═══════════════════════════════ */}
+            {[{left:"16px", top:"50%", rotate:"0deg"}, {right:"16px", top:"50%", rotate:"180deg"}].map((p,i)=>(
+                <div key={i} style={{ position:"absolute", ...p, transform:`translateY(-50%) rotate(${p.rotate})`, width:"55px" }}>
+                    <svg viewBox="0 0 55 160" width="55" height="160">
+                        <g>
+                            <path d="M27,5 Q10,40 27,80 Q44,120 27,155" stroke={c.gold} strokeWidth="1.5" fill="none" opacity=".7"/>
+                            <ellipse cx="27" cy="80" rx="14" ry="6" fill={c.goldPale} opacity=".8" transform="rotate(45,27,80)"/>
+                            <ellipse cx="27" cy="80" rx="14" ry="6" fill={c.goldPale} opacity=".8" transform="rotate(-45,27,80)"/>
+                            <circle  cx="27" cy="80" r="5" fill={c.gold}/>
+                            <circle  cx="27" cy="30" r="3" fill={c.goldLight} opacity=".7"/>
+                            <circle  cx="27" cy="130" r="3" fill={c.goldLight} opacity=".7"/>
+                        </g>
+                    </svg>
+                </div>
+            ))}
 
-                {/* CERTIFICATE heading */}
+            {/* ═══════════════════════════════
+                TOP FLORAL MEDALLION (ornament above CERTIFICATE)
+            ═══════════════════════════════ */}
+            <div style={{ position:"absolute", top:"35px", left:"50%", transform:"translateX(-50%)" }}>
+                <svg viewBox="0 0 320 60" width="320" height="60">
+                    {/* center diamond */}
+                    <polygon points="160,5 175,30 160,55 145,30" fill={c.gold} opacity=".9"/>
+                    <polygon points="160,12 170,30 160,48 150,30" fill={c.ivory}/>
+                    <circle cx="160" cy="30" r="5" fill={c.crimson}/>
+                    {/* horizontal flourishes */}
+                    <path d="M 145,30 Q 120,15 90,30 Q 60,45 30,30 Q 15,22 5,30" stroke={c.gold} strokeWidth="1.5" fill="none"/>
+                    <path d="M 175,30 Q 200,15 230,30 Q 260,45 290,30 Q 305,22 315,30" stroke={c.gold} strokeWidth="1.5" fill="none"/>
+                    {/* petals along flourish */}
+                    {[60,90,120,200,230,260].map((x,i)=>(
+                        <g key={i}>
+                            <ellipse cx={x} cy="30" rx="7" ry="3" fill={c.goldPale} opacity=".8" transform={`rotate(${i%2===0?35:-35},${x},30)`}/>
+                            <circle cx={x} cy="30" r="2" fill={c.gold}/>
+                        </g>
+                    ))}
+                </svg>
+            </div>
+
+            {/* ═══════════════════════════════
+                MAIN CONTENT
+            ═══════════════════════════════ */}
+            <div style={{ position:"relative", zIndex:10, width:"82%", textAlign:"center", marginTop:"10px" }}>
+
+                {/* CERTIFICATE title */}
                 <h1 style={{
-                    fontSize: "76px", margin: "0", color: c.navy,
-                    fontWeight: "900", letterSpacing: "6px",
+                    fontSize: "74px",
                     fontFamily: "'Georgia', 'Times New Roman', serif",
-                    lineHeight: "1"
+                    color: c.crimson,
+                    fontWeight: "bold",
+                    letterSpacing: "6px",
+                    margin: "50px 0 0",
+                    textShadow: `1px 1px 0 rgba(139,26,26,0.2)`,
                 }}>
                     CERTIFICATE
                 </h1>
-                <p style={{ fontSize: "16px", color: c.muted, letterSpacing: "7px", textTransform: "uppercase", margin: "4px 0 25px", fontFamily: "Georgia, serif" }}>
-                    OF COMPLETION
+
+                {/* Sub-ornament under title */}
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", margin:"2px 0 14px" }}>
+                    <div style={{ height:"1px", width:"80px", backgroundColor:c.gold, opacity:.8 }} />
+                    <svg viewBox="0 0 30 12" width="30" height="12">
+                        <polygon points="15,1 20,6 15,11 10,6" fill={c.gold}/>
+                        <circle cx="4"  cy="6" r="2" fill={c.gold} opacity=".7"/>
+                        <circle cx="26" cy="6" r="2" fill={c.gold} opacity=".7"/>
+                    </svg>
+                    <div style={{ height:"1px", width:"80px", backgroundColor:c.gold, opacity:.8 }} />
+                </div>
+
+                {/* Presenter text */}
+                <p style={{
+                    fontSize: "17px",
+                    fontFamily: "Georgia, serif",
+                    color: c.crimson,
+                    textTransform: "uppercase",
+                    letterSpacing: "3px",
+                    margin: "0 0 6px",
+                    fontWeight: "bold"
+                }}>
+                    This Certificate is Proudly Presented For Honorable Achievement To
                 </p>
 
-                {/* Sub text */}
-                <p style={{ fontSize: "18px", fontStyle: "italic", color: c.muted, margin: "0 0 8px", fontFamily: "Georgia, serif" }}>
-                    This certificate is proudly presented to
-                </p>
-
-                {/* Student Name — cursive serif */}
-                <div style={{ position: "relative", display: "inline-block", marginBottom: "12px" }}>
+                {/* Student Name — large cursive italic */}
+                <div style={{ position:"relative", display:"inline-block", margin:"4px 0 8px" }}>
                     <h2 style={{
-                        fontSize: "58px", margin: "0", padding: "0 60px",
-                        color: c.navy,
-                        fontFamily: "'Palatino Linotype', 'Book Antiqua', Palatino, 'Times New Roman', serif",
+                        fontSize: "58px",
+                        fontFamily: "'Palatino Linotype', 'Book Antiqua', Palatino, serif",
+                        fontStyle: "italic",
                         fontWeight: "normal",
-                        fontStyle: "italic"
+                        color: c.text,
+                        margin: "0",
+                        padding: "0 40px"
                     }}>
                         {studentName}
                     </h2>
-                    {/* Gold underline */}
-                    <div style={{ position: "absolute", bottom: "-6px", left: "30%", right: "30%", height: "1.5px", background: `linear-gradient(to right, transparent, ${c.gold}, transparent)` }} />
-                    <div style={{ display: "flex", justifyContent: "center", marginTop: "10px", gap: "6px" }}>
-                        <div style={{ width: "4px", height: "4px", borderRadius: "50%", backgroundColor: c.gold }} />
-                        <div style={{ width: "30px", height: "2px", backgroundColor: c.gold, marginTop: "1px" }} />
-                        <div style={{ width: "4px", height: "4px", borderRadius: "50%", backgroundColor: c.gold }} />
-                    </div>
+                    <div style={{ height:"2px", backgroundColor: c.text, marginTop:"4px", opacity:.6 }} />
                 </div>
 
-                {/* Body copy */}
-                <p style={{ fontSize: "16px", color: c.muted, maxWidth: "640px", margin: "0 auto 6px", lineHeight: "1.7", fontFamily: "Georgia, serif" }}>
-                    For successfully completing the comprehensive course in
-                </p>
-                <h3 style={{
-                    fontSize: "28px", color: c.navy, margin: "0",
-                    fontWeight: "bold", fontFamily: "'Georgia', serif",
-                    textDecoration: "underline", textDecorationColor: c.goldLight,
-                    textUnderlineOffset: "6px"
+                {/* Course Title — red italic */}
+                <p style={{
+                    fontSize: "26px",
+                    fontFamily: "'Palatino Linotype', Palatino, serif",
+                    fontStyle: "italic",
+                    color: c.crimson,
+                    margin: "6px 0 10px"
                 }}>
                     {courseTitle}
-                </h3>
-                <p style={{ fontSize: "14px", color: c.muted, margin: "4px 0 0", fontFamily: "Georgia, serif" }}>
-                    demonstrating excellence and mastery in all required modules.
                 </p>
 
-                {/* ─── 3-COLUMN FOOTER ─── */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 220px 1fr", gap: "30px", marginTop: "40px", alignItems: "flex-end" }}>
+                {/* Body paragraph */}
+                <p style={{
+                    fontSize: "14px",
+                    fontFamily: "'Palatino Linotype', Palatino, serif",
+                    fontStyle: "italic",
+                    color: c.muted,
+                    maxWidth: "720px",
+                    margin: "0 auto 22px",
+                    lineHeight: "1.75"
+                }}>
+                    For successfully completing all requisite modules, demonstrating exceptional dedication,
+                    intellectual rigor, and mastery of the subject matter with distinction.
+                </p>
 
-                    {/* Left – Date */}
-                    <div style={{ textAlign: "center" }}>
-                        <p style={{ fontSize: "10px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "3px", color: c.gold, margin: "0 0 6px" }}>DATE ISSUED</p>
-                        <div style={{ borderBottom: `1.5px solid ${c.gold}`, paddingBottom: "8px", marginBottom: "6px" }}>
-                            <span style={{ fontSize: "18px", fontWeight: "bold", color: c.navy }}>{date}</span>
+                {/* ── 3-COLUMN FOOTER ── */}
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 200px 1fr", gap:"20px", alignItems:"flex-end" }}>
+
+                    {/* Left – Date & Time */}
+                    <div style={{ textAlign:"center" }}>
+                        <div style={{ borderBottom:`1.5px solid ${c.text}`, paddingBottom:"6px", marginBottom:"6px" }}>
+                            <p style={{ fontFamily:"'Palatino Linotype', Palatino, serif", fontStyle:"italic", fontSize:"20px", color:c.text, margin:0 }}>
+                                {date}
+                            </p>
                         </div>
-                        <p style={{ fontSize: "9px", color: c.muted, letterSpacing: "1px", textTransform: "uppercase" }}>CERTIFICATE ID: {certificateId}</p>
-                    </div>
-
-                    {/* Center – Gold Wax Seal + Ribbons */}
-                    <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "flex-start", height: "160px" }}>
-                        {/* Seal Circle */}
-                        <div style={{
-                            width: "140px", height: "140px",
-                            background: `linear-gradient(145deg, ${c.goldLight} 0%, ${c.gold} 50%, #a07820 100%)`,
-                            borderRadius: "50%",
-                            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-                            boxShadow: `0 0 0 4px ${c.cream}, 0 0 0 6px ${c.gold}, 0 12px 30px rgba(0,0,0,0.2)`,
-                            zIndex: 2, position: "relative"
-                        }}>
-                            <span style={{ fontSize: "55px", filter: "brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }}>🏅</span>
-                            <p style={{ fontSize: "9px", fontWeight: "bold", color: c.white, textTransform: "uppercase", letterSpacing: "1.5px", margin: 0 }}>VERIFIED</p>
-                        </div>
-                        {/* Ribbon Left */}
-                        <div style={{ position: "absolute", top: "100px", left: "30px", width: "38px", height: "65px", backgroundColor: c.navy, zIndex: 1, transform: "rotate(-18deg)", clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%)" }} />
-                        {/* Ribbon Right */}
-                        <div style={{ position: "absolute", top: "100px", right: "30px", width: "38px", height: "65px", backgroundColor: c.gold, zIndex: 1, transform: "rotate(18deg)", clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%)" }} />
-                    </div>
-
-                    {/* Right – Vibhu Suneja Signature */}
-                    <div style={{ textAlign: "center" }}>
-                        <div style={{ borderBottom: `1.5px solid ${c.gold}`, paddingBottom: "8px", marginBottom: "6px" }}>
-                            <span style={{
-                                fontSize: "30px",
-                                fontFamily: "'Brush Script MT', 'Dancing Script', cursive",
-                                color: c.navy,
-                                opacity: 0.85
-                            }}>
-                                Vibhu Suneja
-                            </span>
-                        </div>
-                        <p style={{ fontSize: "10px", fontWeight: "bold", color: c.muted, letterSpacing: "1.5px", textTransform: "uppercase", margin: 0 }}>Founder & Director</p>
-                        <p style={{ fontSize: "9px", color: c.gold, letterSpacing: "1px", textTransform: "uppercase", margin: "2px 0 0" }}>Virtual Courses LMS</p>
-
-                        {/* QR Code in right column */}
-                        <div style={{ display: "flex", justifyContent: "center", marginTop: "14px" }}>
-                            <div style={{ padding: "5px", background: c.white, borderRadius: "6px", border: `1px solid ${c.goldPale}`, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+                        <p style={{ fontFamily:"'Palatino Linotype', Palatino, serif", fontStyle:"italic", fontSize:"16px", color:c.text, margin:"0 0 4px" }}>
+                            Date &amp; Time
+                        </p>
+                        {/* QR Code below date */}
+                        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", marginTop:"10px" }}>
+                            <div style={{ padding:"5px", background:c.white, border:`1px solid ${c.gold}`, borderRadius:"6px", boxShadow:"0 2px 8px rgba(0,0,0,0.1)" }}>
                                 <QRCodeCanvas
                                     value={`https://verify-lms.ac.in/verify/${certificateId}`}
                                     size={55} level="H" includeMargin={false}
+                                    fgColor={c.crimsonDark}
                                 />
                             </div>
+                            <p style={{ fontSize:"9px", color:c.muted, margin:"4px 0 0", letterSpacing:"1px", textTransform:"uppercase", fontFamily:"Georgia, serif" }}>Scan to Verify</p>
+                            <p style={{ fontSize:"8px", color:c.muted, margin:"2px 0 0", fontFamily:"Georgia, serif" }}>ID: {certificateId}</p>
                         </div>
-                        <p style={{ fontSize: "8px", color: c.muted, margin: "4px 0 0", letterSpacing: "1px" }}>SCAN TO VERIFY</p>
+                    </div>
+
+                    {/* Center – Red Wax Seal */}
+                    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-end", gap:"0" }}>
+                        {/* Seal ring */}
+                        <div style={{
+                            width:"140px", height:"140px",
+                            borderRadius:"50%",
+                            background:`radial-gradient(circle at 35% 35%, #c0392b, ${c.crimsonDark} 60%, #3d0808)`,
+                            display:"flex", alignItems:"center", justifyContent:"center",
+                            boxShadow:"0 6px 20px rgba(100,0,0,0.35), inset 0 2px 6px rgba(255,255,255,0.2)",
+                            border:`3px solid ${c.crimson}`,
+                            position:"relative"
+                        }}>
+                            {/* inner embossed ring */}
+                            <div style={{ position:"absolute", inset:"10px", borderRadius:"50%", border:"1.5px solid rgba(255,255,255,0.2)" }} />
+                            {/* "S" monogram — replace with first letter of brand */}
+                            <span style={{ fontSize:"52px", color:"rgba(255,255,255,0.9)", fontFamily:"Georgia, serif", fontStyle:"italic", fontWeight:"bold", textShadow:"0 2px 4px rgba(0,0,0,0.5)" }}>VC</span>
+                        </div>
+                    </div>
+
+                    {/* Right – Vibhu Suneja Signature */}
+                    <div style={{ textAlign:"center" }}>
+                        <div style={{ borderBottom:`1.5px solid ${c.text}`, paddingBottom:"6px", marginBottom:"6px" }}>
+                            {/* Stylised cursive signature */}
+                            <p style={{
+                                fontSize: "32px",
+                                fontFamily: "'Brush Script MT', 'Palatino Linotype', cursive",
+                                color: c.text,
+                                margin: 0,
+                                letterSpacing: "1px"
+                            }}>
+                                Vibhu Suneja
+                            </p>
+                        </div>
+                        <p style={{ fontFamily:"'Palatino Linotype', Palatino, serif", fontStyle:"italic", fontSize:"16px", color:c.text, margin:0 }}>
+                            Signature
+                        </p>
+                        <p style={{ fontFamily:"Georgia, serif", fontSize:"10px", color:c.muted, margin:"6px 0 0", textTransform:"uppercase", letterSpacing:"1.5px" }}>
+                            Founder &amp; Director, Virtual Courses LMS
+                        </p>
                     </div>
                 </div>
             </div>

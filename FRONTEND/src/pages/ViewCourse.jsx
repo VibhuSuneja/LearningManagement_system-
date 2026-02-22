@@ -326,10 +326,13 @@ const avgRating = calculateAvgReview(selectedCourse?.reviews)
                       <CertificateDownload 
                         studentName={userData?.name}
                         courseTitle={selectedCourse?.title}
-                        date={new Date(courseProgress?.completedAt || Date.now()).toLocaleDateString('en-GB', {
+                        date={new Date(courseProgress?.completedAt || Date.now()).toLocaleString('en-GB', {
                           day: 'numeric',
                           month: 'long',
-                          year: 'numeric'
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true
                         })}
                         certificateId={`LMS-${courseId.substr(-4)}-${userData?._id?.substr(-4)}`.toUpperCase()}
                       />
