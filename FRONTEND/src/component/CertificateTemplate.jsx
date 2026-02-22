@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { FaGraduationCap, FaCheckCircle, FaGlobe, FaCertificate } from "react-icons/fa";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 
 const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certificateId }, ref) => {
     // Standard Hex Colors for html2canvas compatibility (Avoids oklch issues)
@@ -115,7 +115,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
 
                     <div className="flex flex-col items-center gap-1">
                         <div className="p-2 bg-white border border-gray-100 shadow-sm rounded-lg">
-                            <QRCodeSVG 
+                            <QRCodeCanvas 
                                 value={`https://verify-lms.ac.in/verify/${certificateId}`} 
                                 size={60}
                                 level="H"

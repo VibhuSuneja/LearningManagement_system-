@@ -37,7 +37,9 @@ export const generateQuiz = async (req, res) => {
             return res.status(404).json({ message: "Course not found" });
         }
 
-
+        const creatorId = course.creator._id ? course.creator._id.toString() : course.creator.toString();
+        
+        console.log(`[DEBUG - generateQuiz] Course ID: ${courseId}, Creator ID: ${creatorId}, User ID: ${req.userId}`);
         
         if (creatorId !== req.userId) {
             return res.status(403).json({ 

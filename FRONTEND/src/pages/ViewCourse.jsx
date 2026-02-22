@@ -50,9 +50,10 @@ function ViewCourse() {
     const handleCreator = async () => {
       if (selectedCourse?.creator) {
         try {
+          const userId = selectedCourse.creator._id || selectedCourse.creator;
           const result = await axios.post(
             serverUrl + "/api/course/creator",
-            { userId: selectedCourse.creator._id },
+            { userId },
             { withCredentials: true }
           );
           setCreatorData(result.data);
@@ -101,7 +102,7 @@ function ViewCourse() {
 
   const checkEnrollment = () => {
     const verify = userData?.enrolledCourses?.some(c =>
-      (typeof c === 'string' ? c : c._id).toString() === courseId?.toString()
+      c && (typeof c === 'string' ? c : (c._id || c)).toString() === courseId?.toString()
     );
     if (verify) {
       setIsEnrolled(true);
@@ -137,7 +138,7 @@ function ViewCourse() {
   useEffect(() => {
     if (creatorData?._id && courseData.length > 0) {
       const creatorCourse = courseData.filter(
-        (course) => course.creator?._id.toString() === creatorData._id && course._id !== courseId
+        (course) => course && (course.creator?._id || course.creator)?.toString() === creatorData._id && course._id !== courseId
       );
       setCreatorCourses(creatorCourse);
     }

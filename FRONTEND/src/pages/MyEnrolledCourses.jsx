@@ -37,7 +37,7 @@ function MyEnrolledCourse() {
   };
 
   const getCourseProgress = (courseId) => {
-    const record = progressData.find(p => p.course._id === courseId || p.course === courseId);
+    const record = progressData.find(p => p.course?._id === courseId || p.course === courseId);
     return record ? record.completionPercentage : 0;
   };
 
@@ -84,7 +84,7 @@ function MyEnrolledCourse() {
         <p className="text-gray-500 text-center w-full">You haven’t enrolled in any course yet.</p>
       ) : (
         <div className="flex items-center justify-center flex-wrap gap-[30px]">
-          {userData.enrolledCourses.map((course) => (
+          {userData.enrolledCourses.filter(Boolean).map((course) => (
             <div
               key={course._id}
               className="bg-white rounded-2xl shadow-md overflow-hidden border transition-all hover:shadow-lg"

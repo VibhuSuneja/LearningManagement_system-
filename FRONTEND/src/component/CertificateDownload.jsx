@@ -38,12 +38,14 @@ const CertificateDownload = ({ studentName, courseTitle, date, certificateId }) 
             });
 
             pdf.addImage(imgData, 'JPEG', 0, 0, 1123, 794);
-            pdf.save(`${studentName}-${courseTitle.replace(/\s+/g, '-')}-Certificate.pdf`);
+            const safeStudent = studentName || 'Student';
+            const safeCourse = courseTitle ? courseTitle.replace(/\s+/g, '-') : 'Course';
+            pdf.save(`${safeStudent}-${safeCourse}-Certificate.pdf`);
             
             toast.success("Certificate downloaded successfully! Congratulations!");
         } catch (error) {
             console.error("Certificate Generation Error:", error);
-            toast.error("Failed to generate certificate. Please try again.");
+            toast.error(`Failed to generate certificate: ${error.message || 'Unknown error'}`);
         } finally {
             setIsDownloading(false);
         }

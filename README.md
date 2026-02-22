@@ -6,7 +6,10 @@
 
 ## 🌐 Live Demo
 
-**🔗 [Visit Live Application](https://learningmanagement-system-1.onrender.com)**
+<<<<<<< Updated upstream
+**🔗 [Visit Live Application]([https://learning-management-system-kappa-black.vercel.app/])**
+=======
+
 
 ## 📋 Table of Contents
 
@@ -381,6 +384,7 @@ LearningManagement_system-/
 
 ### AI Search
 (<img width="2469" height="1220" alt="image" src="https://github.com/user-attachments/assets/b7deb9f2-341e-4be4-804b-a1122a06e0b3" />
+
 
 
 ## 🤝 Contributing
