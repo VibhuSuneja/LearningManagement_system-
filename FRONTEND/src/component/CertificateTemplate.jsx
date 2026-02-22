@@ -226,30 +226,30 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                 </p>
 
                 {/* Student Name — premium cursive (Great Vibes) */}
-                <div style={{ position:"relative", display:"inline-block", margin:"2px 0 4px", padding:"0 10px" }}>
+                <div style={{ display:"flex", flexDirection:"column", alignItems:"center", margin:"2px 0 4px" }}>
                     <h2 style={{
                         fontSize: "56px",
                         fontFamily: "'Great Vibes', 'Brush Script MT', cursive",
                         fontWeight: "normal",
                         color: c.text,
                         margin: "0",
-                        padding: "0 40px",
+                        padding: "0",
                         lineHeight: 1.2,
                     }}>
                         {studentName}
                     </h2>
-                    {/* Underline with scroll ornaments integrated */}
-                    <div style={{ position:"relative", marginTop:"2px" }}>
-                        <div style={{ height:"2px", backgroundColor: c.text, opacity:.5 }} />
-                        {/* Left scroll — anchored to left end of line */}
-                        <svg viewBox="0 0 40 16" width="36" height="14" style={{ position:"absolute", left:"-6px", top:"-7px" }}>
-                            <path d="M38,8 Q28,1 18,8 Q10,14 2,8" stroke={c.gold} strokeWidth="1.3" fill="none" opacity=".75"/>
-                            <circle cx="2" cy="8" r="2" fill={c.gold} opacity=".65"/>
+                    {/* Wide signature line with scroll ornaments at each end */}
+                    <div style={{ position:"relative", width:"500px", marginTop:"4px" }}>
+                        <div style={{ height:"1.5px", backgroundColor: c.text, opacity:.45, width:"100%" }} />
+                        {/* Left scroll */}
+                        <svg viewBox="0 0 50 18" width="44" height="16" style={{ position:"absolute", left:"-16px", top:"-8px" }}>
+                            <path d="M46,9 Q34,1 22,9 Q12,16 3,9" stroke={c.gold} strokeWidth="1.4" fill="none" opacity=".8"/>
+                            <circle cx="3" cy="9" r="2.5" fill={c.gold} opacity=".7"/>
                         </svg>
-                        {/* Right scroll — anchored to right end of line */}
-                        <svg viewBox="0 0 40 16" width="36" height="14" style={{ position:"absolute", right:"-6px", top:"-7px", transform:"scaleX(-1)" }}>
-                            <path d="M38,8 Q28,1 18,8 Q10,14 2,8" stroke={c.gold} strokeWidth="1.3" fill="none" opacity=".75"/>
-                            <circle cx="2" cy="8" r="2" fill={c.gold} opacity=".65"/>
+                        {/* Right scroll */}
+                        <svg viewBox="0 0 50 18" width="44" height="16" style={{ position:"absolute", right:"-16px", top:"-8px", transform:"scaleX(-1)" }}>
+                            <path d="M46,9 Q34,1 22,9 Q12,16 3,9" stroke={c.gold} strokeWidth="1.4" fill="none" opacity=".8"/>
+                            <circle cx="3" cy="9" r="2.5" fill={c.gold} opacity=".7"/>
                         </svg>
                     </div>
                 </div>
