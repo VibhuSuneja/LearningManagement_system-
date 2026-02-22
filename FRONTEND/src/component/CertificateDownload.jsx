@@ -33,11 +33,12 @@ const CertificateDownload = ({ studentName, courseTitle, date, certificateId }) 
             const imgData = canvas.toDataURL('image/jpeg', 1.0);
             const pdf = new jsPDF({
                 orientation: 'landscape',
-                unit: 'px',
-                format: [1123, 794]
+                unit: 'mm',
+                format: 'a4'
             });
 
-            pdf.addImage(imgData, 'JPEG', 0, 0, 1123, 794);
+            // A4 dimensions in mm are 297 x 210
+            pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210);
             const safeStudent = studentName || 'Student';
             const safeCourse = courseTitle ? courseTitle.replace(/\s+/g, '-') : 'Course';
             pdf.save(`${safeStudent}-${safeCourse}-Certificate.pdf`);
