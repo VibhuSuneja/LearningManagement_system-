@@ -172,7 +172,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
             {/* ═══════════════════════════════
                 MAIN CONTENT
             ═══════════════════════════════ */}
-            <div style={{ position:"relative", zIndex:10, width:"82%", textAlign:"center", marginTop:"6px" }}>
+            <div style={{ position:"relative", zIndex:10, width:"82%", textAlign:"center", marginTop:"0px" }}>
 
                 {/* ── CERTIFICATE ── (line 1 — large display) */}
                 <h1 style={{
@@ -181,7 +181,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                     color: c.crimson,
                     fontWeight: 900,
                     letterSpacing: "8px",
-                    margin: "42px 0 0",
+                    margin: "36px 0 0",
                     textShadow: `1px 1px 0 rgba(139,26,26,0.15)`,
                     lineHeight: 1.1,
                 }}>
@@ -202,7 +202,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                 </p>
 
                 {/* Sub-ornament — gold divider with diamond */}
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", margin:"6px 0 10px" }}>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", margin:"4px 0 8px" }}>
                     <div style={{ height:"1px", width:"100px", background:`linear-gradient(to right, transparent, ${c.gold}, transparent)` }} />
                     <svg viewBox="0 0 30 12" width="30" height="12">
                         <polygon points="15,1 20,6 15,11 10,6" fill={c.gold}/>
@@ -226,29 +226,32 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                 </p>
 
                 {/* Student Name — premium cursive (Great Vibes) */}
-                <div style={{ position:"relative", display:"inline-block", margin:"2px 0 4px" }}>
-                    {/* Left scroll ornament */}
-                    <svg viewBox="0 0 40 20" width="40" height="20" style={{ position:"absolute", left:"-10px", bottom:"8px" }}>
-                        <path d="M35,10 Q25,2 15,10 Q8,16 2,10" stroke={c.gold} strokeWidth="1.2" fill="none" opacity=".7"/>
-                        <circle cx="2" cy="10" r="2" fill={c.gold} opacity=".6"/>
-                    </svg>
+                <div style={{ position:"relative", display:"inline-block", margin:"2px 0 4px", padding:"0 10px" }}>
                     <h2 style={{
                         fontSize: "56px",
                         fontFamily: "'Great Vibes', 'Brush Script MT', cursive",
                         fontWeight: "normal",
                         color: c.text,
                         margin: "0",
-                        padding: "0 50px",
+                        padding: "0 40px",
                         lineHeight: 1.2,
                     }}>
                         {studentName}
                     </h2>
-                    {/* Right scroll ornament */}
-                    <svg viewBox="0 0 40 20" width="40" height="20" style={{ position:"absolute", right:"-10px", bottom:"8px", transform:"scaleX(-1)" }}>
-                        <path d="M35,10 Q25,2 15,10 Q8,16 2,10" stroke={c.gold} strokeWidth="1.2" fill="none" opacity=".7"/>
-                        <circle cx="2" cy="10" r="2" fill={c.gold} opacity=".6"/>
-                    </svg>
-                    <div style={{ height:"2px", backgroundColor: c.text, marginTop:"2px", opacity:.5 }} />
+                    {/* Underline with scroll ornaments integrated */}
+                    <div style={{ position:"relative", marginTop:"2px" }}>
+                        <div style={{ height:"2px", backgroundColor: c.text, opacity:.5 }} />
+                        {/* Left scroll — anchored to left end of line */}
+                        <svg viewBox="0 0 40 16" width="36" height="14" style={{ position:"absolute", left:"-6px", top:"-7px" }}>
+                            <path d="M38,8 Q28,1 18,8 Q10,14 2,8" stroke={c.gold} strokeWidth="1.3" fill="none" opacity=".75"/>
+                            <circle cx="2" cy="8" r="2" fill={c.gold} opacity=".65"/>
+                        </svg>
+                        {/* Right scroll — anchored to right end of line */}
+                        <svg viewBox="0 0 40 16" width="36" height="14" style={{ position:"absolute", right:"-6px", top:"-7px", transform:"scaleX(-1)" }}>
+                            <path d="M38,8 Q28,1 18,8 Q10,14 2,8" stroke={c.gold} strokeWidth="1.3" fill="none" opacity=".75"/>
+                            <circle cx="2" cy="8" r="2" fill={c.gold} opacity=".65"/>
+                        </svg>
+                    </div>
                 </div>
 
                 {/* "in the course of" connector */}
@@ -257,14 +260,14 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                     fontFamily: "'Cormorant Garamond', Georgia, serif",
                     fontStyle: "italic",
                     color: c.muted,
-                    margin: "4px 0 2px",
+                    margin: "2px 0 1px",
                     letterSpacing: "2px",
                 }}>
                     in the course of
                 </p>
 
                 {/* Course Title — crimson with gold underline accent */}
-                <div style={{ display:"inline-block", marginBottom:"6px" }}>
+                <div style={{ display:"inline-block", marginBottom:"4px" }}>
                     <p style={{
                         fontSize: "26px",
                         fontFamily: "'Cormorant Garamond', 'Palatino Linotype', serif",
@@ -285,7 +288,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                     fontStyle: "italic",
                     color: c.muted,
                     maxWidth: "680px",
-                    margin: "0 auto 12px",
+                    margin: "0 auto 8px",
                     lineHeight: "1.8",
                 }}>
                     For successfully fulfilling all requirements of the curriculum, exhibiting distinguished
@@ -293,7 +296,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                 </p>
 
                 {/* ── GOLD ORNAMENTAL DIVIDER above footer ── */}
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", margin:"0 0 14px" }}>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", margin:"0 0 10px" }}>
                     <div style={{ height:"1px", width:"120px", background:`linear-gradient(to right, transparent, ${c.gold})` }} />
                     <svg viewBox="0 0 60 14" width="60" height="14">
                         <path d="M5,7 Q15,2 30,7 Q45,12 55,7" stroke={c.gold} strokeWidth="1" fill="none"/>
@@ -305,7 +308,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                 </div>
 
                 {/* ── 3-COLUMN FOOTER ── */}
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 180px 1fr", gap:"16px", alignItems:"end" }}>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 180px 1fr", gap:"16px", alignItems:"center" }}>
 
                     {/* Left – Date & QR */}
                     <div style={{ textAlign:"center" }}>
@@ -339,7 +342,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                     </div>
 
                     {/* Center – Red Wax Seal (enlarged) */}
-                    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-end" }}>
+                    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
                         <div style={{
                             width:"160px", height:"160px",
                             borderRadius:"50%",
