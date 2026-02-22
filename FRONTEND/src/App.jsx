@@ -47,6 +47,7 @@ import OnboardingTour from "./component/OnboardingTour";
 import PrivacyCenter from "./pages/PrivacyCenter";
 import LevelUpCelebration from "./component/LevelUpCelebration";
 import BillingHistory from "./pages/BillingHistory";
+import VerifyCertificate from "./pages/VerifyCertificate";
 import { AnimatePresence } from "framer-motion";
 
 export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
@@ -229,6 +230,7 @@ function App() {
           <Route path="/privacy" element={<Privacy />} /> 
           <Route path="/privacy-center" element={userData ? <PrivacyCenter /> : <Navigate to="/signup" />} />
           <Route path="/billing" element={userData ? <BillingHistory /> : <Navigate to="/signup" />} />
+          <Route path="/verify/:certificateId" element={<VerifyCertificate />} />
       </Routes>
     </>
   );

@@ -28,6 +28,7 @@ import analyticsRouter from "./route/analyticsRoute.js";
 import privacyRouter from "./route/privacyRoute.js";
 import invoiceRouter from "./route/invoiceRoute.js";
 import attendanceRouter from "./route/attendanceRoute.js";
+import certificateRouter from "./route/certificateRoute.js";
 import { app, server } from "./socket/socket.js";
 
 // --- Scaling & Security Configuration ---
@@ -107,6 +108,7 @@ app.use("/api/analytics", analyticsRouter);
 app.use("/api/privacy", privacyRouter);
 app.use("/api/invoices", invoiceRouter);
 app.use("/api/attendance", attendanceRouter);
+app.use("/api/certificate", certificateRouter); // PUBLIC — no auth, no rate limit (QR verification)
 
 
 // --- Health check ---

@@ -331,7 +331,7 @@ const CertificateTemplate = forwardRef(({ studentName, courseTitle, date, certif
                                 display:"flex", alignItems:"center", justifyContent:"center",
                             }}>
                                 <QRCodeCanvas
-                                    value={`https://verify-lms.ac.in/verify/${certificateId}`}
+                                    value={`https://learning-management-system-kappa-black.vercel.app/verify/${certificateId}`}
                                     size={52} level="H" includeMargin={false}
                                     fgColor={c.crimsonDark}
                                 />
