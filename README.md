@@ -8,22 +8,21 @@
 
 **🔗 [Visit Live Application](https://learning-management-system-kappa-black.vercel.app/)**
 
-
 ## 📋 Table of Contents
 
-- [[Overview](https://github.com/VibhuSuneja/LearningManagement_system-/blob/main/README.md#-overview)]
-- [Features]
-- [Technology Stack]
-- [AI Integration]
-- [Installation]
-- [Environment Variables]
-- [Usage]
-- [API Endpoints]
-- [Project Structure]
-- [Screenshots]
-- [Contributing]
-- ([#license](https://github.com/VibhuSuneja/LearningManagement_system-/blob/main/README.md#-license))
-- [Contact]
+- [Overview](#-overview)
+- [Features](#-features)
+- [Technology Stack](#️-technology-stack)
+- [AI Integration](#-ai-integration)
+- [Installation](#-installation)
+- [Environment Variables](#-environment-variables)
+- [Usage](#-usage)
+- [API Endpoints](#-api-endpoints)
+- [Project Structure](#-project-structure)
+- [Screenshots](#-screenshots)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Contact](#-contact)
 
 ## 🚀 Overview
 
@@ -52,13 +51,13 @@ The system serves multiple user types including students, instructors, and admin
   - AI-driven chatbot for instant student assistance
   - Automated summary and categorization features
 
-- **Social & Community (New!)**
+- **Social & Community**
   - **Community Forums**: Categorized discussion boards (General, Questions, Resources, etc.)
   - **Engagement Logic**: Like, comment, and threaded discussions
   - **User Following**: Build personal learning networks by following peers and educators
   - **Public Profiles**: Discoverable profiles showcasing achievements and social links
 
-- **Gamification & Rewards (New!)**
+- **Gamification & Rewards**
   - **XP System**: Earn experience points for active learning and enrollment
   - **Leveling Logic**: Progress through dynamic levels (Level up every 500 XP)
   - **Badge Achievements**: Unlock milestones like 'Fast Learner' and 'Live Scholar'
@@ -69,13 +68,13 @@ The system serves multiple user types including students, instructors, and admin
   - Multiple payment method support
   - Automatic enrollment and gamification triggers upon payment
 
-- **Onboarding & Demos (New!)**
+- **Onboarding & Demos**
   - **Animated Product Demo**: High-fidelity dashboard simulations on the landing page
   - **Spotlight Platform Tour**: Cinematic, physics-based interactive walkthrough that "beams" focus onto UI elements
   - **Role-Specific Onboarding**: Tailored tours for Educators and Students
   - **Auto-Scrolling Guidance**: Intelligent UI tracking that scrolls the bridge to the focused feature
 
-- **Growth & SEO (Advanced) (New!)**
+- **Growth & SEO (Advanced)**
   - **Dynamic Social Previews**: Custom Vercel Edge Middleware that detects social media crawlers and serves dynamic Open Graph/Twitter meta tags.
   - **SEO Infrastructure**: Public-facing course API endpoints allowing crawlers to fetch data without authentication barriers.
   - **Direct HTML Serving**: Bypassing SPA limitations by serving pre-rendered static HTML directly to crawlers for perfect link previews on WhatsApp, LinkedIn, and Twitter.
@@ -109,8 +108,7 @@ The system serves multiple user types including students, instructors, and admin
   - **Skeleton Loaders**: High-end pulsing skeletons for course cards to improve perceived speed.
   - **Glassmorphism UI**: Modern, translucent interface elements with Framer Motion animations.
   - **Cinematic About Page**: Dedicated mission-driven page featuring high-fidelity visuals, interactive timelines, and "Meet the Founder" storytelling.
-  - **Interactive Founder Badge**: Pulsing "Active Creator" status indicator on the homepage to establish personal brand trust.
-  - **Advanced Empty States**: Beautifully themed "No Content" illustrations using platform-aligned iconography.
+  - **Premium Certificate System**: High-fidelity, verifiable digital certificates with ornate designs, signatures, and QR verification.
 
 ## 🛠️ Technology Stack
 
@@ -200,7 +198,7 @@ cd frontend
 npm install
 
 # Start development server
-npm start
+npm run dev
 ```
 
 ## 🔧 Environment Variables
@@ -310,31 +308,11 @@ POST   /api/ai/analyze         # Content analysis
 LearningManagement_system-/
 ├── backend/
 │   ├── config/
-│   │   ├── database.js
-│   │   └── cloudinary.js
 │   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── courseController.js
-│   │   ├── userController.js
-│   │   └── paymentController.js
 │   ├── middleware/
-│   │   ├── auth.js
-│   │   ├── errorHandler.js
-│   │   └── upload.js
 │   ├── models/
-│   │   ├── User.js
-│   │   ├── Course.js
-│   │   ├── Enrollment.js
-│   │   └── Transaction.js
 │   ├── routes/
-│   │   ├── auth.js
-│   │   ├── courses.js
-│   │   ├── users.js
-│   │   └── payments.js
 │   ├── utils/
-│   │   ├── emailService.js
-│   │   ├── aiService.js
-│   │   └── helpers.js
 │   ├── .env
 │   ├── package.json
 │   └── server.js
@@ -342,25 +320,14 @@ LearningManagement_system-/
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Auth/
-│   │   │   ├── Course/
-│   │   │   ├── Dashboard/
-│   │   │   └── Common/
 │   │   ├── pages/
-│   │   │   ├── Home.js
-│   │   │   ├── Courses.js
-│   │   │   ├── Dashboard.js
-│   │   │   └── Profile.js
 │   │   ├── redux/
-│   │   │   ├── store.js
-│   │   │   ├── slices/
-│   │   │   └── api/
 │   │   ├── utils/
 │   │   ├── styles/
-│   │   ├── App.js
-│   │   └── index.js
+│   │   ├── App.jsx
+│   │   └── main.jsx
 │   ├── package.json
-│   └── tailwind.config.js
+│   └── vite.config.js
 ├── README.md
 ├── .gitignore
 └── package.json
@@ -369,54 +336,39 @@ LearningManagement_system-/
 ## 📸 Screenshots
 
 ### Homepage
-<img width="2537" height="1439" alt="image" src="https://github.com/user-attachments/assets/aeff5938-7fd2-4f6f-800c-f888c93ae7bd" />
-
+<img width="100%" alt="Homepage Banner" src="https://github.com/user-attachments/assets/aeff5938-7fd2-4f6f-800c-f888c93ae7bd" />
 
 ### Course Dashboard
-<img width="2498" height="1218" alt="image" src="https://github.com/user-attachments/assets/c384f42e-b5ad-47e4-987c-122013bb875b" />
-
+<img width="100%" alt="Course Details" src="https://github.com/user-attachments/assets/c384f42e-b5ad-47e4-987c-122013bb875b" />
 
 ### Course Creation
-<img width="2494" height="1223" alt="image" src="https://github.com/user-attachments/assets/06083a38-f39b-46d7-a4e9-2bf8ae2ad536" />
-
+<img width="100%" alt="Educator Panel" src="https://github.com/user-attachments/assets/06083a38-f39b-46d7-a4e9-2bf8ae2ad536" />
 
 ### AI Search
-(<img width="2469" height="1220" alt="image" src="https://github.com/user-attachments/assets/b7deb9f2-341e-4be4-804b-a1122a06e0b3" />
-
-
+<img width="100%" alt="Gemini Search" src="https://github.com/user-attachments/assets/b7deb9f2-341e-4be4-804b-a1122a06e0b3" />
 
 ## 🤝 Contributing
 
 We welcome contributions from the community! Please follow these steps:
 
-1. **Fork the repository**
+1. **Fork the repository** by clicking the fork button at the top of the page.
+2. **Clone your fork**:
    ```bash
-   git fork https://github.com/VibhuSuneja/LearningManagement_system-
+   git clone https://github.com/YOUR_USERNAME/LearningManagement_system-.git
    ```
-
-2. **Create a feature branch**
+3. **Create a feature branch**:
    ```bash
    git checkout -b feature/amazing-feature
    ```
-
-3. **Commit your changes**
+4. **Commit your changes**:
    ```bash
    git commit -m 'Add some amazing feature'
    ```
-
-4. **Push to the branch**
+5. **Push to the branch**:
    ```bash
    git push origin feature/amazing-feature
    ```
-
-5. **Open a Pull Request**
-
-### Development Guidelines
-- Follow existing code style and conventions
-- Write clear, descriptive commit messages
-- Include tests for new functionality
-- Update documentation as needed
-- Ensure all tests pass before submitting
+6. **Open a Pull Request** to the main branch.
 
 ## 📄 License
 
@@ -429,7 +381,7 @@ This project is proprietary and confidential. No part of this software may be co
 **Vibhu Suneja** 
 *(Ambitious CS Student & Lifelong Learner)*
 - GitHub: [@VibhuSuneja](https://github.com/VibhuSuneja)
-- Email: vibhusun01@gmail.com
+- Email: [vibhusun01@gmail.com](mailto:vibhusun01@gmail.com)
 - LinkedIn: [Vibhu Suneja Profile](https://www.linkedin.com/in/vibhusuneja08)
 
 ## 🙏 Acknowledgments
@@ -445,22 +397,20 @@ This project is proprietary and confidential. No part of this software may be co
 ### Short-term Goals
 - [ ] Mobile app (iOS/Android) using React Native
 - [ ] Video playback tracking (Resuming lectures)
-- [ ] Downloadable certificates in PDF format
+- [x] **MODERN CERTIFICATES**: Downloadable premium certificates in PDF format (Completed ✅)
 - [ ] Advanced Quiz & Assessment engine
 
 ### Long-term Vision
 - [ ] Virtual Reality (VR) learning classrooms
-- [ ] Blockchain-based certificate verification
+- [x] **QR VERIFICATION**: Security-hardened certificate verification via QR codes (Completed ✅)
 - [ ] Multi-language localization (Spanish, Hindi, French)
 - [ ] AI-driven personalized study planners
 
 ## 📊 Project Statistics
 
-- **Total Commits**: 200+
-- **Languages**: JavaScript (65%), HTML (30%), CSS (5%)
-- **Dependencies**: 55+ packages
-- **Development Time**: 11 weeks
-- **Current Status**: Production Hardened & SEO Optimized (v1.3)
+- **Total Commits**: 250+
+- **Languages**: JavaScript, HTML5, CSS3, React.js
+- **Current Status**: Production Hardened & SEO Optimized (v1.5)
 - **Key Metric**: 100% accurate social link previews across all major platforms.
 
 ---
