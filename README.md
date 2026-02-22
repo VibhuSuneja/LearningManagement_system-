@@ -6,9 +6,7 @@
 
 ## 🌐 Live Demo
 
-<<<<<<< Updated upstream
-**🔗 [Visit Live Application]([https://learning-management-system-kappa-black.vercel.app/])**
-=======
+**🔗 [Visit Live Application](https://learning-management-system-kappa-black.vercel.app/)**
 
 
 ## 📋 Table of Contents
