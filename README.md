@@ -1,6 +1,6 @@
 # 🎓 AI-Powered Learning Management System
 
-![LMS Banner](https://img.shields.io/badge/MERN-Stack-blue) ![AI Powered](https://img.shields.io/badge/AI-Powered-green) ![License](https://img.shields.io/badge/License-MIT-yellow) ![Deployment](https://img.shields.io/badge/Deployed-Render-purple)
+![LMS Banner](https://img.shields.io/badge/MERN-Stack-blue) ![AI Powered](https://img.shields.io/badge/AI-Powered-green) ![License](https://img.shields.io/badge/License-Proprietary-red) ![Deployment](https://img.shields.io/badge/Deployed-Render-purple)
 
 > A modern, intelligent Learning Management System built with MERN stack and AI integration for enhanced educational experiences.
 
@@ -418,31 +418,9 @@ We welcome contributions from the community! Please follow these steps:
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+**All Rights Reserved.**
 
-```
-MIT License
-
-Copyright (c) 2025 Vibhu Suneja
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+This project is proprietary and confidential. No part of this software may be copied, reproduced, distributed, republished, downloaded, displayed, posted, or transmitted in any form or by any means without the prior express written permission of Vibhu Suneja. See the [LICENSE](LICENSE) file for full details.
 
 ## 📞 Contact
 
