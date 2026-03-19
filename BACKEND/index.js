@@ -117,7 +117,17 @@ app.get("/", (req, res) => {
 });
 
 // --- Server Startup ---
-server.listen(port, () => {
-  console.log(`✅ Server running on port ${port}`);
-  connectDb();
-});
+const startServer = async () => {
+  try {
+    await connectDb();
+    server.listen(port, () => {
+      console.log(`✅ Server running on port ${port}`);
+      console.log("🚀 Database connection established.");
+    });
+  } catch (error) {
+    console.error("❌ Critical server startup failure:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
