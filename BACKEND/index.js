@@ -27,6 +27,7 @@ import aiRouter from "./route/aiRoute.js";
 import analyticsRouter from "./route/analyticsRoute.js";
 import privacyRouter from "./route/privacyRoute.js";
 import invoiceRouter from "./route/invoiceRoute.js";
+import danaRouter from "./route/danaRoute.js";
 import attendanceRouter from "./route/attendanceRoute.js";
 import certificateRouter from "./route/certificateRoute.js";
 import { app, server } from "./socket/socket.js";
@@ -107,6 +108,7 @@ app.use("/api/ai-features", strictLimiter, aiRouter); // Apply strict limit to A
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/privacy", privacyRouter);
 app.use("/api/invoices", invoiceRouter);
+app.use("/api/dana", danaRouter);
 app.use("/api/attendance", attendanceRouter);
 app.use("/api/certificate", certificateRouter); // PUBLIC — no auth, no rate limit (QR verification)
 

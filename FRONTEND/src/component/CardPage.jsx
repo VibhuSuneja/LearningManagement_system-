@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import Card from './Card'; // <-- ADD THIS LINE
+import Card from './Card';
 import CourseSkeleton from './CourseSkeleton';
 import { FaGraduationCap } from 'react-icons/fa';
 
@@ -17,39 +17,44 @@ function CardPage() {
   }, [courseData]);
 
   return (
-    <div className='relative flex items-center justify-center flex-col min-h-[400px]'>
-      <h1 className='md:text-[45px] text-[30px] font-semibold text-center mt-[30px] px-[20px]'>
-        Our Popular Courses
-      </h1>
-      <span className='lg:w-[50%] md:w-[80%] text-[15px] text-center mt-[30px] mb-[30px] px-[20px]'>
-        Explore top-rated courses designed to boost your skills, enhance careers, and unlock opportunities in tech, AI, business, and beyond.
-      </span>
-      
-      <div className='w-[100%] flex items-center justify-center flex-wrap gap-[50px] lg:p-[50px] md:p-[30px] p-[10px] mb-[40px]'>
-        {loading ? (
-          // Skeleton Loaders
-          [1, 2, 3].map((n) => <CourseSkeleton key={n} />)
-        ) : popularCourses.length > 0 ? (
-          // Actual Content
-          popularCourses.map((course, index) => (
-            <Card
-              key={index}
-              thumbnail={course.thumbnail}
-              title={course.title}
-              category={course.category}
-              price={course.price}
-              id={course._id}
-              reviews={course.reviews}
-            />
-          ))
-        ) : (
-          // Beautiful Empty State
-          <div className="flex flex-col items-center justify-center py-20 text-center opacity-50">
-            <FaGraduationCap className="text-8xl text-gray-200 mb-6" />
-            <h3 className="text-2xl font-black text-gray-300 uppercase tracking-widest">No Courses Found</h3>
-            <p className="text-gray-400 font-medium">Be the first to create an amazing learning path!</p>
-          </div>
-        )}
+    <div className='w-full py-20 px-6 bg-[#f8fafc]'>
+      <div className="max-w-7xl mx-auto space-y-12">
+        <div className="text-center space-y-4">
+          <h1 className='text-4xl md:text-5xl lg:text-6xl font-black text-black uppercase tracking-tighter leading-none'>
+            Our Popular<br />
+            <span className="text-gray-300">Courses</span>
+          </h1>
+          <p className='text-gray-500 font-medium text-lg max-w-2xl mx-auto'>
+            Explore top-rated courses designed to boost your skills, enhance careers, and unlock opportunities in tech, AI, business, and beyond.
+          </p>
+        </div>
+        
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 justify-items-center'>
+          {loading ? (
+            // Skeleton Loaders
+            [1, 2, 3].map((n) => <CourseSkeleton key={n} />)
+          ) : popularCourses.length > 0 ? (
+            // Actual Content
+            popularCourses.map((course, index) => (
+              <Card
+                key={index}
+                thumbnail={course.thumbnail}
+                title={course.title}
+                category={course.category}
+                price={course.price}
+                id={course._id}
+                reviews={course.reviews}
+              />
+            ))
+          ) : (
+            // Beautiful Empty State
+            <div className="col-span-full py-32 flex flex-col items-center justify-center text-center opacity-30">
+              <FaGraduationCap className="text-8xl mb-6 text-gray-400" />
+              <h3 className="text-2xl font-black uppercase tracking-widest text-gray-300">No Courses Found</h3>
+              <p className="text-gray-400 font-medium mt-2 italic">Wait for the future to be written.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

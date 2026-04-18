@@ -12,43 +12,54 @@ import { toast, ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
 import useGetCurrentUser from "./customHooks/getCurrentUser";
 import useGetCreatorCourse from "./customHooks/getCreatorCourse";
-import Dashboard from './pages/Educator/Dashboard';
-import Courses from './pages/Educator/Courses';
-import CreateCourses from './pages/Educator/CreateCourses';
-// FIX: Added the import for the EditCourse component
-import EditCourse from "./pages/Educator/EditCourse";
-import getPublishedCourse from "./customHooks/getPublishedCourse";
-import AllCourses from "./pages/AllCourses";
-import CreateLecture from "./pages/Educator/CreateLecture";
-import EditLecture from "./pages/Educator/EditLectures";
-import ViewCourse from "./pages/ViewCourse";
+import { Suspense, lazy } from "react";
+// Heavy Routes Lazy Loaded
+const Dashboard = lazy(() => import('./pages/Educator/Dashboard'));
+const Courses = lazy(() => import('./pages/Educator/Courses'));
+const CreateCourses = lazy(() => import('./pages/Educator/CreateCourses'));
+const EditCourse = lazy(() => import("./pages/Educator/EditCourse"));
+const AllCourses = lazy(() => import("./pages/AllCourses"));
+const CreateLecture = lazy(() => import("./pages/Educator/CreateLecture"));
+const EditLecture = lazy(() => import("./pages/Educator/EditLectures"));
+const ViewCourse = lazy(() => import("./pages/ViewCourse"));
+const ViewLectures = lazy(() => import("./pages/Educator/ViewLectures.jsx"));
+const MyEnrolledCourses = lazy(() => import("./pages/MyEnrolledCourses.jsx"));
+const SearchWithAi = lazy(() => import("./pages/SearchWithAi.jsx"));
+const DanaDashboard = lazy(() => import('./pages/Educator/DanaProtocol.jsx'));
+const Chat = lazy(() => import("./pages/Chat.jsx"));
+const LiveSessions = lazy(() => import("./pages/LiveSessions.jsx"));
+const Leaderboard = lazy(() => import("./pages/Leaderboard.jsx"));
+const Forum = lazy(() => import("./pages/Forum.jsx"));
+const ThreadView = lazy(() => import("./pages/ThreadView.jsx"));
+const CreateQuiz = lazy(() => import("./pages/Educator/CreateQuiz"));
+const TakeQuiz = lazy(() => import("./pages/TakeQuiz"));
+const ManageQuizzes = lazy(() => import("./pages/Educator/ManageQuizzes"));
+const CreateAssignment = lazy(() => import('./pages/Educator/CreateAssignment'));
+const SubmitAssignment = lazy(() => import('./pages/SubmitAssignment'));
+const GradeAssignment = lazy(() => import('./pages/Educator/GradeAssignment'));
+const ManageAssignments = lazy(() => import('./pages/Educator/ManageAssignments'));
+const BillingHistory = lazy(() => import("./pages/BillingHistory"));
+const VerifyCertificate = lazy(() => import("./pages/VerifyCertificate"));
+const PrivacyCenter = lazy(() => import("./pages/PrivacyCenter"));
+
 import ScrollToTop from './component/ScrollToTop.jsx'
-import ViewLectures from "./pages/Educator/ViewLectures.jsx";
-import MyEnrolledCourses from "./pages/MyEnrolledCourses.jsx";
+import getPublishedCourse from "./customHooks/getPublishedCourse.js";
 import getAllReviews from "./customHooks/getAllReviews.js";
-import SearchWithAi from "./pages/SearchWithAi.jsx";
 import Chatbot from "./component/Chatbot.jsx";
-import Chat from "./pages/Chat.jsx";
-import LiveSessions from "./pages/LiveSessions.jsx";
-import Leaderboard from "./pages/Leaderboard.jsx";
-import Forum from "./pages/Forum.jsx";
-import ThreadView from "./pages/ThreadView.jsx";
 import { useSocketContext } from "./context/SocketContext";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
-import CreateQuiz from "./pages/Educator/CreateQuiz";
-import TakeQuiz from "./pages/TakeQuiz";
-import ManageQuizzes from "./pages/Educator/ManageQuizzes";
-import CreateAssignment from './pages/Educator/CreateAssignment';
-import SubmitAssignment from './pages/SubmitAssignment';
-import GradeAssignment from './pages/Educator/GradeAssignment';
-import ManageAssignments from './pages/Educator/ManageAssignments';
 import OnboardingTour from "./component/OnboardingTour";
-import PrivacyCenter from "./pages/PrivacyCenter";
 import LevelUpCelebration from "./component/LevelUpCelebration";
-import BillingHistory from "./pages/BillingHistory";
-import VerifyCertificate from "./pages/VerifyCertificate";
 import { AnimatePresence } from "framer-motion";
+
+// Global Suspense Loader UI
+const PageLoader = () => (
+  <div className="min-h-screen bg-black flex flex-col items-center justify-center">
+    <div className="w-16 h-16 border-4 border-white/10 border-t-white rounded-full animate-spin"></div>
+    <p className="mt-8 text-[10px] uppercase font-black tracking-[0.4em] text-white/50">Initializing Core...</p>
+  </div>
+);
 
 export const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8080";
 console.log("Using Server URL:", serverUrl);
@@ -168,7 +179,7 @@ function App() {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={3000} theme="dark" />
       <ScrollToTop />
       <Chatbot />
       <OnboardingTour />
@@ -194,6 +205,7 @@ function App() {
         </button>
       )}
       
+      <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={!userData ? <SignUp /> : <Navigate to="/" />} />
@@ -214,6 +226,7 @@ function App() {
           <Route path="/mycourses" element={userData ? <MyEnrolledCourses /> : <Navigate to="/signup" />} /> 
           <Route path="/search" element={userData ? <SearchWithAi /> : <Navigate to="/signup" />} /> 
           <Route path="/chat" element={userData ? <Chat /> : <Navigate to="/signup" />} /> 
+          <Route path="/dana-protocol" element={userData?.role === "educator" ? <DanaDashboard /> : <Navigate to="/signup" />} />
           <Route path="/leaderboard" element={userData ? <Leaderboard /> : <Navigate to="/signup" />} /> 
           <Route path="/live/:courseId" element={userData ? <LiveSessions /> : <Navigate to="/signup" />} /> 
           <Route path="/forum" element={userData ? <Forum /> : <Navigate to="/signup" />} /> 
@@ -232,6 +245,7 @@ function App() {
           <Route path="/billing" element={userData ? <BillingHistory /> : <Navigate to="/signup" />} />
           <Route path="/verify/:certificateId" element={<VerifyCertificate />} />
       </Routes>
+      </Suspense>
     </>
   );
 }

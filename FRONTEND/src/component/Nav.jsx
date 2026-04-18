@@ -35,228 +35,178 @@ function Nav() {
   };
 
   return (
-    <div>
-      <div className="w-[100%] h-[70px] fixed top-0 px-[20px] py-[10px] flex items-center justify-between bg-[#00000047] z-10">
+    <div className="relative">
+      <div className="w-full h-[70px] fixed top-0 px-4 md:px-10 py-3 flex items-center justify-between bg-black/40 backdrop-blur-md z-[100] border-b border-white/10">
         {/* LOGO */}
-        <div className="lg:w-[20%] w-[40%] lg:pl-[50px]">
+        <div className="flex items-center gap-2 cursor-pointer group" onClick={() => navigate("/")}>
           <img
             src={logo}
             alt="logo"
-            className="w-[60px] rounded-[5px] border-2 border-white"
+            className="w-[45px] h-[45px] rounded-xl border border-white/20 group-hover:scale-110 transition-transform"
           />
+          <span className="text-white font-black text-xl tracking-tighter hidden sm:block">V-LMS</span>
         </div>
 
         {/* DESKTOP NAV */}
-        <div className="w-[45%] lg:flex items-center justify-end gap-5 hidden">
+        <div className="hidden lg:flex items-center justify-end gap-6 flex-1">
           {userData && (
             <div 
               title="Daily Learning Streak"
-              className="flex items-center gap-1.5 bg-black/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 group hover:scale-110 transition-all cursor-default"
+              className="flex items-center gap-2 bg-white/5 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 group hover:border-orange-500/50 transition-all cursor-default"
             >
               <FaFire className={`text-xl ${userData.streak > 0 ? "text-orange-500 animate-pulse" : "text-gray-400 opacity-50"}`} />
               <span className="font-black text-white text-sm">{userData.streak || 0}</span>
             </div>
           )}
+          
           {userData && <NotificationTray />}
-          {!userData ? (
-            <IoPersonCircle
-              className="w-[50px] h-[50px] fill-black cursor-pointer"
-              onClick={() => setShow((prev) => !prev)}
-            />
-          ) : (
-            <>
-              {userData.photoUrl && userData.photoUrl !== "" ? (
-                <img
-                  src={userData.photoUrl}
-                  className="w-[50px] h-[50px] rounded-full border-2 border-white cursor-pointer"
-                  alt="user avatar"
-                  onClick={() => setShow((prev) => !prev)}
-                />
-              ) : (
-                <div
-                  className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center text-[20px] border-2 bg-black border-white cursor-pointer"
+
+          <div className="flex items-center gap-4 border-l border-white/10 pl-6 h-8">
+            {!userData ? (
+              <div 
+                className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => navigate("/login")}
+              >
+                <IoPersonCircle className="w-10 h-10 text-white" />
+                <span className="text-white font-bold text-sm">Login</span>
+              </div>
+            ) : (
+              <div className="relative group/user">
+                <div 
+                  className="w-10 h-10 rounded-xl overflow-hidden border-2 border-white/20 cursor-pointer hover:border-white transition-all shadow-lg"
                   onClick={() => setShow((prev) => !prev)}
                 >
-                  {userData?.name ? userData.name.slice(0, 1).toUpperCase() : "U"}
+                  {userData.photoUrl ? (
+                    <img src={userData.photoUrl} className="w-full h-full object-cover" alt="avatar" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-gray-800 to-black text-white flex items-center justify-center font-bold">
+                      {userData?.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </div>
-              )}
-            </>
-          )}
 
-          {userData?.role === "educator" && (
-            <div
-              className="px-[20px] py-[10px] border-2 lg:border-white border-black lg:text-white bg-[black] text-black rounded-[10px] text-[18px] font-light flex gap-2 cursor-pointer"
-              onClick={() => navigate("/dashboard")}
-            >
-              Dashboard
-            </div>
-          )}
-
-          {!userData ? (
-            <span
-              className="px-[20px] py-[10px] border-2 border-white text-white rounded-[10px] text-[18px] font-light cursor-pointer bg-[#000000d5]"
-              onClick={() => navigate("/login")}
-            >
-              Login
-            </span>
-          ) : (
-            <span
-              className="px-[20px] py-[10px] bg-white text-black rounded-[10px] shadow-sm shadow-black text-[18px] cursor-pointer"
-              onClick={handleLogout}
-            >
-              LogOut
-            </span>
-          )}
-
-          {show && userData && (
-            <div className="absolute top-[110%] right-[15%] flex flex-col items-center justify-center gap-2 text-[16px] rounded-md bg-white px-[15px] py-[10px] border-[2px] border-black hover:border-white hover:text-white hover:bg-black cursor-pointer">
-              <span
-                className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600"
-                onClick={() => navigate("/profile")}
-              >
-                My Profile
-              </span>
-              <span
-                className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600"
-                onClick={() => navigate("/leaderboard")}
-              >
-                Leaderboard
-              </span>
-              <span
-                className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600"
-                onClick={() => navigate("/forum")}
-              >
-                Community Forum
-              </span>
-              <span
-                className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600"
-                onClick={() => navigate("/mycourses")}
-              >
-                My Courses
-              </span>
-              <span
-                className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600"
-                onClick={() => navigate("/chat")}
-              >
-                Messages
-              </span>
-              <span
-                className="bg-[black] text-white px-[30px] py-[10px] rounded-2xl hover:bg-gray-600"
-                onClick={() => navigate("/about")}
-              >
-                About Us
-              </span>
-            </div>
-          )}
+                {/* Desktop Dropdown */}
+                {show && (
+                  <div className="absolute top-[120%] right-0 w-[240px] bg-black/90 backdrop-blur-2xl rounded-[24px] border border-white/20 p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                    {[
+                      { label: "My Profile", path: "/profile" },
+                      { label: "Leaderboard", path: "/leaderboard" },
+                      { label: "Community Forum", path: "/forum" },
+                      { label: "My Courses", path: "/mycourses" },
+                      { label: "Messages", path: "/chat" },
+                      { label: "About Us", path: "/about" },
+                    ].map((item) => (
+                      <button
+                        key={item.path}
+                        onClick={() => { navigate(item.path); setShow(false); }}
+                        className="w-full text-left px-5 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-2xl transition-all text-sm font-bold tracking-tight"
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                    {userData?.role === "educator" && (
+                      <button
+                        onClick={() => { navigate("/dashboard"); setShow(false); }}
+                        className="w-full text-left px-5 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-2xl transition-all text-sm font-black mt-2"
+                      >
+                        Dashboard
+                      </button>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-5 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-2xl transition-all text-sm font-bold mt-1"
+                    >
+                      LogOut
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* MOBILE NAV */}
-        <RxHamburgerMenu
-          className="w-[35px] h-[35px] lg:hidden text-white fill-black cursor-pointer"
-          onClick={() => setShowHam((prev) => !prev)}
-        />
+        {/* MOBILE CONTROLS */}
+        <div className="flex lg:hidden items-center gap-4">
+          {userData && <NotificationTray />}
+          <button 
+            onClick={() => setShowHam(!showHam)}
+            className="p-2 bg-white/10 rounded-xl border border-white/20 text-white"
+          >
+            {showHam ? <GiTireIronCross size={24} /> : <RxHamburgerMenu size={24} />}
+          </button>
+        </div>
 
+        {/* MOBILE MENU */}
         <div
-          className={`fixed top-0 left-0 w-[100vw] h-[100vh] bg-[#000000d6] flex items-center justify-center flex-col gap-5 z-10 lg:hidden ${
-            showHam
-              ? "translate-x-[0%] transition duration-600"
-              : "translate-x-[-100%] transition duration-600"
+          className={`fixed inset-0 top-[70px] w-full h-[calc(100vh-70px)] bg-black/95 backdrop-blur-2xl z-[90] lg:hidden transition-all duration-500 ease-in-out ${
+            showHam ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
           }`}
         >
-          <GiTireIronCross
-            className="w-[35px] h-[35px] fill-white absolute top-5 right-[4%]"
-            onClick={() => setShowHam((prev) => !prev)}
-          />
-
-          {!userData ? (
-            <IoPersonCircle className="w-[50px] h-[50px] fill-black cursor-pointer" />
-          ) : (
-            <>
-              {userData.photoUrl ? (
-                <img
-                  src={userData.photoUrl}
-                  className="w-[50px] h-[50px] rounded-full border-2 bg-black border-white cursor-pointer"
-                  alt="user avatar"
-                />
-              ) : (
-                <div className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center text-[20px] border-2 bg-black border-white cursor-pointer">
-                  {userData?.name ? userData.name.slice(0, 1).toUpperCase() : "U"}
+          <div className="flex flex-col h-full p-8 space-y-4 overflow-y-auto pb-20">
+            {userData && (
+              <div className="flex items-center gap-4 p-4 bg-white/5 rounded-[24px] border border-white/10 mb-2">
+                <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/20">
+                  {userData.photoUrl ? (
+                    <img src={userData.photoUrl} className="w-full h-full object-cover" alt="avatar" />
+                  ) : (
+                    <div className="w-full h-full bg-black text-white flex items-center justify-center text-2xl font-black">
+                      {userData?.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </div>
-              )}
-
-              <div className="flex items-center gap-2 bg-white/10 px-6 py-3 rounded-2xl border border-white/20 mb-2">
-                <FaFire className={`text-2xl ${userData.streak > 0 ? "text-orange-500 animate-pulse" : "text-gray-400 opacity-50"}`} />
-                <span className="font-black text-white text-xl">{userData.streak || 0} DAY STREAK</span>
+                <div>
+                  <h3 className="text-white font-black text-lg leading-none">{userData.name}</h3>
+                  <div className="flex items-center gap-2 mt-2 text-orange-500 text-xs font-black uppercase tracking-widest">
+                    <FaFire /> {userData.streak || 0} day streak
+                  </div>
+                </div>
               </div>
+            )}
 
-              <div
-                className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
-                onClick={() => navigate("/profile")}
-              >
-                My Profile
-              </div>
-
-              <div
-                className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
-                onClick={() => navigate("/leaderboard")}
-              >
-                Leaderboard
-              </div>
-              
-              <div
-                className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
-                onClick={() => navigate("/forum")}
-              >
-                Community Forum
-              </div>
-
-              <div
-                className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
-                onClick={() => navigate("/mycourses")}
-              >
-                My Courses
-              </div>
-
-               <div
-                className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
-                onClick={() => navigate("/chat")}
-              >
-                Messages
-              </div>
-
-              <div
-                className="w-[200px] h-[65px] border-2 border-white text-white bg-[black] flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
-                onClick={() => navigate("/about")}
-              >
-                About Us
-              </div>
-
-              {userData?.role === "educator" && (
-                <div
-                  className="w-[200px] h-[65px] border-2 border-white text-white bg-black flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
-                  onClick={() => navigate("/dashboard")}
+            <div className="grid grid-cols-1 gap-3">
+              {[
+                { label: "My Profile", path: "/profile" },
+                { label: "Leaderboard", path: "/leaderboard" },
+                { label: "Community Forum", path: "/forum" },
+                { label: "My Courses", path: "/mycourses" },
+                { label: "Messages", path: "/chat" },
+                { label: "About Us", path: "/about" },
+              ].map((item) => (
+                <button
+                  key={item.path}
+                  onClick={() => { navigate(item.path); setShowHam(false); }}
+                  className="w-full py-4 px-6 bg-white/5 border border-white/10 text-white rounded-[20px] text-lg font-bold text-left hover:bg-white/10 active:scale-[0.98] transition-all"
                 >
-                  Dashboard
-                </div>
+                  {item.label}
+                </button>
+              ))}
+              
+              {userData?.role === "educator" && (
+                <button
+                  onClick={() => { navigate("/dashboard"); setShowHam(false); }}
+                  className="w-full py-5 px-6 bg-white text-black rounded-[20px] text-lg font-black text-left active:scale-[0.98] transition-all"
+                >
+                  Educator Dashboard
+                </button>
               )}
-            </>
-          )}
 
-          {!userData ? (
-            <span
-              className="w-[200px] h-[65px] border-2 border-white text-white bg-black flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
-              onClick={() => navigate("/login")}
-            >
-              Login
-            </span>
-          ) : (
-            <span
-              className="w-[200px] h-[65px] border-2 border-white text-white bg-black flex items-center justify-center rounded-[10px] text-[18px] font-light cursor-pointer"
-              onClick={handleLogout}
-            >
-              LogOut
-            </span>
-          )}
+              {!userData ? (
+                <button
+                  onClick={() => { navigate("/login"); setShowHam(false); }}
+                  className="w-full py-5 px-6 bg-blue-600 text-white rounded-[20px] text-lg font-black text-center active:scale-[0.98] transition-all mt-4"
+                >
+                  Getting Started
+                </button>
+              ) : (
+                <button
+                  onClick={handleLogout}
+                  className="w-full py-5 px-6 bg-red-600/20 border border-red-600/30 text-red-500 rounded-[20px] text-lg font-bold text-center active:scale-[0.98] transition-all mt-4"
+                >
+                  Log Out
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

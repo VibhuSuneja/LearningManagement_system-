@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { IoVideocamOutline } from "react-icons/io5";
+import { IoVideocamOutline, IoPlayCircleOutline } from "react-icons/io5";
+import { FiTrendingUp, FiCheckCircle, FiClock, FiActivity } from "react-icons/fi";
 import useGetCurrentUser from '../customHooks/getCurrentUser';
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { ClipLoader } from 'react-spinners';
-import { motion } from 'framer-motion';
- 
+import { motion, AnimatePresence } from 'framer-motion';
+import Nav from '../component/Nav';
+import Footer from '../component/Footer';
+
 function MyEnrolledCourse() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useGetCurrentUser();
- 
+  
   const { userData } = useSelector((state) => state.user);
   const [progressData, setProgressData] = useState([]);
   const [stats, setStats] = useState(null);
@@ -43,91 +46,175 @@ function MyEnrolledCourse() {
 
   if (loading) {
     return (
-      <div className='min-h-screen bg-gray-50 flex justify-center items-center'>
-        <ClipLoader size={50} color='#000' />
+      <div className='min-h-screen bg-[#000] flex justify-center items-center'>
+        <div className="relative">
+            <div className="absolute inset-0 bg-blue-500/20 blur-3xl animate-pulse" />
+            <ClipLoader size={50} color='#ffffff' speedMultiplier={0.5} />
+        </div>
       </div>
     );
   }
 
+  const statConfig = [
+    { label: 'Active Tracks', value: stats?.totalCourses || 0, icon: FiTrendingUp, color: 'blue' },
+    { label: 'Milestones', value: stats?.completedCourses || 0, icon: FiCheckCircle, color: 'emerald' },
+    { label: 'In Transition', value: stats?.inProgressCourses || 0, icon: FiClock, color: 'purple' },
+    { label: 'Efficiency', value: `${stats?.averageCompletion || 0}%`, icon: FiActivity, color: 'rose' },
+  ];
+
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen w-full px-4 py-9 bg-gray-50"
-    >
-      <FaArrowLeftLong  className='absolute top-[3%] md:top-[6%] left-[5%] w-[22px] h-[22px] cursor-pointer' onClick={()=>navigate("/")}/>
-      <h1 className="text-3xl text-center font-bold text-gray-800 mb-2">
-        My Enrolled Courses
-      </h1>
-      <p className="text-center text-gray-500 mb-8 font-medium">Continue where you left off</p>
+    <div className="min-h-screen bg-[#000] text-white selection:bg-white selection:text-black font-['Inter']">
+      <Nav />
+      
+      {/* Background Decorative Glows */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-blue-600/10 blur-[150px] rounded-full" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[60%] h-[60%] bg-indigo-600/10 blur-[150px] rounded-full" />
+      </div>
 
-      {/* Stats Summary */}
-      {stats && (
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-          {[
-            { label: 'Enrolled', value: stats.totalCourses, color: 'blue' },
-            { label: 'Completed', value: stats.completedCourses, color: 'green' },
-            { label: 'In Progress', value: stats.inProgressCourses, color: 'yellow' },
-            { label: 'Average', value: `${stats.averageCompletion}%`, color: 'indigo' },
-          ].map((stat, idx) => (
-            <div key={idx} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 text-center">
-              <p className="text-sm font-semibold text-gray-500 mb-1">{stat.label}</p>
-              <p className={`text-2xl font-black text-${stat.color}-600`}>{stat.value}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {userData.enrolledCourses.length === 0 ? (
-        <p className="text-gray-500 text-center w-full">You haven’t enrolled in any course yet.</p>
-      ) : (
-        <div className="flex items-center justify-center flex-wrap gap-[30px]">
-          {userData.enrolledCourses.filter(Boolean).map((course) => (
-            <div
-              key={course._id}
-              className="bg-white rounded-2xl shadow-md overflow-hidden border transition-all hover:shadow-lg"
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="max-w-[1600px] mx-auto px-8 md:px-16 pt-32 pb-32 relative z-10"
+      >
+        {/* Header Section */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12 mb-24">
+          <div className="space-y-8 max-w-2xl">
+            <button 
+              onClick={() => navigate("/")}
+              className="flex items-center gap-4 text-white/30 hover:text-white transition-all group mb-8 border border-white/5 bg-white/[0.02] px-6 py-3 rounded-full w-fit hover:bg-white/5"
             >
-              <img
-                src={course.thumbnail}
-                alt={course.title}
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="text-lg font-bold text-gray-800 line-clamp-1">{course?.title}</h2>
-                <p className="text-xs font-semibold text-gray-500 mt-1 uppercase tracking-wider">{course?.category}</p>
-                
-                {/* Progress Bar */}
-                <div className="mt-4 mb-1">
-                  <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-[11px] font-bold text-gray-500">Course Progress</span>
-                    <span className="text-[11px] font-bold text-blue-600">{getCourseProgress(course._id)}%</span>
-                  </div>
-                  <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                    <div 
-                      className="bg-blue-600 h-full rounded-full transition-all duration-500"
-                      style={{ width: `${getCourseProgress(course._id)}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2 mt-[15px]">
-                  <button className='w-full py-[10px] bg-black text-white rounded-[10px] text-[15px] font-bold hover:bg-gray-800 transition-all flex items-center justify-center gap-2' onClick={()=>navigate(`/viewlecture/${course._id}`)}>
-                    Watch Now
-                  </button>
-                  <button className='w-full py-[10px] bg-red-600 text-white rounded-[10px] font-bold text-[15px] hover:bg-red-700 transition-all flex items-center justify-center gap-2' onClick={()=>navigate(`/live/${course._id}`)}>
-                    <div className="flex items-center gap-2">
-                      <IoVideocamOutline size={18} /> <span>Live Sessions</span>
-                    </div>
-                  </button>
-                </div>
-              </div>
+              <FaArrowLeftLong className="group-hover:-translate-x-1 transition-transform" />
+              <span className="text-[10px] font-black uppercase tracking-[0.4em]">Initialize Return</span>
+            </button>
+            <div className="space-y-4">
+                <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.6em]">Personnel Matrix</span>
+                <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9] font-['Outfit']">
+                Learning<br />
+                <span className="text-white/10 hover:text-white transition-colors duration-1000">Simulation</span>
+                </h1>
             </div>
-          ))}
+            <p className="text-white/40 font-medium text-lg leading-relaxed max-w-lg">Comprehensive telemetry of your neural convergence and active developmental sequences.</p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 w-full lg:w-auto">
+            {statConfig.map((stat, idx) => (
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 + idx * 0.1 }}
+                className="bg-white/[0.02] backdrop-blur-3xl border border-white/10 p-8 rounded-[32px] min-w-[200px] hover:border-white/20 transition-all group relative overflow-hidden"
+              >
+                <div className={`absolute -top-10 -right-10 w-24 h-24 bg-${stat.color}-500/10 blur-3xl group-hover:bg-${stat.color}-500/20 transition-colors`} />
+                <stat.icon className="text-white/20 mb-6 group-hover:text-white transition-colors" size={24} />
+                <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em] mb-2">{stat.label}</p>
+                <p className="text-4xl font-black text-white tracking-tighter">{stat.value}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      )}
-    </motion.div>
-  )
+
+        {/* Courses Grid */}
+        {!userData?.enrolledCourses || userData.enrolledCourses.length === 0 ? (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="py-48 flex flex-col items-center justify-center text-center space-y-8 bg-white/[0.01] border border-white/5 rounded-[48px] backdrop-blur-xl"
+          >
+            <div className="w-24 h-24 rounded-[32px] bg-white/[0.02] flex items-center justify-center text-5xl border border-white/5 relative group">
+              <div className="absolute inset-0 bg-blue-500/20 blur-3xl opacity-50 group-hover:opacity-100 transition-opacity" />
+              <span className="relative">🛰️</span>
+            </div>
+            <div className="space-y-3">
+                <h3 className="text-3xl font-black uppercase tracking-tighter">Void Sequence</h3>
+                <p className="text-white/30 max-w-sm mx-auto font-medium leading-relaxed">Your neural repository is currently offline. Synchronize with the simulation hub to begin your ascent.</p>
+            </div>
+            <button 
+              onClick={() => navigate("/allcourses")}
+              className="px-12 py-5 bg-white text-black font-black text-[11px] uppercase tracking-[0.4em] rounded-full hover:bg-gray-100 transition-all hover:scale-105 active:scale-95 shadow-xl"
+            >
+               Browse Dimensions
+            </button>
+          </motion.div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12">
+            <AnimatePresence mode="popLayout">
+              {userData.enrolledCourses.filter(Boolean).map((course, index) => (
+                <motion.div
+                  key={course._id}
+                  layout
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: index * 0.1,
+                    ease: [0.23, 1, 0.32, 1]
+                  }}
+                  className="bg-white/[0.01] backdrop-blur-3xl border border-white/5 rounded-[40px] overflow-hidden group hover:border-white/20 transition-all duration-700 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] relative"
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={course.thumbnail}
+                      alt={course.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2000ms] ease-out"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#000] via-[#000]/20 to-transparent opacity-90" />
+                    
+                    <div className="absolute top-6 left-6">
+                      <span className="px-5 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white text-[9px] font-black uppercase tracking-[0.3em] shadow-lg">
+                        {course.category}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-10 space-y-10 relative">
+                    <h2 className="text-2xl font-black text-white tracking-tighter leading-[1.1] min-h-[3rem] group-hover:text-blue-400 transition-colors duration-500">
+                      {course?.title}
+                    </h2>
+                    
+                    {/* Progress Information */}
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-end">
+                        <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em]">Synchronization</span>
+                        <span className="text-lg font-black text-white tracking-tighter">{getCourseProgress(course._id)}%</span>
+                      </div>
+                      <div className="w-full bg-white/5 rounded-full h-2 overflow-hidden border border-white/5 p-[1px]">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${getCourseProgress(course._id)}%` }}
+                          transition={{ duration: 1.5, ease: [0.23, 1, 0.32, 1], delay: 0.5 }}
+                          className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 h-full rounded-full shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <button 
+                        onClick={() => navigate(`/viewlecture/${course._id}`)}
+                        className="flex items-center justify-center gap-3 py-5 bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-gray-100 transition-all active:scale-[0.97] shadow-lg"
+                      >
+                        <IoPlayCircleOutline size={20} /> Resume
+                      </button>
+                      <button 
+                        onClick={() => navigate(`/live/${course._id}`)}
+                        className="flex items-center justify-center gap-3 py-5 bg-red-600/10 text-red-500 border border-red-500/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-600 hover:text-white hover:border-transparent transition-all active:scale-[0.97]"
+                      >
+                        <IoVideocamOutline size={20} /> Live
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+      </motion.div>
+
+      <Footer />
+    </div>
+  );
 }
 
-export default MyEnrolledCourse
+export default MyEnrolledCourse;
+

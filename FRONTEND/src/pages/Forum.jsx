@@ -22,6 +22,7 @@ const Forum = () => {
     const [loading, setLoading] = useState(true);
     const [category, setCategory] = useState("");
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
 
     // Create Thread Form State (with courseId if present)
     const [newThread, setNewThread] = useState({ 
@@ -72,10 +73,10 @@ const Forum = () => {
     return (
         <div className="min-h-screen bg-[#f8f9fa] flex flex-col pt-24">
             <Nav />
-            <div className="max-w-6xl mx-auto w-full px-6 flex-1 flex flex-col md:flex-row gap-8">
+            <div className="max-w-6xl mx-auto w-full px-3 md:px-6 flex-1 flex flex-col md:flex-row gap-8">
                 
-                {/* Sidebar Filters */}
-                <div className="md:w-64 space-y-6">
+                {/* Sidebar Filters - Desktop only */}
+                <div className="hidden md:block md:w-64 space-y-6">
                     <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
                         <h3 className="text-black font-black mb-4 flex items-center gap-2">
                             <FaFilter /> CATEGORIES
@@ -102,32 +103,59 @@ const Forum = () => {
                 </div>
 
                 {/* Main Content */}
-                <div className="flex-1 space-y-4 pb-12">
-                    <div className="flex justify-between items-center mb-6">
-                        <div className="flex flex-col">
-                            <div className="flex items-center gap-4">
+                <div className="flex-1 space-y-4 pb-24 md:pb-12">
+                    {/* Mobile Header */}
+                    <div className="flex flex-col gap-3 mb-4 md:mb-6">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
                                 <button 
                                     onClick={() => navigate('/')}
-                                    className="p-3 bg-white border border-gray-200 rounded-2xl shadow-sm hover:bg-gray-50 transition-all group"
+                                    className="p-2 md:p-3 bg-white border border-gray-200 rounded-xl md:rounded-2xl shadow-sm hover:bg-gray-50 transition-all group"
                                     title="Back to Home"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600 group-hover:text-black transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                     </svg>
                                 </button>
-                                <h1 className="text-3xl font-black text-black tracking-tight">COMMUNITY FORUM</h1>
+                                <h1 className="text-xl md:text-3xl font-black text-black tracking-tight">COMMUNITY FORUM</h1>
                             </div>
-                            {courseIdParam && (
-                                <div className="flex items-center gap-2 mt-2 ml-14">
-                                    <span className="text-xs font-black bg-blue-100 text-blue-600 px-3 py-1 rounded-full flex items-center gap-2">
-                                        COURSE DISCUSSIONS <FaTimes className="cursor-pointer" onClick={() => navigate('/forum')} />
-                                    </span>
-                                </div>
-                            )}
+                            {/* Mobile: Filter icon + New Thread button */}
+                            <div className="flex items-center gap-2 md:hidden">
+                                <button
+                                    onClick={() => setShowMobileFilters(prev => !prev)}
+                                    className="p-2 bg-white border border-gray-200 rounded-xl shadow-sm"
+                                    title="Filter"
+                                >
+                                    <FaFilter className="text-gray-600" />
+                                </button>
+                            </div>
                         </div>
+                        {/* Mobile: Collapsible Filter */}
+                        {showMobileFilters && (
+                            <div className="md:hidden bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                                <div className="flex flex-wrap gap-2">
+                                    {["", "General", "Question", "Announcement", "Feedback", "Resources"].map(cat => (
+                                        <button 
+                                            key={cat}
+                                            onClick={() => { setCategory(cat); setShowMobileFilters(false); }}
+                                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${category === cat ? 'bg-black text-white' : 'bg-gray-100 text-gray-500'}`}
+                                        >
+                                            {cat || "All"}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        {courseIdParam && (
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-black bg-blue-100 text-blue-600 px-3 py-1 rounded-full flex items-center gap-2">
+                                    COURSE DISCUSSIONS <FaTimes className="cursor-pointer" onClick={() => navigate('/forum')} />
+                                </span>
+                            </div>
+                        )}
                         <div className="relative">
                            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                           <input type="text" placeholder="Search threads..." className="pl-10 pr-4 py-2 bg-white rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black w-64 text-sm font-bold" />
+                           <input type="text" placeholder="Search threads..." className="pl-10 pr-4 py-2 bg-white rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black w-full md:w-64 text-sm font-bold" />
                         </div>
                     </div>
 
@@ -274,6 +302,14 @@ const Forum = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Mobile FAB - New Thread */}
+            <button
+                onClick={() => setShowCreateModal(true)}
+                className="md:hidden fixed bottom-6 right-6 z-40 bg-black text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all"
+            >
+                <FaPlus size={20} />
+            </button>
 
             <Footer />
         </div>

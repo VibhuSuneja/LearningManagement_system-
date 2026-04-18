@@ -9,55 +9,90 @@ import { SiGoogledataproc } from "react-icons/si";
 import { BsClipboardDataFill } from "react-icons/bs";
 import { SiOpenaigym } from "react-icons/si";
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion'
+
 function ExploreCourses() {
   const navigate = useNavigate()
+  
+  const categories = [
+    { name: "Web Dev", icon: <TbDeviceDesktopAnalytics />, color: "from-fuchsia-500 to-purple-600" },
+    { name: "UI/UX", icon: <LiaUikit />, color: "from-emerald-400 to-cyan-500" },
+    { name: "App Dev", icon: <MdAppShortcut />, color: "from-rose-400 to-orange-500" },
+    { name: "Hacking", icon: <FaHackerrank />, color: "from-sky-400 to-indigo-500" },
+    { name: "AI/ML", icon: <TbBrandOpenai />, color: "from-yellow-300 to-amber-500" },
+    { name: "Data Sci", icon: <SiGoogledataproc />, color: "from-orange-400 to-red-500" },
+    { name: "Analytics", icon: <BsClipboardDataFill />, color: "from-slate-300 to-slate-500" },
+    { name: "AI Tools", icon: <SiOpenaigym />, color: "from-violet-400 to-indigo-600" },
+  ];
+
   return (
-    <div className='w-[100vw] min-h-[50vh] lg:h-[50vh] flex flex-col lg:flex-row items-center justify-center gap-4 px-[30px]'>
-        <div className='w-[100%] lg:w-[350px] lg:h-[100%] h-[400px]  flex flex-col items-start justify-center gap-1 md:px-[40px]  px-[20px]'>
-          <span className='text-[35px] font-semibold'>Explore</span>
-          <span className='text-[35px] font-semibold'>Our Courses</span>
-          <p className='text-[17px]'>Join the best courses don't waste time</p>
-          <button className='px-[20px] py-[10px] border-2 bg-[black] border-white text-white rounded-[10px] text-[18px] font-light flex gap-2 mt-[40px]' onClick={()=>navigate("/allcourses")}>Explore Courses <SiViaplay className='w-[30px] h-[30px] fill-white' /></button>
+    <section className="w-full py-24 md:py-32 px-6 bg-black relative overflow-hidden">
+      {/* Background Decorative Blurs */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-white/[0.02] rounded-full blur-[120px] pointer-events-none"></div>
 
-        </div>
-        <div className='w-[720px] max-w-[90%] lg:h-[300px] md:min-h-[300px] flex items-center justify-center lg:gap-[60px] gap-[50px] flex-wrap mb-[50px] lg:mb-[0px]'>
-          <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center '>
-            <div className='w-[100px] h-[90px] bg-[#fbd9fb] rounded-lg flex items-center justify-center '><TbDeviceDesktopAnalytics className='w-[60px] h-[60px] text-[#6d6c6c]' /></div>
-            Web Devlopment
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center '>
-            <div className='w-[100px] h-[90px] bg-[#d9fbe0] rounded-lg flex items-center justify-center '><LiaUikit className='w-[60px] h-[60px] text-[#6d6c6c]' /></div>
-            UI UX Designing
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center'>
-            <div className='w-[100px] h-[90px] bg-[#fcb9c8] rounded-lg flex items-center justify-center '><MdAppShortcut className='w-[50px] h-[50px] text-[#6d6c6c]' /></div>
-            App Devlopment
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center'>
-            <div className='w-[100px] h-[90px] bg-[#fbd9fb] rounded-lg flex items-center justify-center '><FaHackerrank className='w-[55px] h-[55px] text-[#6d6c6c]' /></div>
-            Ethical Hacking
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center'>
-            <div className='w-[100px] h-[90px] bg-[#d9fbe0] rounded-lg flex items-center justify-center '><TbBrandOpenai className='w-[55px] h-[55px] text-[#6d6c6c]' /></div>
-            AI/ML
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center'>
-            <div className='w-[100px] h-[90px] bg-[#fcb9c8] rounded-lg flex items-center justify-center '><SiGoogledataproc className='w-[45px] h-[45px] text-[#6d6c6c]' /></div>
-            Data Science
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center '>
-            <div className='w-[100px] h-[90px] bg-[#fbd9fb] rounded-lg flex items-center justify-center '><BsClipboardDataFill className='w-[50px] h-[50px] text-[#6d6c6c]' /></div>
-            Data Analytics
-            </div>
-            <div className='w-[100px] h-[130px] font-light text-[13px] flex flex-col gap-3 text-center'>
-            <div className='w-[100px] h-[90px] bg-[#d9fbe0] rounded-lg flex items-center justify-center '><SiOpenaigym className='w-[50px] h-[50px] text-[#6d6c6c]' /></div>
-            AI Tools
-            </div>
-        </div>
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 md:gap-24">
+        {/* Left Section: Context */}
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="w-full lg:w-2/5 flex flex-col items-start space-y-8"
+        >
+          <div className="space-y-4">
+            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-[0.85]">
+              Explore<br />
+              <span className="text-white/20">Our Universe</span>
+            </h2>
+            <div className="w-20 h-1 bg-white rounded-full"></div>
+          </div>
+          
+          <p className="text-white/50 font-medium text-lg md:text-xl max-w-md leading-relaxed">
+            Master the most in-demand skills with our curated curriculum, designed by industry experts for the next generation of digital architects.
+          </p>
 
-      
-    </div>
-  )
+          <button 
+            onClick={() => navigate("/allcourses")}
+            className="group relative flex items-center gap-4 bg-white text-black px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-2xl active:scale-95 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gray-200 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+            <span className="relative z-10 flex items-center gap-3">
+              View All Courses 
+              <SiViaplay className="text-xl group-hover:translate-x-1 transition-transform" />
+            </span>
+          </button>
+        </motion.div>
+
+        {/* Right Section: Categories Grid */}
+        <div className="w-full lg:w-3/5 grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
+          {categories.map((cat, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              onClick={() => navigate(`/allcourses`)}
+              className="group cursor-pointer"
+            >
+              <div className="relative aspect-square rounded-[35px] bg-white/[0.03] backdrop-blur-3xl border border-white/10 flex flex-col items-center justify-center gap-4 hover:bg-white/[0.07] hover:border-white/20 hover:-translate-y-2 transition-all duration-500">
+                {/* Glow Effect */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-10 rounded-[35px] transition-opacity duration-500`}></div>
+                
+                <div className={`text-4xl md:text-5xl text-white group-hover:scale-110 transition-transform duration-500 z-10 p-4 rounded-2xl bg-gradient-to-br ${cat.color} bg-clip-text text-transparent filter drop-shadow-sm`}>
+                 <span className="text-white/80 group-hover:text-white transition-colors"> {cat.icon} </span>
+                </div>
+                
+                <span className="text-[10px] md:text-xs font-black uppercase tracking-widest text-white/40 group-hover:text-white transition-colors z-10 text-center px-2">
+                  {cat.name}
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export default ExploreCourses
+

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { FaArrowLeftLong, FaStar } from "react-icons/fa6";
+import { FaArrowLeftLong, FaStar, FaArrowRight } from "react-icons/fa6";
 import { useNavigate, useParams } from 'react-router-dom';
 import { setSelectedCourse } from '../redux/courseSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaLock, FaPlayCircle, FaComments } from "react-icons/fa";
+import { FaLock, FaPlayCircle, FaComments, FaAward, FaCalendarAlt } from "react-icons/fa";
 import { IoVideocamOutline } from "react-icons/io5";
 import { serverUrl } from '../App';
 import img from "../assets/empty.jpg"
@@ -12,7 +12,11 @@ import Card from '../component/Card';
 import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import { useSocketContext } from '../context/SocketContext';
+import Nav from '../component/Nav';
+import Footer from '../component/Footer';
 import CertificateDownload from '../component/CertificateDownload';
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 function ViewCourse() {
   const navigate = useNavigate();
@@ -214,260 +218,375 @@ function ViewCourse() {
   };
 
     const handleReview = async () => {
-      setLoading(true)
+    setLoading(true);
     try {
-      const result = await axios.post(serverUrl + "/api/review/createreview" , {rating , comment , courseId} , {withCredentials:true})
-      toast.success("Review Added")
-      setLoading(false)
-      console.log(result.data)
-      setRating(0)
-      setComment("")
-
+      const result = await axios.post(serverUrl + "/api/review/createreview", { rating, comment, courseId }, { withCredentials: true });
+      toast.success("Review Added");
+      setLoading(false);
+      setRating(0);
+      setComment("");
+      // Refresh course data to show new review
+      fetchCourseData();
     } catch (error) {
-      console.log(error)
-      setLoading(false)
-      toast.error(error.response?.data?.message || "Something went wrong while submitting review")
-      setRating(0)
-      setComment("")
+      console.log(error);
+      setLoading(false);
+      toast.error(error.response?.data?.message || "Something went wrong while submitting review");
     }
-  }
-
-  const calculateAvgReview = (reviews) =>{
-      if(!reviews || reviews.length  === 0 ){
-        return 0
-      }
-    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-  return (total / reviews.length).toFixed(1); // rounded to 1 decimal
   };
 
-const avgRating = calculateAvgReview(selectedCourse?.reviews)
+  const calculateAvgReview = (reviews) => {
+    if (!reviews || reviews.length === 0) return 0;
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return (total / reviews.length).toFixed(1);
+  };
 
-
+  const avgRating = calculateAvgReview(selectedCourse?.reviews);
 
   return (
-    <div className='min-h-screen bg-gray-50 p-6'>
-      <div className='max-w-6xl mx-auto bg-white shadow-md rounded-xl p-6 space-y-6 relative'>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className='min-h-screen bg-black font-sans selection:bg-white selection:text-black'
+    >
+      <Nav />
+      <div className='pt-[100px] pb-20 px-4 md:px-8 max-w-7xl mx-auto'>
+        
+        {/* Back Button & Header */}
+        <motion.div 
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          className="flex items-center gap-4 mb-8"
+        >
+          <button 
+            onClick={() => navigate(-1)}
+            className="p-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white hover:bg-white hover:text-black transition-all active:scale-90"
+          >
+            <FaArrowLeftLong />
+          </button>
+          <h1 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter">Course Blueprint</h1>
+        </motion.div>
 
-        {/* Top Section */}
-        <div className='flex flex-col md:flex-row gap-6'>
+        <motion.div 
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className='bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[30px] md:rounded-[50px] p-6 md:p-12 relative overflow-hidden'
+        >
+          {/* Decorative Glows */}
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-          {/* Thumbnail */}
-          <div className="w-full md:w-1/2">
-            <FaArrowLeftLong
-              className='text-[black] w-[22px] h-[22px] cursor-pointer mb-3'
-              onClick={() => navigate("/")}
-            />
-            {selectedCourse?.thumbnail ? (
-              <img
-                src={selectedCourse?.thumbnail}
-                alt="Course Thumbnail"
-                className="rounded-xl w-full object-cover"
-              />
-            ) : (
-              <img
-                src={img}
-                alt="Course Thumbnail"
-                className="rounded-xl w-full object-cover"
-              />
-            )}
+          {/* Top Section: Media & Primary Info */}
+          <div className='flex flex-col lg:flex-row gap-8 lg:gap-16 relative z-10'>
+
+            {/* Thumbnail / Video Preview Area */}
+            <div className="w-full lg:w-3/5 space-y-6">
+              <motion.div 
+                whileHover={{ scale: 1.01 }}
+                className="relative group overflow-hidden rounded-[30px] border border-white/10 shadow-2xl bg-black"
+              >
+                {selectedCourse?.thumbnail ? (
+                  <img
+                    src={selectedCourse?.thumbnail}
+                    alt="Course Thumbnail"
+                    className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-[2s] opacity-90 group-hover:opacity-100"
+                  />
+                ) : (
+                  <img
+                    src={img}
+                    alt="Course Placeholder"
+                    className="w-full aspect-video object-cover opacity-40"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                {!isEnrolled && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <motion.div 
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="w-20 h-20 bg-white/10 backdrop-blur-2xl rounded-full flex items-center justify-center border border-white/20 cursor-pointer shadow-2xl group"
+                    >
+                      <FaPlayCircle className="text-white text-4xl group-hover:text-emerald-400 transition-colors" />
+                    </motion.div>
+                  </div>
+                )}
+              </motion.div>
+
+              {/* Rating & Social Proof */}
+              <div className="flex flex-wrap items-center justify-between gap-6 py-6 px-8 bg-white/[0.02] rounded-[30px] border border-white/5">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <FaStar key={i} className={i <= Math.round(avgRating) ? "text-amber-400 text-sm" : "text-white/10 text-sm"} />
+                    ))}
+                  </div>
+                  <span className="text-2xl font-black text-white">{avgRating}</span>
+                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">({selectedCourse?.reviews?.length || 0} Learners)</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Legacy:</span>
+                  <span className="text-[10px] font-black text-white bg-white/10 px-4 py-2 rounded-xl uppercase tracking-widest">{selectedCourse?.category}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Course Meta & Call to Action */}
+            <div className="flex-1 flex flex-col justify-between space-y-8">
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <span className="text-emerald-400 text-[10px] font-black uppercase tracking-[0.5em] block">Propelling Innovation</span>
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight md:leading-[0.9] tracking-tighter uppercase">{selectedCourse?.title}</h1>
+                </div>
+                <p className="text-lg text-white/60 font-medium leading-relaxed italic border-l-2 border-white/10 pl-6">{selectedCourse?.subTitle}</p>
+              </div>
+
+              <div className="space-y-8">
+                <div className="flex items-baseline gap-4">
+                  <span className='text-6xl font-black text-white tracking-tighter'>₹{selectedCourse?.price}</span>
+                  {selectedCourse?.price < 599 && (
+                    <span className='text-xl font-bold text-white/20 line-through decoration-red-500/50'>₹599</span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex items-center gap-4 p-5 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/[0.08] transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                      <FaAward size={20} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/70">Premium Access</span>
+                  </div>
+                  <div className="flex items-center gap-4 p-5 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/[0.08] transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400">
+                      <FaCalendarAlt size={20} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/70">Lifetime Updates</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  {!isEnrolled && userData?._id !== (selectedCourse?.creator?._id || selectedCourse?.creator) ? (
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className='flex-1 bg-white text-black px-8 py-6 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-[0_20px_40px_rgba(255,255,255,0.1)] hover:shadow-[0_20px_50px_rgba(255,255,255,0.2)] transition-all'
+                      onClick={() => handleEnroll(userData?._id, courseId)}
+                    >
+                      Enroll in Academy
+                    </motion.button>
+                  ) : (
+                    <>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className='flex-1 bg-emerald-500 text-white px-8 py-6 rounded-2xl transition-all flex items-center justify-center gap-3 font-black text-xs uppercase tracking-[0.3em] shadow-xl shadow-emerald-500/20' 
+                        onClick={() => navigate(`/viewlecture/${courseId}`)}
+                      >
+                        <FaPlayCircle size={18} /> Resume Journey
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className='flex-1 bg-white/5 border border-white/10 text-white px-8 py-6 rounded-2xl transition-all flex items-center justify-center gap-3 font-black text-xs uppercase tracking-[0.3em] hover:bg-white/10' 
+                        onClick={() => navigate(`/forum?courseId=${courseId}`)}
+                      >
+                        <FaComments size={18} /> Discussion
+                      </motion.button>
+                    </>
+                  )}
+                </div>
+                
+                {isEnrolled && isCompleted && (
+                  <motion.div 
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="pt-4"
+                  >
+                    <CertificateDownload 
+                      studentName={userData?.name}
+                      courseTitle={selectedCourse?.title}
+                      date={new Date(courseProgress?.completedAt || Date.now()).toLocaleString('en-GB', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                      })}
+                      certificateId={`LMS-${courseId.substr(-4)}-${userData?._id?.substr(-4)}`.toUpperCase()}
+                    />
+                  </motion.div>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Course Info */}
-          <div className="flex-1 space-y-2 mt-[20px]">
-            <h1 className="text-2xl font-bold">{selectedCourse?.title}</h1>
-            <p className="text-gray-600">{selectedCourse?.subTitle}</p>
-
-            {/* Rating */}
-            <div className="font-medium">
-              <div className="flex items-center gap-2 text-yellow-500">
-                <FaStar />
-                <span>{avgRating}</span>
-                <span className="text-gray-600">(1,200 Reviews)</span>
-              </div>
-            </div>
-
-            {/* Price */}
-            <div>
-              <span className='text-xl font-semibold text-black'>₹{selectedCourse?.price}</span>{" "}
-              <span className='line-through text-sm text-gray-400'>₹599</span>
-            </div>
-
-            {/* Highlights */}
-            <ul className="text-sm text-gray-700 space-y-1 pt-2">
-              <li>✅ 10+ hours of video content</li>
-              <li>✅ Lifetime access to course materials</li>
-            </ul>
-
-            {/* Enroll / Watch / Live */}
-            <div className="flex gap-4">
-              {!isEnrolled && userData?._id !== selectedCourse?.creator?._id ? (
-                <button
-                  className='bg-black text-white px-6 py-2 rounded hover:bg-gray-700 mt-3 cursor-pointer transition-all'
-                  onClick={() => handleEnroll(userData._id, courseId)}
-                >
-                  Enroll Now
-                </button>
-              ) : (
-                <>
-                  <button
-                    className='bg-green-100 text-green-500 px-6 py-2 hover:bg-green-200 rounded mt-3 cursor-pointer transition-all flex items-center gap-2 font-semibold' 
-                    onClick={() => navigate(`/viewlecture/${courseId}`)}
-                  >
-                    <FaPlayCircle /> Watch Now
-                  </button>
-                  <button
-                    className='bg-blue-100 text-blue-500 px-6 py-2 hover:bg-blue-200 rounded mt-3 cursor-pointer transition-all flex items-center gap-2 font-semibold' 
-                    onClick={() => navigate(`/forum?courseId=${courseId}`)}
-                  >
-                    <FaComments /> Course Community
-                  </button>
-                  {isCompleted && (
-                    <div className="mt-3">
-                      <CertificateDownload 
-                        studentName={userData?.name}
-                        courseTitle={selectedCourse?.title}
-                        date={new Date(courseProgress?.completedAt || Date.now()).toLocaleString('en-GB', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: true
-                        })}
-                        certificateId={`LMS-${courseId.substr(-4)}-${userData?._id?.substr(-4)}`.toUpperCase()}
-                      />
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-
-            {/* What You'll Learn */}
-            <div>
-              <h2 className='text-xl font-semibold mb-2'>What You'll Learn</h2>
-              <ul className='list-disc pl-6 text-gray-700 space-y-1'>
-                <li>Learn {selectedCourse?.category} from Beginning</li>
-              </ul>
-            </div>
-
-            {/* Who This Course is For */}
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Who This Course is For</h2>
-              <p className="text-gray-700">
-                Beginners, aspiring developers, and professionals looking to upgrade skills.
-              </p>
-            </div>
-
-            {/* Curriculum Section */}
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="bg-white w-full md:w-2/5 p-6 rounded-2xl shadow-lg border border-gray-200">
-                <h2 className='text-xl font-bold mb-1 text-gray-800'>Course Curriculum</h2>
-                <p className='text-sm text-gray-500 mb-4'>
-                  {selectedCourse?.lectures?.length} Lectures
-                </p>
-
-                <div className='flex flex-col gap-3'>
+          {/* Curriculum Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mt-24 md:mt-32 pt-16 border-t border-white/5">
+            
+            <div className="lg:col-span-8 space-y-16">
+              <section>
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+                  <div>
+                    <h2 className='text-[10px] font-black text-white/40 uppercase tracking-[0.5em] mb-4'>Structural Path</h2>
+                    <h3 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter">Course Curriculum</h3>
+                  </div>
+                  <span className="text-[10px] font-black text-white/30 bg-white/5 px-6 py-3 rounded-full uppercase tracking-widest border border-white/5 self-start">
+                    {selectedCourse?.lectures?.length} Modules
+                  </span>
+                </div>
+                
+                <div className="space-y-4">
                   {selectedCourse?.lectures?.map((lecture, index) => (
-                    <button
+                    <motion.div
                       key={index}
-                      disabled={!lecture.isPreviewFree}
-                      onClick={() => {
-                        if (lecture.isPreviewFree) {
-                          setSelectedLecture(lecture);
-                        }
-                      }}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg border transition-all duration-200 text-left ${
-                        lecture.isPreviewFree
-                          ? `hover:bg-gray-100 cursor-pointer border-gray-300 ${
-                              selectedLecture?.lectureTitle === lecture?.lectureTitle
-                                ? "bg-gray-100 border-gray-400"
-                                : ""
-                            }`
-                          : "cursor-not-allowed opacity-60 border-gray-200"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.05 }}
+                      className={`group flex items-center justify-between p-6 md:p-8 rounded-[30px] border transition-all ${
+                        lecture.isPreviewFree || isEnrolled 
+                          ? "bg-white/[0.02] border-white/5 hover:border-white/20 hover:bg-white/[0.04] cursor-pointer" 
+                          : "bg-black/40 border-white/5 opacity-40 cursor-not-allowed"
                       }`}
+                      onClick={() => {
+                        if (lecture.isPreviewFree || isEnrolled) setSelectedLecture(lecture);
+                      }}
                     >
-                      <span className='text-lg text-gray-700'>
-                        {lecture.isPreviewFree ? <FaPlayCircle /> : <FaLock />}
-                      </span>
-                      <span className='text-sm font-medium text-gray-800'>
-                        {lecture?.lectureTitle}
-                      </span>
-                    </button>
+                      <div className="flex items-center gap-6 md:gap-8">
+                        <div className={`w-14 h-14 md:w-16 md:h-16 rounded-[20px] flex items-center justify-center transition-all group-hover:rotate-6 ${lecture.isPreviewFree || isEnrolled ? "bg-white text-black shadow-2xl" : "bg-white/5 text-white/20"}`}>
+                          {lecture.isPreviewFree || isEnrolled ? <FaPlayCircle size={24} /> : <FaLock size={20} />}
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em] mb-2">Module {index + 1}</p>
+                          <h4 className="text-lg md:text-xl font-black text-white uppercase tracking-tight group-hover:text-emerald-400 transition-colors">{lecture?.lectureTitle}</h4>
+                          {lecture.isPreviewFree && !isEnrolled && <span className="text-[9px] bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-lg font-black uppercase tracking-[0.2em] mt-3 inline-block">Free Sample</span>}
+                        </div>
+                      </div>
+                      {(lecture.isPreviewFree || isEnrolled) && <FaArrowRight className="text-white/20 group-hover:text-white group-hover:translate-x-2 transition-all" />}
+                    </motion.div>
                   ))}
                 </div>
-              </div>
 
-              <div className='bg-white w-full md:w-3/5 p-6 rounded-2xl shadow-lg border border-gray-200'>
-                <div className='aspect-video w-full rounded-lg overflow-hidden mb-4 bg-black flex items-center justify-center'>
-                  {selectedLecture?.videoUrl ? (
-                    <video
-                      className='w-full h-full object-cover'
-                      src={selectedLecture?.videoUrl}
-                      controls
-                    />
-                  ) : (
-                    <span className='text-white text-sm'>
-                      Select a Preview Lecture to Watch
-                    </span>
+                <AnimatePresence>
+                  {selectedLecture && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.95, y: 50 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 50 }}
+                      className="mt-12 p-6 md:p-8 bg-black/90 backdrop-blur-3xl rounded-[40px] border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.8)] overflow-hidden"
+                    >
+                      <div className="flex justify-between items-center mb-8">
+                        <div className="flex items-center gap-4">
+                            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.5)]"></div>
+                            <h3 className="text-[10px] font-black text-white uppercase tracking-[0.4em] truncate max-w-xs">{selectedLecture.lectureTitle}</h3>
+                        </div>
+                        <button onClick={() => setSelectedLecture(null)} className="w-12 h-12 flex items-center justify-center bg-white/5 rounded-2xl text-white hover:bg-white hover:text-black transition-all">✕</button>
+                      </div>
+                      <div className='aspect-video w-full rounded-[30px] overflow-hidden bg-black shadow-inner border border-white/5'>
+                        <video
+                          className='w-full h-full object-contain'
+                          src={selectedLecture?.videoUrl}
+                          controls
+                          autoPlay
+                        />
+                      </div>
+                    </motion.div>
                   )}
-                </div>
-              </div>
+                </AnimatePresence>
+              </section>
+
+              {/* Reviews Section */}
+              <section className="pt-8">
+                  <h2 className='text-[10px] font-black text-white/40 uppercase tracking-[0.5em] mb-12'>Community Resonance</h2>
+                  <div className='bg-white/[0.02] backdrop-blur-2xl rounded-[40px] p-8 md:p-12 border border-white/5'>
+                    <div className="flex flex-col md:flex-row gap-8 items-start">
+                      <div className="w-full md:w-auto flex flex-col items-center gap-4 bg-white/5 p-8 rounded-3xl border border-white/5">
+                        <span className="text-5xl font-black text-white">{avgRating}</span>
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map(i => (
+                            <FaStar key={i} className={i <= Math.round(avgRating) ? "text-amber-400 text-sm" : "text-white/10 text-sm"} />
+                          ))}
+                        </div>
+                        <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">{selectedCourse?.reviews?.length || 0} Reviews</span>
+                      </div>
+                      
+                      <div className="flex-1 w-full space-y-6">
+                        <div className='flex items-center gap-4'>
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <FaStar 
+                              key={star} 
+                              onClick={()=>setRating(star)} 
+                              className={`w-10 h-10 cursor-pointer transition-all hover:scale-110 ${star <= rating ? "text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]" : "text-white/5 hover:text-white/20"}`}
+                            />
+                          ))}
+                        </div>
+                        <textarea
+                          onChange={(e)=>setComment(e.target.value)}
+                          value={comment}
+                          className='w-full bg-black/40 border border-white/5 rounded-[25px] p-8 text-sm text-white focus:ring-1 focus:ring-white/20 focus:border-transparent outline-none transition-all placeholder:text-white/10 resize-none'
+                          placeholder='Share your experience with the world...'
+                          rows={4}
+                        />
+                        <button 
+                          className='bg-white text-black px-10 py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] hover:scale-105 active:scale-95 disabled:opacity-20 transition-all flex items-center justify-center min-w-[220px] shadow-2xl ml-auto' 
+                          disabled={loading || !rating} 
+                          onClick={handleReview}
+                        >
+                          {loading ? <ClipLoader size={18} color='black'/> : "Broadcast Review"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+              </section>
             </div>
 
-            {/* Review Section */}
-            <div className='mt-8 border-t pt-6'>
-              <h2 className='text-xl font-semibold mb-2'>Write a Review</h2>
-              <div className='mb-4'>
-                <div className='flex gap-1 mb-2'>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <FaStar key={star} onClick={()=>setRating(star)} className={star <= rating ? "fill-amber-300" : "fill-gray-300"}/>
-                  ))}
+            {/* Instructor Profile */}
+            <div className="lg:col-span-4">
+              <div className='bg-white/[0.02] backdrop-blur-2xl border border-white/5 rounded-[40px] p-10 lg:sticky lg:top-32 h-fit'>
+                <h3 className="text-[10px] font-black text-white/40 uppercase tracking-[0.5em] mb-10 text-center">Master Instructor</h3>
+                <div className='flex flex-col items-center text-center space-y-6 mb-10'>
+                  <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    className="relative group p-1.5 bg-white/5 rounded-[45px] border border-white/10"
+                  >
+                    <img
+                      src={creatorData?.photoUrl || img}
+                      alt={creatorData?.name}
+                      className='w-32 h-32 rounded-[38px] object-cover group-hover:scale-105 transition-transform duration-700'
+                    />
+                    <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-emerald-500 border-4 border-black rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)]"></div>
+                  </motion.div>
+                  <div>
+                    <h4 className='text-2xl font-black text-white uppercase tracking-tighter leading-none mb-2'>{creatorData?.name}</h4>
+                    <p className='text-[10px] font-black text-white/30 uppercase tracking-[0.2em]'>{creatorData?.email}</p>
+                  </div>
                 </div>
-                <textarea
-                onChange={(e)=>setComment(e.target.value)}
-                  value={ comment}
-                  className='w-full border border-gray-300 rounded-lg p-2'
-                  placeholder='Write your review here...'
-                  rows={3}
-                />
-                <button className='bg-black text-white mt-3 px-4 py-2 rounded hover:bg-gray-800' disabled={loading} onClick={handleReview}>
-                  {loading? <ClipLoader size={30} color='white'/>:"Submit Review"}
+                <p className='text-sm text-white/60 font-medium leading-relaxed text-center mb-10 px-4'>
+                  {creatorData?.description || "A world-class mentor dedicated to pushing the boundaries of digital education and technological excellence."}
+                </p>
+                <button 
+                  onClick={() => navigate(`/profile/${creatorData?._id || selectedCourse?.creator?._id}`)}
+                  className="w-full py-5 bg-white/5 text-white/80 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white/10 border border-white/5 transition-all shadow-xl"
+                >
+                  Explore Portfolio
                 </button>
               </div>
             </div>
+          </div>
+        </motion.div>
 
-            {/* Creator Info */}
-            <div className='flex items-center gap-4 pt-4 border-t'>
-              {creatorData?.photoUrl ? (
-                <img
-                  src={creatorData?.photoUrl}
-                  alt=""
-                  className='border-1 border-gray-200 w-16 h-16 rounded-full object-cover'
-                />
-              ) : (
-                <img
-                  src={img}
-                  alt=""
-                  className='w-16 h-16 rounded-full object-cover border-1 border-gray-200'
-                />
-              )}
-
+        {/* More Courses Section */}
+        {creatorCourses?.length > 0 && (
+          <div className="pt-24 mt-24 md:pt-32 md:mt-32 border-t border-white/5">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 mb-16">
               <div>
-                <h2 className='text-lg font-semibold'>{creatorData?.name}</h2>
-                <p className='md:text-sm text-gray-600 text-[10px]'>{creatorData?.description}</p>
-                <p className="md:text-sm text-gray-600 text-[10px]">{creatorData?.email}</p>
+                <h2 className='text-[10px] font-black text-white/40 uppercase tracking-[0.6em] mb-5'>Deepening Expertise</h2>
+                <h3 className="text-4xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tighter">More from this Author</h3>
               </div>
+              <button className="text-[10px] font-black text-white/40 uppercase tracking-widest hover:text-white transition-colors flex items-center gap-4 self-start">
+                SEE ARCHIVE <FaArrowRight className="text-white/20" />
+              </button>
             </div>
-
-            {/* Other Courses */}
-            <div>
-              <p className='text-xl font-semibold mb-2'>
-                Other Published Courses by the Educator -
-              </p>
-            </div>
-
-            <div className='w-full transition-all duration-300 py-[20px] flex items-start justify-center lg:justify-start flex-wrap gap-6 lg:px-[80px]'>
-              {creatorCourses?.map((course, index) => (
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10'>
+              {creatorCourses.map((course, index) => (
                 <Card
                   key={index}
                   thumbnail={course.thumbnail}
@@ -479,9 +598,10 @@ const avgRating = calculateAvgReview(selectedCourse?.reviews)
               ))}
             </div>
           </div>
-        </div>
+        )}
       </div>
-    </div>
+      <Footer />
+    </motion.div>
   );
 }
 
